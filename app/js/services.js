@@ -4,7 +4,7 @@
 angular.module('myApp.services', []);
 
 // Retrieve Quotes based on current filter (or no filter), user interaction, etc.
-myApp.factory('QuoteFactory', function(User, $rootScope, progress, $http, $q){
+myApp.factory('QuoteFactory', function(User, $rootScope, $http, $q){
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 	var Quotes = {
 		quotes : [], // all current quotes retrieved
@@ -95,7 +95,7 @@ myApp.factory('QuoteFactory', function(User, $rootScope, progress, $http, $q){
 
 // Filter the quotes.  Remember, quotes is a singleton object with no use of the "new" keyword.
 // however, a QuoteFilter can be instantiated and modifications to it will immediately reflect the Quote singleton in real time.
-myApp.factory('QuoteFilter', function(User, QuoteFactory, $rootScope, progress, $http, $q){
+myApp.factory('QuoteFilter', function(User, QuoteFactory, $rootScope, $http, $q){
 	var QuoteFilter = function() {
 		this.busy = false;
 		this.quotes = [];
@@ -282,7 +282,7 @@ myApp.factory("AuthenticateService", ['User', '$cookies', '$http', '$q', functio
 }]);
 
 // The User singleton.  Cannot be instantiated.  Updates will reflect in real time
-myApp.factory('User', function($rootScope, progress, $http, $q){
+myApp.factory('User', function($rootScope, $http, $q){
 	var User = {
 		data : {
 			id : false,
@@ -323,14 +323,4 @@ myApp.factory('menuService', ['$rootScope', function ($rootScope) {
 		}
 	};
 	return service;
-}]);
-
-// progress bar at top of page
-myApp.service("progress", ["$rootScope", "ngProgress", function($rootScope, ngProgress){
-	$rootScope.$on("event:endProgress", function(){
-	  ngProgress.complete();
-	});
-	$rootScope.$on("event:startProgress", function(){
-	  ngProgress.reset();
-	})
 }]);

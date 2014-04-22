@@ -7,8 +7,16 @@
   "private": true,
   "dependencies": {
     "angular": "1.2.x",
-    "angular-route": "1.2.x",
-    "angular-loader": "1.2.x",
-    "angular-mocks": "~1.2.15"
+    "bootstrap": "~3.1.1",
+    "font-awesome": "~4.0.3",
+    "jquery": "~2.1.0"
+  },
+  "devDependencies": {
+    "angular-ui-router": "~0.2.10",
+    "angular-resource": "~1.2.16",
+    "ngInfiniteScroll": "~1.1.0",
+    "angular-cookies": "~1.2.16",
+    "angular-animate": "~1.2.16",
+    "angular-loading-bar": "~0.4.0"
   }
 }
