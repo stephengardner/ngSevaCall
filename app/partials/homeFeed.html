@@ -1,0 +1,115 @@
+<!-- quotes column -->
+<div class="nopadding col-md-12 col-sm-12">
+	<div class="feed1">
+		<div class="feed-object" ng-repeat="quote in quoteFactory.quotes">
+			<div class="quote-window">
+				<div class="row no-gutter">
+					<!-- quote score -->
+					<div class="col-md-1 col-xs-1">
+						<div class="rating-block">
+							<i ng-class="{active:quote.interaction.liked}" class="vote fa fa-chevron-up"></i>
+							<div class="quote-score">{{quote.score}}</div>
+							<i ng-class="{active:quote.interaction.disliked}" class="vote fa fa-chevron-down"></i>
+						</div>
+					</div>
+					<!-- quote -->
+					<div class="col-md-10 col-xs-10">
+						<!-- quote text -->
+						<div class="quote">
+							<i class="quotation quotation-left fa-quote-left fa"></i>
+								{{quote.quote}}
+							<i class="quotation quotation-right fa-quote-right fa"></i>
+						</div>
+						<!-- quote media -->
+						<div class="media">
+							<a ui-sref="filter({type : 'author', value: {{'quote.author'}}})">
+								{{quote.author}}
+							</a>
+						</div>
+					</div>
+					<!-- favorite -->
+					<div class="col-md-1 col-xs-1">
+						<div class="favorite">
+							<i class="fa fa-heart-o"></i>
+						</div>
+					</div>
+				</div>
+				<!-- quote images -->
+				<div class="row no-gutter">
+					<div class="photo col-md-4" ng-repeat="photo in quote.media.photos.data">
+						<!-- image -->
+						<img style="width:100%;" src="{{photo.images.thumbnail.url}}"/>
+						<!-- image like -->
+						<span ng-class="{active:photo.interaction.likedByUser}" class="thumbs-up">
+							<i ng-class="{'active fa-thumbs-up':photo.interaction.likedByUser}"  class="fa fa-thumbs-o-up"></i>
+						</span>
+						<!-- image dislike -->
+						<span class="thumbs-down">
+							<i ng-class="{'active fa-thumbs-down':photo.interaction.dislikedByUser}"   class="fa fa-thumbs-o-down"></i>
+						</span>
+						<!-- image rating bar -->
+						<div class="rating-wrapper">
+							<div class="rating-bar-wrapper">
+								<span class="rating-bar" ng-class="{'active' : photo.likes + photo.dislikes}"></span>
+								<span class="rating-bar-painted" ng-style="{width : ((photo.likes / (photo.likes + photo.dislikes)) * 100) + '%'}" ></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- quote tags -->
+			<div class="quote-tag" ng-repeat="tag in quote.tags track by tag.id">
+				<a ui-sref="filter({type : 'tag', value: {{'tag.tag'}}})">
+					{{tag.tag}}
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="next-page" infinite-scroll="quoteFactory.nextPage()" infinite-scroll-distance="0">Load More</div>
+</div>
+<!--
+<br/>
+before ui-view
+<div ui-view></div>
+after ui-view
+<br/>
+<a ui-sref=".tag">Tag</a>
+-->
+<!-- sidebar -->
+
+<!-- COLUMN TWO NAMED VIEW 
+<div class="col-md-4 col-xs-0">
+	<div ui-view="columnTwo"></div>
+</div>-->
+		<!--
+	<div class="col-md-8 col-sm-12">
+		<div class="row feed-object" ng-repeat="quote in quotes">
+			<div class="quote-window">
+				<div class="row">
+					<div class="col-md-1">
+						<div class="rating-block">
+							<i class="fa fa-chevron-up"></i>
+							<div class="quote-score">{{quote.score}}</div>
+							<i class="fa fa-chevron-down"></i>
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div class="quote">
+							<i class="quotation quotation-left fa-quote-left fa"></i>
+							{{quote.quote}}
+							<i class="quotation quotation-right fa-quote-right fa"></i>
+						</div>
+					</div>
+					<div class="col-md-1">
+					</div>
+				</div>
+				<div class="row">
+					pictures
+				</div>
+			</div>
+			<div class="quote-tag" ng-repeat="tag in quote.tags track by tag.id">
+				{{tag.tag}}
+			</div>
+		</div>
+	</div>
+		-->

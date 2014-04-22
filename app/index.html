@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" ng-app="myApp">
+	<head>
+		<meta charset="utf-8">
+		<title>My AngularJS App</title>
+		<link rel="stylesheet" href="css/bootstrap.css"/>
+		<link rel="stylesheet" href="css/font-awesome.css"/>
+		<link rel="stylesheet" href="css/media.css"/>
+		<link rel="stylesheet" href="css/sidebar.css"/>
+		<link rel="stylesheet" href="vendors/ngProgress/css/ngProgress.css"/>
+		<link rel="stylesheet" href="vendors/loading-bar/loading-bar.css"/>
+		<link rel="stylesheet" href="css/app.css"/>
+		<script src="js/components/jQuery/jQuery-1-10-2.js"></script>
+		<script src="../bower_components/angular/angular.js"></script>
+	</head>
+	<body>
+		<div class="header col-md-12">
+			<h1 class="nopadding col-md-8 block m-0-box tc " style="letter-spacing:-.12em; font-size:2em; font-weight:bold;">
+				<a class="nodecoration autocolor pure-u-1 pure-u-wrapper" ui-sref="body">
+					<em class="highlight">q</em>uotogenic
+				</a>
+			</h1>
+			<div class="hidden-xs nopadding col-md-4 menu-buttons">
+				<ig-login></ig-login>
+			</div>
+		</div>
+		<div class="index">
+			<div ui-view></div>
+		</div>
+		<!-- In production use:
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+		-->
+		<script src="../bower_components/angular-route/angular-route.js"></script>
+		<script src="js/components/ngInfiniteScroll/ngInfiniteScroll.js"></script>
+		<script src="js/components/ngResource/resource.js"></script>
+		<script src="js/components/uiRouter/angular-ui-router.js"></script>
+		<script src="js/components/ngAnimate/ngAnimate.js"></script>
+		<script src="js/components/ngCookies/angular-cookies.js"></script>
+		<script src="vendors/ngProgress/ngProgress.js"></script>
+		<script src="vendors/loading-bar/loading-bar.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/services.js"></script>
+		<script src="js/controllers.js"></script>
+		<script src="js/filters.js"></script>
+		<script src="js/directives.js"></script>
+	</body>
+</html>

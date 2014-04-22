@@ -1,0 +1,228 @@
+/* app css stylesheet */
+h1, h2, h3 {
+	margin:0px;
+}
+
+.header {
+	margin:1em 0em;
+}
+
+.highlight {
+	color: rgb(0, 219, 228);
+	font-style: normal;
+}
+
+.feed1 {
+	padding: 1em;
+	background: rgb(0, 84, 111);
+	margin-bottom: 1em;
+	border-radius:8px;
+}
+
+.feed-object {
+	margin-bottom:.75em;
+}
+
+.feed-object ~ .feed-object {
+	margin-top:.75em;
+}
+
+.quote-window {
+	border-radius:5px;
+	background:white;
+	color:black;
+	padding:1em;
+}
+
+.menu-buttons {
+	text-align:right;
+}
+
+.popular a, .quote-tag a {
+	text-decoration: none;
+	color:white;
+}
+.rating-block {
+	float:left;
+	text-align:center;
+}
+.quote-tag {
+	margin-right: 20px;
+	border-top-left-radius: 4px;
+	font-size: .8em;
+	border-bottom-left-radius: 4px;
+	position: relative;
+	padding: 2px 7px 2px 7px;
+	background: #01a3bb;
+	color: white;
+	display:inline-block;
+}
+
+.quote-tag:after {
+	position: absolute;
+	display: inline-block;
+	content: "";
+	background-image: url('../img/tag2.png');
+	background-size: 12px 19px;
+	background-repeat: no-repeat;
+	width: 20px;
+	height: 20px;
+	top: 0;
+	right: -20px;
+}
+
+.popular .author {
+	display:inline-block;
+	margin-right:20px;
+	padding: 2px 7px 2px 7px;
+	background: #01a3bb;
+	font-size: .8em;
+	border-radius:4px;
+}
+
+.media a {
+	color:#888;
+	font-weight:bold;
+}
+
+.quote {
+	font-size:1.1em;
+	font-weight:bold;
+	cursor:pointer;
+	text-align:center;
+	position:relative;
+}
+
+.quote-window .quotation {
+	color:#ddd;
+}
+.quote-window .quotation-left {
+	position: absolute;
+	left: -.5em;
+	top: -.5em;
+}
+
+.quote-window .quotation-right {
+	position: absolute;
+	right: -.5em;
+	bottom: -.5em;
+}
+
+.quote-window .favorite {
+	font-size:1.7em;
+	float:right;
+}
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
+.row.no-gutter {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.row.no-gutter [class*='col-']:not(:first-child),
+.row.no-gutter [class*='col-']:not(:last-child) {
+  padding-right: 0;
+  padding-left: 0;
+}
+.row.no-gutter { margin-left:0;margin-right:0; }
+
+.quote-window .photo {
+	padding-right: .5em!important;
+}
+.quote-window .photo ~ .photo{
+	padding-right: 0em!important;
+	padding-left:.5em!important;
+}
+
+.header h1 {
+	margin:0px;
+}
+.header {
+	text-align:center;
+}
+.header .menu-buttons {
+	float:right;
+}
+
+.thumbs-down {
+	float:right;
+}
+
+.thumbs-up {
+	float:left;
+}
+
+.next-page {
+	padding:1em;
+	text-align:center;
+	background:#ddd;
+	border-radius:6px;
+}
+.rating-wrapper {
+	padding-left:20px;
+	padding-right:20px;
+	position:relative;
+}
+
+.rating-bar-wrapper {
+	position:relative;
+	top:8px;
+	height:4px;
+}
+
+.rating-bar {
+	width:100%;
+	position:absolute;
+	display:inline-block;
+	height:4px;
+	background:#bbb;
+	margin-bottom:3px;
+}
+
+.rating-bar.active {
+	background:red;
+}
+
+.rating-bar-painted {
+	position:absolute;
+	left:0px;
+	display:inline-block;
+	height:4px;
+	background:green;
+	margin-bottom:3px;
+}
+/* 
+  Allow angular.js to be loaded in body, hiding cloaked elements until 
+  templates compile.  The !important is important given that there may be 
+  other selectors that are more specific or come later and might alter display.  
+ */
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
+.ng-cloak {
+  display: none  !important;
+}
+
+.vote.active {
+	color:green;
+}
+
+.sidebar {
+	padding: 0em 1em;
+}
+.sidebar  h2 {
+	margin-bottom:.2em;
+	font-size:1.5em;
+	font-weight:bold;
+}
+.load-more {
+	margin-top:.4em;
+}
+.sidebar .popular-wrapper ~ .popular-wrapper {
+	margin-top:1em;
+}

@@ -1,0 +1,11 @@
+.sidebar .tag {
+	margin-right: 20px;
+	border-top-left-radius: 4px;
+	font-size: .8em;
+	border-bottom-left-radius: 4px;
+	position: relative;
+	padding: 2px 7px 2px 7px;
+	background: #01a3bb;
+	color: white;
+	display:inline-block;
+}
