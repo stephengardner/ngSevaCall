@@ -20,7 +20,7 @@ RewriteRule ^/quote/([0-9]+)$ /quote.php?quoteID=$1
 #RewriteRule ^quote.php$ /index.php
 
 #main API
-RewriteRule api/v2/(?!js)(.*)$ api/v2/api.php?request=$1 [QSA,NC,L]
+RewriteRule api/v2/(?!js)(.*)$ app/api/v2/api.php?request=$1 [QSA,NC,L]
 
 # instagram bot API
 RewriteRule instagram_v2/api/v1/(?!js)(.*)$ instagram_v2/api/v1/api.php?request=$1 [QSA,NC,L]
