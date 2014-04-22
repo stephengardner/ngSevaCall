@@ -54,7 +54,6 @@ class feed {
 			$SQL_USER_LIKE = ", count(CASE WHEN QuoteRatings.quoteID = Quotes.quoteID AND QuoteRatings.userID = '$userID' AND QuoteRatings.optionRatingTypeID = 1 THEN 1 ELSE NULL END) AS likedByUser";
 			$SQL_USER_DISLIKE = ", count(CASE WHEN QuoteRatings.quoteID = Quotes.quoteID AND QuoteRatings.userID = '$userID' AND QuoteRatings.optionRatingTypeID = 2 THEN 1 ELSE NULL END) AS dislikedByUser";
 			$SQL_USER_FAVORITE = ", count(CASE WHEN QuoteFavorites.quoteFavoriteActive AND QuoteFavorites.userID = '$userID' THEN 1 ELSE NULL END) AS favorite"; 
-			//$SQL_USER_USER = ", Users.userName as user";
 			$SQL_USER = $SQL_USER_LIKE . $SQL_USER_DISLIKE . $SQL_USER_FAVORITE . $SQL_USER_USER;
 			$SQL_FAVORITE_JOIN = "
 				LEFT JOIN QuoteFavorites ON QuoteFavorites.quoteID = Quotes.quoteID AND QuoteFavorites.userID = '$userID'

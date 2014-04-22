@@ -3,6 +3,12 @@ h1, h2, h3 {
 	margin:0px;
 }
 
+.title {
+	letter-spacing:-.12em; 
+	font-size:2em; 
+	font-weight:bold;
+}
+
 .header {
 	margin:1em 0em;
 }
@@ -42,10 +48,12 @@ h1, h2, h3 {
 	text-decoration: none;
 	color:white;
 }
+
 .rating-block {
 	float:left;
 	text-align:center;
 }
+
 .quote-tag {
 	margin-right: 20px;
 	border-top-left-radius: 4px;
@@ -71,15 +79,6 @@ h1, h2, h3 {
 	right: -20px;
 }
 
-.popular .author {
-	display:inline-block;
-	margin-right:20px;
-	padding: 2px 7px 2px 7px;
-	background: #01a3bb;
-	font-size: .8em;
-	border-radius:4px;
-}
-
 .media a {
 	color:#888;
 	font-weight:bold;
@@ -96,6 +95,7 @@ h1, h2, h3 {
 .quote-window .quotation {
 	color:#ddd;
 }
+
 .quote-window .quotation-left {
 	position: absolute;
 	left: -.5em;
@@ -125,14 +125,19 @@ h1, h2, h3 {
 
 .row.no-gutter [class*='col-']:not(:first-child),
 .row.no-gutter [class*='col-']:not(:last-child) {
-  padding-right: 0;
-  padding-left: 0;
+	padding-right: 0;
+	padding-left: 0;
 }
-.row.no-gutter { margin-left:0;margin-right:0; }
+
+.row.no-gutter { 
+	margin-left:0;
+	margin-right:0; 
+}
 
 .quote-window .photo {
 	padding-right: .5em!important;
 }
+
 .quote-window .photo ~ .photo{
 	padding-right: 0em!important;
 	padding-left:.5em!important;
@@ -162,6 +167,7 @@ h1, h2, h3 {
 	background:#ddd;
 	border-radius:6px;
 }
+
 .rating-wrapper {
 	padding-left:20px;
 	padding-right:20px;
@@ -195,6 +201,7 @@ h1, h2, h3 {
 	background:green;
 	margin-bottom:3px;
 }
+
 /* 
   Allow angular.js to be loaded in body, hiding cloaked elements until 
   templates compile.  The !important is important given that there may be 
@@ -220,9 +227,11 @@ h1, h2, h3 {
 	font-size:1.5em;
 	font-weight:bold;
 }
+
 .load-more {
 	margin-top:.4em;
 }
+
 .sidebar .popular-wrapper ~ .popular-wrapper {
 	margin-top:1em;
 }

@@ -9,6 +9,7 @@
 		display:none;
 	}
 }
+
 /* Medium */
 @media (max-width:800px) AND (min-width:501px) {
 	.quote-window .photo {
@@ -19,6 +20,7 @@
 		display:none;
 	}
 }
+
 /* Large */
 @media (min-width:801px) {
 	.quote-window .photo {

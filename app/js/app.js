@@ -1,6 +1,5 @@
 'use strict';
 
-
 // Declare app level module which depends on filters, and services
 var myApp = angular.module('myApp', [
 	'ngRoute',
@@ -20,7 +19,6 @@ var myApp = angular.module('myApp', [
         if (data === undefined) {
             return data;
         }
-		console.log(data);
         return $.param(data);
     }
 })
@@ -50,32 +48,22 @@ cfpLoadingBarProvider.includeSpinner = false;
 })
 // UI-router config
 .config(function($stateProvider, $urlRouterProvider) {
-	$urlRouterProvider.otherwise('/home');
+	// route to root if no valid route found
+	$urlRouterProvider.otherwise('/');
 	
-	// home, currently an unused "/" route, but automatically authorizes a user before any action takes place down the chain
+	// home: an abstract route, load the home.html
 	var home = {
 		name : 'home',
 		url : '/',
-		templateUrl: 'partials/home.html',
-		resolve : {
-			resolveAuthenticate : function(User, AuthenticateService, $q) {
-				if(!User.id) {
-					var auth = new AuthenticateService();
-					window.Authenticate = auth;
-					var deferred = $q.defer();
-					auth.authenticate().then(function(){
-					console.log("done auth");deferred.resolve(1)});
-					return deferred.promise;
-				}
-			
-			}
-		}
+		abstract : true,
+		templateUrl: 'partials/home.html'
 	};
 	
 	// sidebar, load popular items
 	var sidebar = {
 		name : 'sidebar',
 		url : '^/',
+		abstract : true,
 		parent : home,
 		views : {
 			'sidebar@home' : {
@@ -85,13 +73,13 @@ cfpLoadingBarProvider.includeSpinner = false;
 					resolveTags : function(PopularFactory, $http, $q) {
 						var deferred = $q.defer();
 						var d = new PopularFactory("tag");
-						d.nextPage().then(function(){console.log("Done sidebar");deferred.resolve(d);});
+						d.nextPage().then(function(){deferred.resolve(d);});
 						return deferred.promise;
 					},
 					resolveAuthors : function(PopularFactory, $http, $q) {
 						var deferred = $q.defer();
 						var d = new PopularFactory("author");
-						d.nextPage().then(function(){console.log("Done sidebar");deferred.resolve(d);});
+						d.nextPage().then(function(){deferred.resolve(d);});
 						return deferred.promise;
 					}
 				}
@@ -102,8 +90,8 @@ cfpLoadingBarProvider.includeSpinner = false;
 	// body, the feed and content body
 	var body = {
 		name : 'body',
-		url : '^/home',
-		parent : sidebar,
+		url : '^/',
+		parent : sidebar, // require the sidebar for this view
 		views : {
 			'content@home' : {
 				templateUrl: 'partials/homeFeed.html',
@@ -114,9 +102,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 						
 						var auth = new AuthenticateService();
 						auth.authenticate().then(function(){
-							console.log("Absolute done auth");
 							if(QuoteFactory.quotes.length == 0) {
-								console.log("getting quotes");
 								var d = QuoteFactory;
 								d.nextPage().then(function(){
 									deferred.resolve(d);
@@ -136,7 +122,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 		}
 	};
 	
-	// tag, the state for popular tags/authors
+	// filter, the state for filtering quotes by tag/quthor 
 	var filter = {
 		name : 'filter',
 		url : '^/{type:tag|author}/:value',
@@ -147,7 +133,6 @@ cfpLoadingBarProvider.includeSpinner = false;
 				controller : 'initialFeed',
 				resolve : {
 					resolveQuotes : function(AuthenticateService, QuoteFilter, $http, $q, $stateParams) {
-						console.log("State Params:", $stateParams);
 						var data = {};
 						if($stateParams.type == "tag") {
 							data = { tag : $stateParams.value };

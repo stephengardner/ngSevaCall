@@ -13,16 +13,24 @@ to allow for easier real-time updates in a Single-Page-Application powered quote
 The application is built off angular-seed, a boilerplate for angular/bower enabled applications.
 You'll find the actual code residing in the "app" directory
 
+## Fundamentals
+
+A very high level look at the fundamentals involved with the current progress of this Angular project: 
+
+* `Angular` - ui-router, services, directives, controllers, partials, ngProgress, authentication, login/logout, infinite scroll, etc
+* `PHP` - Database connection, API integration, ajax retrieval, JSON delivery, REST oriented
+* `REST` - Custom REST PHP Class for creating endpoints and delivering data
+* `MySQL` - Retrieval of data across several tables totaling hundreds of thousands of rows, created with a normalized table structure
+* `Bootstrap` - Bootstrap CSS
+
+more coming...
+
+## Hidden Passwords
+
+This repository exposes the backend API as well as the frontend javascript/HTML/CSS.
+I have hidden the database password as well as the instagram API secret key,
+so while this is a full platform as-is, it is not forkably usable by a third party unless you'd like access to my database and instagram API (on request)
+
 ## Contact
 
 Contact me at opensourceaugie@gmail.com or www.quotogenic.com/contact
-
-[git]: http://git-scm.com/
-[bower]: http://bower.io
-[npm]: https://www.npmjs.org/
-[node]: http://nodejs.org
-[protractor]: https://github.com/angular/protractor
-[jasmine]: http://pivotal.github.com/jasmine/
-[karma]: http://karma-runner.github.io
-[travis]: https://travis-ci.org/
-[http-server]: https://github.com/nodeapps/http-server 

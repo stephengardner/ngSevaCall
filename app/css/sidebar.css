@@ -9,3 +9,35 @@
 	color: white;
 	display:inline-block;
 }
+
+.popular .quote-tag:after {
+	position: absolute;
+	display: inline-block;
+	content: "";
+	background-image: url('../img/tag2.png');
+	background-size: 14px 24px;
+	background-repeat: no-repeat;
+	width: 20px;
+	height: 24px;
+	top: 0;
+	right: -20px;
+}
+
+.popular .author {
+	display:inline-block;
+	margin-right:20px;
+	padding: 2px 7px 2px 7px;
+	background: #01a3bb;
+	font-size: .8em;
+	border-radius:4px;
+}
+
+.popular .quote-tag {
+	font-size:1em;
+	margin-top:3px;
+}
+
+.popular .author {
+	font-size:1em;
+	margin-top:3px;
+}

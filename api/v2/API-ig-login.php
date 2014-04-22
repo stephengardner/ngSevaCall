@@ -16,10 +16,10 @@ class login {
 		$mysqli = $GLOBALS['mysqli'];
 		include_once('Instagram/instagram.class.php');
 		$instagram = new Instagram(array(
-							"apiKey" => "75b6c945b4e04cb2982f25126e7add0f",
-							"apiSecret" => "9b622f42cdf44f0f9465c926c4a32855",
-							"apiCallback" => "http://localhost/public_html/angular-seed/app/instagram-redirect-handler.html"
-						));
+			"apiKey" => "75b6c945b4e04cb2982f25126e7add0f",
+			"apiSecret" => "HIDDEN",
+			"apiCallback" => "http://localhost/public_html/ngQuotogenic/app/instagram-redirect-handler.html"
+		));
 		$instagram->setAccessToken($params['access_token']);
 		
 		$stmt = $mysqli->prepare("

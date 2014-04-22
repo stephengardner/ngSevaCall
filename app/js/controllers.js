@@ -4,17 +4,13 @@
 
 angular.module('myApp.controllers', [])
 	.controller('initialFeed', ['QuoteFactory', '$cookies', 'resolveQuotes', '$scope', '$stateParams', function(QuoteFactory, $cookies, resolveQuotes, $scope, $stateParams) {
-		console.log("--------------------- resolveQuotes inside initialFeed ------------------------:", resolveQuotes);
 		$scope.quoteFactory = QuoteFactory;
-	}])
-	.controller('popularFeed', ['resolveQuotes', '$scope', '$stateParams', function(resolveQuotes, $scope, $stateParams) {
-		$scope.quoteFactory = resolveQuotes;
 	}])
 	.controller('sidebarOne', ['resolveTags', 'resolveAuthors', '$scope', function(resolveTags, resolveAuthors, $scope) {
 		$scope.popularTags = resolveTags;
 		$scope.popularAuthors = resolveAuthors;
 	}])
-	.controller('login2', ['User', 'QuoteFactory', 'AuthenticateService', '$scope', function(User, QuoteFactory, AuthenticateService, $scope) {
+	.controller('login', ['User', 'QuoteFactory', 'AuthenticateService', '$scope', function(User, QuoteFactory, AuthenticateService, $scope) {
 		var Authenticate = new AuthenticateService();
 		
 		// use window.Authenticate so that the instagram popup can close via the window's scope
@@ -30,8 +26,8 @@ angular.module('myApp.controllers', [])
 		};
 		
 		$scope.login = function() {
-				window.Authenticate.login().then(function(d){
-					QuoteFactory.onUserReset();
+			window.Authenticate.login().then(function(d){
+				QuoteFactory.onUserReset();
 			});
-		}
+		};
 	}]);

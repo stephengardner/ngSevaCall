@@ -1,16 +1,16 @@
 'use strict';
 /* Services */
-// Register the services
+// Register the services:
 angular.module('myApp.services', []);
 
-// Retrieve Quotes based on current filter, no filter, user interaction, etc.
+// Retrieve Quotes based on current filter (or no filter), user interaction, etc.
 myApp.factory('QuoteFactory', function(User, $rootScope, progress, $http, $q){
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 	var Quotes = {
-		quotes : [],
-		busy : false,
-		data : { page : 1, key : "tmp", type : "score", userID : User.data.id },
-		init : function() {
+		quotes : [], // all current quotes retrieved
+		busy : false, // status indicator of http requests
+		data : { page : 1, key : "tmp", type : "score", userID : User.data.id }, // data to GET or POST with http calls
+		init : function() { // initialize with options, if available
 			this.data = $.extend({}, this.data, opts);
 		},
 		
@@ -19,15 +19,15 @@ myApp.factory('QuoteFactory', function(User, $rootScope, progress, $http, $q){
 			this.data.userID = User.data.id
 		},
 		
+		// run the next page of quotes, pings the quotogenic API based on the current page set in the global "data" object, as well as the other data params
 		nextPage : function() {
 			var self = this;
-			this.updateUser();
-			self.data.pagesInclusive = 0;
-			if (this.busy) return;
-			this.busy = true;
-			var url = "../api/v2/feed?" + $.param(self.data);
-			var deferred = $q.defer();
-			console.log("pinging the following: " + url);
+			self.updateUser();
+			if (self.busy) return; // return if the http status is busy
+			self.busy = true; // set the http status to busy
+			var url = "../api/v2/feed?" + $.param(self.data); // create the url to ping
+			var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
+			self.data.pagesInclusive = 0; // nextPage() will never want all the inclusive quotes, only the next page.
 			$http({
 				url : url, 
 				method : "GET", 
@@ -35,40 +35,31 @@ myApp.factory('QuoteFactory', function(User, $rootScope, progress, $http, $q){
 			}).
 			success(function(d) {
 				var items = d.data.quotes;
-				var data = [];
+				// add all the retrieved quotes to the global quotes[] array
 				angular.forEach(items, function(value, key) {
 					self.quotes.push(value);
 				});
-				console.log("ALL QUOTES:", self.quotes);
-				self.busy = false;
-				self.data.page++;
-				deferred.resolve(self);
+				self.busy = false; // reset http status, allow future pings
+				self.data.page++; // increase page for next ping
+				deferred.resolve(self); // resolve the $q promise
 			}).
 			error(function(data){
-				alert("err");
+				alert("err"); // testing, simply return an alert for now
 			});
-			return deferred.promise;
+			return deferred.promise; // once the http callback has been fulfilled, this function returns the satisfied promise
 		},
 		
+		// reset the global data object, perhaps we switched pages and want to go back to page 1
 		reset : function() {
 			this.data = { page : 1, key : "tmp", type : "score" };
 		},
 		
-		reload : function(data) {
-			var self = this;
-			if(!data)
-				this.reset();
-			this.data = $.extend({}, this.data, data);
-			console.log("************************ reloading. user is: ", User);
-			self.data.page = 1;
-			self.quotes = [];
-			return self.nextPage();
-		},
-		
+		// update the quotes all at once
 		updateQuotes : function(quotes) {
 			this.quotes = quotes;
 		},
 		
+		// if a user logs in/out, update the quotes object instantly
 		onUserReset : function() {
 			var deferred = $q.defer();
 			var self = this;
@@ -77,7 +68,7 @@ myApp.factory('QuoteFactory', function(User, $rootScope, progress, $http, $q){
 			self.data.pagesInclusive = 1;
 			
 			var url = "../api/v2/feed?" + $.param(self.data);
-			console.log("pinging the following: " + url);
+			console.log("--PING-- pinging the following: " + url);
 			$http({
 				url : url, 
 				method : "GET", 
@@ -128,16 +119,14 @@ myApp.factory('QuoteFilter', function(User, QuoteFactory, $rootScope, progress, 
 		ping : function() {
 			var self = this;
 			var url = "../api/v2/feed?" + $.param(self.data);
-			console.log("pinging the following: " + url);
+			console.log("--PING-- pinging the following: " + url);
 			$http({
 				url : url, 
 				method : "GET", 
 				headers : {'Content-Type': 'application/json'}
 			}).
 			success(function(d) {
-				console.log("success", d);
 				angular.forEach(d.data.quotes, function(value, key) {
-					console.log("quotes success", value);
 					self.quotes.push(value);
 				});
 				self.busy = false;
@@ -197,7 +186,6 @@ myApp.factory('PopularFactory', function($http, $q){
 			success(function(d) {
 				var items = d.data;
 				angular.forEach(items, function(value, key) {
-					console.log(value);
 					self.items.push(value);
 				});
 				self.busy = false;
@@ -213,33 +201,11 @@ myApp.factory('PopularFactory', function($http, $q){
 	return Popular
 });
 
-myApp.factory('menuService', ['$rootScope', function ($rootScope) {
-	var service = {
-		view: '../partials/partial2.html',
-
-		MenuItemClicked: function (data) {
-			$rootScope.$broadcast('menuitemclicked', data);
-		}
-	};
-	return service;
-}]);
-
-
-myApp.service("progress", ["$rootScope", "ngProgress", function($rootScope, ngProgress){
-	$rootScope.$on("event:endProgress", function(){
-	  //console.log("End progress");
-	  ngProgress.complete();
-	});
-	$rootScope.$on("event:startProgress", function(){
-	  //console.log("Start progress");
-	  ngProgress.reset();
-	})
-}]);
-
+// authenticate the returning user, if they have an access cookie, log them in using their linked instagram account
 myApp.factory("AuthenticateService", ['User', '$cookies', '$http', '$q', function(User, $cookies, $http, $q) {
 	var Authenticate = function(opts) {
 		this.test = "";
-		this.link = "https://instagram.com/oauth/authorize/?client_id=75b6c945b4e04cb2982f25126e7add0f&redirect_uri=http://localhost/public_html/angular-seed/app/instagram-redirect-handler.html&response_type=token&scope=relationships+likes";
+		this.link = "https://instagram.com/oauth/authorize/?client_id=75b6c945b4e04cb2982f25126e7add0f&redirect_uri=http://localhost/public_html/ngQuotogenic/app/instagram-redirect-handler.html&response_type=token&scope=relationships+likes";
 		this.popup;
 		this.data = { 
 			key : "tmp", 
@@ -247,7 +213,7 @@ myApp.factory("AuthenticateService", ['User', '$cookies', '$http', '$q', functio
 			qac : $cookies.qac 
 		};
 		this.deferred = false;
-		this.url = "../api/v2/login";
+		this.loginUrl = "../api/v2/login";
 		this.logoutUrl = "../api/v2/logout";
 		this.authenticateUrl = "../api/v2/authenticate";
 	};
@@ -275,17 +241,15 @@ myApp.factory("AuthenticateService", ['User', '$cookies', '$http', '$q', functio
 		processToken : function(access_token) {
 			var self = this;
 			this.data.access_token = access_token;
-			$http.post(this.url, this.data)
+			$http.post(this.loginUrl, this.data)
 			.success(function(data, status, headers, config) {
-				//try {
-					console.log("processToken returned: ", data);
-					console.log(data.data);
+				try {
 					User.login(data.data.data);
 					self.deferred.resolve(data);
-				//}
-				//catch (e) {
-					//console.error("error on processing login token after HTTP success: ", e);
-				//}
+				}
+				catch (e) {
+					console.error("error on processing login token after HTTP success: ", e);
+				}
 			}).error(function(data, status, headers, config) {
 				alert("err");
 				self.deferred.resolve(data);
@@ -303,7 +267,9 @@ myApp.factory("AuthenticateService", ['User', '$cookies', '$http', '$q', functio
 			.success(function(data, status, headers, config) {
 				self.response = data.data;
 				// update the User singleton object with the supplied login data
-				User.login(data.data);
+				// if there was an actual data.data return value (a user object)
+				if(data.data) 
+					User.login(data.data);
 				self.deferred.resolve(data);
 			}).error(function(data, status, headers, config) {
 				alert("err");
@@ -346,3 +312,25 @@ myApp.factory('User', function($rootScope, progress, $http, $q){
 	};
 	return User;
 });
+
+// unused, menu item service
+myApp.factory('menuService', ['$rootScope', function ($rootScope) {
+	var service = {
+		view: '../partials/partial2.html',
+
+		MenuItemClicked: function (data) {
+			$rootScope.$broadcast('menuitemclicked', data);
+		}
+	};
+	return service;
+}]);
+
+// progress bar at top of page
+myApp.service("progress", ["$rootScope", "ngProgress", function($rootScope, ngProgress){
+	$rootScope.$on("event:endProgress", function(){
+	  ngProgress.complete();
+	});
+	$rootScope.$on("event:startProgress", function(){
+	  ngProgress.reset();
+	})
+}]);
