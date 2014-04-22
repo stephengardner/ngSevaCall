@@ -215,7 +215,7 @@ myApp.factory("AuthenticateService", ['User', '$cookies', '$http', '$q', functio
 		this.deferred = false;
 		this.loginUrl = "api/v2/login";
 		this.logoutUrl = "api/v2/logout";
-		this.authenticateUrl = "../api/v2/authenticate";
+		this.authenticateUrl = "api/v2/authenticate";
 	};
 	
 	Authenticate.prototype = {
