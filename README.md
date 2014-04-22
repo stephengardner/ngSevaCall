@@ -25,6 +25,13 @@ A very high level look at the fundamentals involved with the current progress of
 
 more coming...
 
+## Grunt | Bower
+
+This project uses grunt and bower to automatically add dependencies to the `app/vendors` and `app/angular-components` directories.
+Within the `Gruntfile.js` is a list of `concat` operations to move files from the `components` directory at the root (these are the `bower_components`, renamed, using `.bowerrc`),
+and place them within the `app` directory, at their desired locations.
+In order to run this grunt operation, which is configured within `Gruntfile.js`, simply run `grunt bower` from the project root via the CLI.
+
 ## Hidden Passwords
 
 This repository exposes the backend API as well as the frontend javascript/HTML/CSS.
