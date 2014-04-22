@@ -6,6 +6,10 @@ This project is based on re-designing www.quotogenic.com using the Angular.js fr
 Abstracting all backend functionality into a REST API, and using Angular's two way data binding
 to allow for easier real-time updates in a Single-Page-Application powered quote/photo matching platform.
 
+### Live: Online
+
+See this early project in action at www.quotogenic.com/app
+
 ## Where to begin
 
 ### app directory
