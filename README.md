@@ -2,13 +2,13 @@
 
 ## Quotogenic built with Angular.js (in progress)
 
-This project is based on re-designing <a href="http://www.quotogenic.com">quotogenic.com</a> using the Angular.js framework.  
+This project is based on re-designing [quotogenic.com](http://www.quotogenic.com) using the Angular.js framework.  
 Abstracting all backend functionality into a REST API, and using Angular's two way data binding
 to allow for easier real-time updates in a Single-Page-Application powered quote/photo matching platform.
 
 ### Live: Online
 
-See this early project in action at <a href="http://www.quotogenic.com/app">quotogenic.com/app</a>
+See this early project in action at [quotogenic.com/app](http://www.quotogenic.com/app)
 
 ## Where to begin
 
@@ -44,4 +44,4 @@ so while this is a full platform as-is, it is not forkably usable by a third par
 
 ## Contact
 
-Contact me at opensourceaugie@gmail.com or <a href="http://www.quotogenic.com/contact">quotogenic.com/contact</a>
+Contact me at opensourceaugie@gmail.com or [quotogenic.com/contact](http://www.quotogenic.com/contact)
