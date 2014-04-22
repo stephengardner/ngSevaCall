@@ -7,10 +7,13 @@ angular.module('myApp.controllers', [])
 		$scope.quoteFactory = QuoteFactory;
 	}])
 	.controller('sidebarOne', ['resolveTags', 'resolveAuthors', '$scope', function(resolveTags, resolveAuthors, $scope) {
+
 		$scope.popularTags = resolveTags;
 		$scope.popularAuthors = resolveAuthors;
+
 	}])
 	.controller('login', ['User', 'QuoteFactory', 'AuthenticateService', '$scope', function(User, QuoteFactory, AuthenticateService, $scope) {
+
 		var Authenticate = new AuthenticateService();
 		
 		// use window.Authenticate so that the instagram popup can close via the window's scope

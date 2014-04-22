@@ -38,7 +38,7 @@
 				<div class="row no-gutter">
 					<div class="photo col-md-4" ng-repeat="photo in quote.media.photos.data">
 						<!-- image -->
-						<img style="width:100%;" src="{{photo.images.thumbnail.url}}"/>
+						<img ng-bind="photo.images" style="width:100%;" ng-src="{{photo.images.thumbnail.url}}"/>
 						<!-- image like -->
 						<span ng-class="{active:photo.interaction.likedByUser}" class="thumbs-up">
 							<i ng-class="{'active fa-thumbs-up':photo.interaction.likedByUser}"  class="fa fa-thumbs-o-up"></i>
