@@ -14,7 +14,11 @@ $forceUserID = false;
 define("ROOT", __DIR__ ."/");
 define('SQL_HOST', '107.170.127.182');
 define('SQL_USER', 'root');
+<<<<<<< HEAD
 define('SQL_PASS', 'HIDDEN');
+=======
+define('SQL_PASS', 'HIDEN');
+>>>>>>> 639aca7... bower, dependencies, readibility
 define('SQL_DB', 'quotogenicDev');
 
 // set up the mysqli object to be used by the API
