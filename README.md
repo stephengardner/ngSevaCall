@@ -39,8 +39,8 @@ In order to run this grunt operation, which is configured within `Gruntfile.js`,
 ## Hidden Passwords
 
 This repository exposes the backend API as well as the frontend javascript/HTML/CSS.
-I have hidden the database password as well as the instagram API secret key,
-so while this is a full platform as-is, it is not forkably usable by a third party unless you'd like access to my database and instagram API (on request)
+The sensitive data, database passwords, and instagram API Secret Key, have been ignored from this repository.  
+So while this is a full platform as-is, it is not forkably usable by a third party unless you'd like access to my database and instagram API (on request)
 
 ## Contact
 

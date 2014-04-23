@@ -1,5 +1,6 @@
 <?php
 header('Access-Control-Allow-Origin: *');
+include_once('api-config.php');
 /*
  *	Version 4 of the Quotogenic API handler written as a standalone class definition
  *	Author: Augie Gardner
@@ -10,15 +11,9 @@ header('Access-Control-Allow-Origin: *');
 $debug = false;
 $forceUserID = false;
 
-// define database login information.  Note, HIDDEN for github
-define("ROOT", __DIR__ ."/");
-define('SQL_HOST', '107.170.127.182');
-define('SQL_USER', 'root');
-define('SQL_PASS', 'HIDDEN');
-define('SQL_DB', 'quotogenicDev');
-
 // set up the mysqli object to be used by the API
 function prepareSQL() {
+	// the "SQL_" definitions are located in api-config
 	$mysqli = new mysqli(SQL_HOST, SQL_USER, SQL_PASS, SQL_DB);
 	if(mysqli_connect_errno()) { echo "Connection Failed: " . mysqli_connect_errno(); exit(); }
 	return $mysqli;
