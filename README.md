@@ -8,7 +8,7 @@ to allow for easier real-time updates in a Single-Page-Application powered quote
 
 ### Live: Online
 
-See this early project in action at [quotogenic.com/ngQuotogenic/app](http://quotogenic.com/ngQuotogenic/app), current code is synced in real-time using github push/pull hooks
+See this early project in action at [quotogenic.com/ng](http://quotogenic.com/ng), current code is synced in real-time using github push/pull hooks
 
 ## Where to begin
 
