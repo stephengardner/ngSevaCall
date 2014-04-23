@@ -25,6 +25,6 @@ angular.module('myApp.directives', []).
 				eventHandler: '&ngClick'
 			},
 			controller : 'login',
-			templateUrl: 'partials/login.html'
+			templateUrl: '/public_html/ngQuotogenic/app/partials/login.html'
 		}
 	}]);

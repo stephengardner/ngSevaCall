@@ -25,7 +25,7 @@ myApp.factory('QuoteFactory', function(User, $rootScope, $http, $q){
 			self.updateUser();
 			if (self.busy) return; // return if the http status is busy
 			self.busy = true; // set the http status to busy
-			var url = "api/v2/feed?" + $.param(self.data); // create the url to ping
+			var url = "/public_html/ngQuotogenic/app/api/v2/feed?" + $.param(self.data); // create the url to ping
 			var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
 			self.data.pagesInclusive = 0; // nextPage() will never want all the inclusive quotes, only the next page.
 			$http({
@@ -67,7 +67,7 @@ myApp.factory('QuoteFactory', function(User, $rootScope, $http, $q){
 			this.updateUser();
 			self.data.pagesInclusive = 1;
 			
-			var url = "api/v2/feed?" + $.param(self.data);
+			var url = "/public_html/ngQuotogenic/app/api/v2/feed?" + $.param(self.data);
 			console.log("--PING-- pinging the following: " + url);
 			$http({
 				url : url, 
@@ -118,7 +118,7 @@ myApp.factory('QuoteFilter', function(User, QuoteFactory, $rootScope, $http, $q)
 		
 		ping : function() {
 			var self = this;
-			var url = "api/v2/feed?" + $.param(self.data);
+			var url = "/public_html/ngQuotogenic/app/api/v2/feed?" + $.param(self.data);
 			console.log("--PING-- pinging the following: " + url);
 			$http({
 				url : url, 
@@ -176,7 +176,7 @@ myApp.factory('PopularFactory', function($http, $q){
 		var self = this;
 		if (this.busy) return;
 		this.busy = true;
-		var url = "api/v2/popular?" + $.param(self.data);
+		var url = "/public_html/ngQuotogenic/app/api/v2/popular?" + $.param(self.data);
 		var deferred = $q.defer();
 		$http({
 				url : url, 
@@ -213,9 +213,9 @@ myApp.factory("AuthenticateService", ['User', '$cookies', '$http', '$q', functio
 			qac : $cookies.qac 
 		};
 		this.deferred = false;
-		this.loginUrl = "api/v2/login";
-		this.logoutUrl = "api/v2/logout";
-		this.authenticateUrl = "api/v2/authenticate";
+		this.loginUrl = "/public_html/ngQuotogenic/app/api/v2/login";
+		this.logoutUrl = "/public_html/ngQuotogenic/app/api/v2/logout";
+		this.authenticateUrl = "/public_html/ngQuotogenic/app/api/v2/authenticate";
 	};
 	
 	Authenticate.prototype = {
@@ -228,7 +228,7 @@ myApp.factory("AuthenticateService", ['User', '$cookies', '$http', '$q', functio
 		logout : function(qac) {
 			var self = this;
 			this.deferred = $q.defer();
-			$http.post("api/v2/logout", { key : "tmp", qac : qac })
+			$http.post("/public_html/ngQuotogenic/app/api/v2/logout", { key : "tmp", qac : qac })
 			.success(function(data, status, headers, config) {
 				User.logout();
 				self.deferred.resolve(data);

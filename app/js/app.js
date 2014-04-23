@@ -54,7 +54,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 		name : 'home',
 		url : '/',
 		abstract : true,
-		templateUrl: 'partials/home.html'
+		templateUrl: '/public_html/ngQuotogenic/app/partials/home.html'
 	};
 	
 	// sidebar, load popular items
@@ -65,7 +65,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 		parent : home,
 		views : {
 			'sidebar@home' : {
-				templateUrl: 'partials/sidebarOne.html',
+				templateUrl: '/public_html/ngQuotogenic/app/partials/sidebarOne.html',
 				controller : 'sidebarOne',
 				resolve : {
 					resolveTags : function(PopularFactory, $http, $q) {
@@ -92,7 +92,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 		parent : sidebar, // require the sidebar for this view
 		views : {
 			'content@home' : {
-				templateUrl: 'partials/homeFeed.html',
+				templateUrl: '/public_html/ngQuotogenic/app/partials/homeFeed.html',
 				controller : 'initialFeed',
 				resolve : {
 					resolveQuotes : function(AuthenticateService, QuoteFilter, QuoteFactory, $http, $q) {
@@ -127,7 +127,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 		parent : sidebar,
 		views : {
 			'content@home' : {
-				templateUrl: 'partials/homeFeed.html',
+				templateUrl: '/public_html/ngQuotogenic/app/partials/homeFeed.html',
 				controller : 'initialFeed',
 				resolve : {
 					resolveQuotes : function(AuthenticateService, QuoteFilter, $http, $q, $stateParams) {
