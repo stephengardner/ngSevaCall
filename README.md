@@ -1,6 +1,6 @@
-# ngQuotogenic
+# ngQuotogenic 1.0.0
 
-## Quotogenic built with Angular.js (in progress)
+## Quotogenic built with Angular.js (work in progress)
 
 This project is based on re-designing [quotogenic.com](http://quotogenic.com) using the Angular.js framework.  
 Abstracting all backend functionality into a REST API, and using Angular's two way data binding
