@@ -5,6 +5,7 @@
 angular.module('myApp.controllers', [])
 	.controller('initialFeed', ['QuoteFactory', '$cookies', 'resolveQuotes', '$scope', '$stateParams', function(QuoteFactory, $cookies, resolveQuotes, $scope, $stateParams) {
 		$scope.quoteFactory = QuoteFactory;
+		console.log($scope);
 	}])
 	.controller('sidebarOne', ['resolveTags', 'resolveAuthors', '$scope', function(resolveTags, resolveAuthors, $scope) {
 
@@ -33,4 +34,18 @@ angular.module('myApp.controllers', [])
 				QuoteFactory.onUserReset();
 			});
 		};
+	}])
+	.controller('photoController', ['QuoteFactory', '$cookies', 'resolvePhotoMap', '$scope', '$stateParams', function(QuoteFactory, $cookies, resolvePhotoMap, $scope, $stateParams) {
+		$scope.photoMap = resolvePhotoMap;
+	}])
+	.controller('ratingBarController', ['$parse', '$attrs', '$scope', function($parse, $attrs, $scope){
+		console.log($attrs);
+		//console.log("before");
+		//var value = $.parse($attrs.photo);//($scope);
+		//console.log("after");
+		//console.log(value);
+		//var value = $parse($attrs.photo)($scope);
+		//console.log(value);
+		//console.log($scope);
 	}]);
+	

@@ -376,6 +376,7 @@ include_once("API-feed.php");
 include_once("API-ig-login.php");
 include_once("API-ig-logout.php");
 include_once("API-ig-authenticate.php");
+include_once("API-photo.php");
 
 class MyAPI extends API {
     protected $User;
@@ -410,6 +411,7 @@ try {
 	$API->map('login','login');
 	$API->map('logout','logout');
 	$API->map('authenticate','authenticate');
+	$API->map('photo', 'photo');
 	
 	// echo the processed api response
 	echo $API->processAPI();

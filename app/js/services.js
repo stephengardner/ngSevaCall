@@ -93,6 +93,84 @@ myApp.factory('QuoteFactory', function(User, $rootScope, $http, $q){
 	return Quotes
 });
 
+myApp.factory('pinger', function($http, $q) {
+	var pinger = function() {
+		this.deferred = $q.defer();
+		this.busy = false;
+		this.data = {};
+		this.params = { key : "tmp" };
+	};
+	pinger.prototype = {
+		ping : function(url, params) {
+			params = $.extend({}, this.params, params);
+			var self = this;
+			self.deferred = $q.defer();
+			$http({
+				url : url + "?" + $.param(params), 
+				method : "GET", 
+				headers : {'Content-Type': 'application/json'}
+			}).
+			success(function(d) {
+				self.busy = false;
+				self.data.page++;
+				self.data = d;
+				self.deferred.resolve(d);
+			}).
+			error(function(data){
+				alert("err");
+			});
+			return self.deferred.promise;
+		}
+	};
+	return pinger;
+});
+
+/** 
+ *
+ *  var wrapper = function () {
+ 
+    // Apply global changes to arguments, or perform other
+    // nefarious acts.
+ 
+    return $http.apply($http, arguments);
+  };
+ 
+  // $http has convenience methods such as $http.get() that we have
+  // to pass through as well.
+  Object.keys($http).filter(function (key) {
+    return (typeof $http[key] === 'function');
+  }).forEach(function (key) {
+    wrapper[key] = function () {
+ 
+      // Apply global changes to arguments, or perform other
+      // nefarious acts.
+ 
+       return $http[key].apply($http, arguments);
+    };
+  });
+ 
+  return wrapper;
+ *
+ */
+myApp.factory('PhotoMap', function(pinger, User, QuoteFactory, $rootScope, $http, $q){
+	var PhotoMap = {
+		url : "http://localhost/public_html/ngQuotogenic/app/api/v2/photo",
+		p : new pinger(),
+		params : {},
+		ping : function(params) {
+			params = $.extend({}, this.params, params);
+			console.log(params);
+			var self = this;
+			var deferred = $q.defer();
+			self.p.ping(this.url, params).then(function(d) {
+				deferred.resolve(d) 
+			});
+			return deferred.promise;
+		}
+	};
+	return PhotoMap;
+});
+
 // Filter the quotes.  Remember, quotes is a singleton object with no use of the "new" keyword.
 // however, a QuoteFilter can be instantiated and modifications to it will immediately reflect the Quote singleton in real time.
 myApp.factory('QuoteFilter', function(User, QuoteFactory, $rootScope, $http, $q){

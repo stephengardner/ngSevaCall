@@ -150,11 +150,31 @@ cfpLoadingBarProvider.includeSpinner = false;
 		}
 	};
 	
+	var photo = {
+		name : 'photo',
+		url : '^/photo/:id',
+		parent : sidebar,
+		views : {
+			'content@home' : {
+				templateUrl : '/public_html/ngQuotogenic/app/partials/photo.html',
+				controller : 'photoController',
+				resolve : {
+					resolvePhotoMap : function(PhotoMap, AuthenticateService, $http, $q, $stateParams) {
+						var deferred = $q.defer();
+						PhotoMap.ping({ id : $stateParams.id}).then(function(d){deferred.resolve(d)});
+						return deferred.promise;
+					}
+				}
+			}
+		}
+	};
+	
 	// add all states to the app
 	$stateProvider.state(home);
 	$stateProvider.state(sidebar);
 	$stateProvider.state(body);
 	$stateProvider.state(filter);
+	$stateProvider.state(photo);
 });
 
 myApp.filter('reverse', function() {

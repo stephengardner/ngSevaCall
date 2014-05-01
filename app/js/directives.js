@@ -27,4 +27,23 @@ angular.module('myApp.directives', []).
 			controller : 'login',
 			templateUrl: '/public_html/ngQuotogenic/app/partials/login.html'
 		}
+	}])
+	.directive('ratingBar', ['User', function(User){
+		return {
+			restrict : 'EA',
+			replace : true,
+			scope : {
+				photo : "=",
+				photoMap : "@photoMap"
+			},
+			link : function(scope, element, attrs) {
+				//console.log(scope);
+				//scope.photo = { likes : 5, dislikes : 2};
+				//scope.likes = 10;
+				console.log(scope);
+				console.log("PHOTO IS:", scope.photo);
+			},
+			controller : 'ratingBarController',
+			templateUrl: '/public_html/ngQuotogenic/app/partials/ratingBar1.html'
+		}
 	}]);

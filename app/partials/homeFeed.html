@@ -38,22 +38,16 @@
 				<div class="row no-gutter">
 					<div class="photo col-md-4" ng-repeat="photo in quote.media.photos.data">
 						<!-- image -->
-						<img ng-bind="photo.images" style="width:100%;" ng-src="{{photo.images.thumbnail.url}}"/>
-						<!-- image like -->
-						<span ng-class="{active:photo.interaction.likedByUser}" class="thumbs-up">
-							<i ng-class="{'active fa-thumbs-up':photo.interaction.likedByUser}"  class="fa fa-thumbs-o-up"></i>
-						</span>
-						<!-- image dislike -->
-						<span class="thumbs-down">
-							<i ng-class="{'active fa-thumbs-down':photo.interaction.dislikedByUser}"   class="fa fa-thumbs-o-down"></i>
-						</span>
-						<!-- image rating bar -->
+						<img ui-sref="photo({ id : {{photo.photoMapID}} })" ng-bind="photo.images" style="width:100%;" ng-src="{{photo.images.thumbnail.url}}"/>
+						<rating-bar photo="photo">
+						</rating-bar>
+						<!-- image rating bar
 						<div class="rating-wrapper">
 							<div class="rating-bar-wrapper">
 								<span class="rating-bar" ng-class="{'active' : photo.likes + photo.dislikes}"></span>
 								<span class="rating-bar-painted" ng-style="{width : ((photo.likes / (photo.likes + photo.dislikes)) * 100) + '%'}" ></span>
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
