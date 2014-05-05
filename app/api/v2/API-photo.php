@@ -11,7 +11,8 @@ class photo {
 		$SQL_QUERY = "
 			SELECT Quotes.quote, Authors.author, Photos.high_resolution, Users.username,
 				COUNT(CASE WHEN PhotoRatings.optionRatingTypeID = 1 AND PhotoRatings.photoMapID = ? THEN 1 ELSE NULL END) as photoLikes,
-				COUNT(CASE WHEN PhotoRatings.optionRatingTypeID = 2 AND PhotoRatings.photoMapID = ? THEN 1 ELSE NULL END) as photoDislikes
+				COUNT(CASE WHEN PhotoRatings.optionRatingTypeID = 2 AND PhotoRatings.photoMapID = ? THEN 1 ELSE NULL END) as photoDislikes,
+				PhotoMap.photoMapSubmittedDateTime as dateTime
 			$SQL_USER_SELECT
 			FROM PhotoMap
 			JOIN Quotes ON Quotes.quoteID = PhotoMap.quoteID
@@ -27,9 +28,9 @@ class photo {
 		// userID, and photoMapID(sent in as 'id') are passed in
 		$stmt->bind_param("iiiiii", $params['id'], $params['id'], $params['userID'], $params['userID'], $params['id'], $params['id']);
 		$stmt->execute();
-		$stmt->bind_result($quote, $author, $medium_resolution, $username, $photoLikes, $photoDislikes, $photoLikedByUser, $photoDislikedByUser);
+		$stmt->bind_result($quote, $author, $medium_resolution, $username, $photoLikes, $photoDislikes, $dateTime, $photoLikedByUser, $photoDislikedByUser);
 		while($stmt->fetch()) {
-			return array('quote' => array('quote' => $quote, 'author' => $author), 'photo' => array('username' => $username, 'likes' => $photoLikes, 'dislikes' => $photoDislikes, 'interaction' => array('likedByUser' => $photoLikedByUser, 'dislikedByUser' => $photoDislikedByUser), 'images' => array('medium_resolution' => $medium_resolution)));
+			return array('quote' => array('quote' => $quote, 'author' => $author), 'photo' => array('username' => $username, 'timestamp' => $dateTime, 'time_elapsed' => time_elapsed_string($dateTime), 'likes' => $photoLikes, 'dislikes' => $photoDislikes, 'interaction' => array('likedByUser' => $photoLikedByUser, 'dislikedByUser' => $photoDislikedByUser), 'images' => array('medium_resolution' => $medium_resolution)));
 		}
 	}
 }

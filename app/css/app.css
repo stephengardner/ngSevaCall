@@ -17,9 +17,18 @@ h1, h2, h3 {
 	color: rgb(0, 219, 228);
 	font-style: normal;
 }
-.single {
-	margin:0 auto;
+
+.photo-meta {
+	padding-top:1em;
+	padding-bottom:1em;
+}
+
+.photo-single .single, .photo-single .quote-box, .photo-single .photo-meta  {
+	margin:0 auto!important;
 	max-width:700px;
+}
+.quote {
+	text-align:center;
 }
 .single .photo {
 	width:100%;
@@ -99,23 +108,41 @@ h1, h2, h3 {
 	position:relative;
 }
 
-.quote-window .quotation {
+.photo-meta .username {
+	float:left;
+}
+
+.photo-meta .timestamp {
+	float:right;
+}
+
+.directive-rating-bar.large .thumbs-up, .directive-rating-bar.large .thumbs-down {
+	font-size:1.5em!important;
+}
+.directive-rating-bar.large .rating-wrapper {
+	padding-left:25px!important;
+	padding-right:25px!important;
+}
+.directive-rating-bar.large .rating-bar-wrapper {
+	top:12px!important;
+}
+.quote-window .quotation, .quote-box .quotation {
 	color:#ddd;
 }
 
-.quote-window .quotation-left {
+.quote-window .quotation-left, .quote-box .quotation-left {
 	position: absolute;
 	left: -.5em;
 	top: -.5em;
 }
 
-.quote-window .quotation-right {
+.quote-window .quotation-right, .quote-box .quotation-right {
 	position: absolute;
 	right: -.5em;
 	bottom: -.5em;
 }
 
-.quote-window .favorite {
+.quote-window .favorite , .quote-box .favorite{
 	font-size:1.7em;
 	float:right;
 }

@@ -1,39 +1,12 @@
 <!-- quotes column -->
-<div class="nopadding col-md-12 col-sm-12">
+<div ng-cloak class="nopadding col-md-12 col-sm-12">
 	<div class="feed1">
 		<div class="feed-object" ng-repeat="quote in quoteFactory.quotes">
 			<div class="quote-window">
-				<div class="row no-gutter">
-					<!-- quote score -->
-					<div class="col-md-1 col-xs-1">
-						<div class="rating-block">
-							<i ng-class="{active:quote.interaction.liked}" class="vote fa fa-chevron-up"></i>
-							<div class="quote-score">{{quote.score}}</div>
-							<i ng-class="{active:quote.interaction.disliked}" class="vote fa fa-chevron-down"></i>
-						</div>
-					</div>
-					<!-- quote -->
-					<div class="col-md-10 col-xs-10">
-						<!-- quote text -->
-						<div class="quote">
-							<i class="quotation quotation-left fa-quote-left fa"></i>
-								{{quote.quote}}
-							<i class="quotation quotation-right fa-quote-right fa"></i>
-						</div>
-						<!-- quote media -->
-						<div class="media">
-							<a ui-sref="filter({type : 'author', value: {{'quote.author'}}})">
-								{{quote.author}}
-							</a>
-						</div>
-					</div>
-					<!-- favorite -->
-					<div class="col-md-1 col-xs-1">
-						<div class="favorite">
-							<i class="fa fa-heart-o"></i>
-						</div>
-					</div>
-				</div>
+				<!-- begin quote-block directive, need to make it so loading this does not flicker -->
+
+                <quote-block quote="quote" showOptions="true"></quote-block>
+				<!-- end quote-block directive -->
 				<!-- quote images -->
 				<div class="row no-gutter">
 					<div class="photo col-md-4" ng-repeat="photo in quote.media.photos.data">
@@ -41,13 +14,6 @@
 						<img ui-sref="photo({ id : {{photo.photoMapID}} })" ng-bind="photo.images" style="width:100%;" ng-src="{{photo.images.thumbnail.url}}"/>
 						<rating-bar photo="photo">
 						</rating-bar>
-						<!-- image rating bar
-						<div class="rating-wrapper">
-							<div class="rating-bar-wrapper">
-								<span class="rating-bar" ng-class="{'active' : photo.likes + photo.dislikes}"></span>
-								<span class="rating-bar-painted" ng-style="{width : ((photo.likes / (photo.likes + photo.dislikes)) * 100) + '%'}" ></span>
-							</div>
-						</div> -->
 					</div>
 				</div>
 			</div>

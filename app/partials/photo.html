@@ -1,26 +1,19 @@
 <!-- photo -->
-<div class="nopadding col-md-12 col-sm-12">
-	<div class="quote-box">
-		<div class="quote-text">
-			<i class="quotation quotation-left fa-quote-left fa"></i>
-				{{photoMap.data.quote.quote}}
-			<i class="quotation quotation-right fa-quote-right fa"></i>
+<div class="photo-single nopadding col-md-12 col-sm-12">
+	<quote-block quote="photoMap.data.quote" options="false"></quote-block>
+	<div class="photo-meta clearfix">
+		<div class="username">
+			<i class="fa fa-user"></i> {{photoMap.data.photo.username}}
 		</div>
-		<div class="media">
-			<a ui-sref="filter({type : 'author', value: {{'quote.author'}}})">
-				{{photoMap.data.quote.author}}
-			</a>
+		<div class="timestamp">
+			<i class="fa fa-clock-o"></i> {{photoMap.data.photo.time_elapsed}}
 		</div>
-		{{photoMap.data.photo}}
-		<div class="single">
-			<div class="photo">
-				<img ng-src="{{photoMap.data.photo.images.medium_resolution}}"/>
-			</div>
-			<rating-bar photo="photoMap.data.photo"></rating-bar>
-			<div style="margin-top:200px;">
-				{{photoMap}}
-			</div>
+	</div>
+	<div class="single">
+		<div class="photo">
+			<img ng-src="{{photoMap.data.photo.images.medium_resolution}}"/>
 		</div>
+		<rating-bar photo="photoMap.data.photo" size="'large'"></rating-bar>
 	</div>
 </div>
 		

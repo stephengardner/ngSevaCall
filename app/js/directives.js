@@ -34,16 +34,28 @@ angular.module('myApp.directives', []).
 			replace : true,
 			scope : {
 				photo : "=",
-				photoMap : "@photoMap"
+				photoMap : "@photoMap",
+				size : "="
 			},
 			link : function(scope, element, attrs) {
-				//console.log(scope);
-				//scope.photo = { likes : 5, dislikes : 2};
-				//scope.likes = 10;
 				console.log(scope);
 				console.log("PHOTO IS:", scope.photo);
 			},
 			controller : 'ratingBarController',
-			templateUrl: '/public_html/ngQuotogenic/app/partials/ratingBar1.html'
+			templateUrl: '/public_html/ngQuotogenic/app/partials/ratingBar.html'
 		}
-	}]);
+	}])
+	.directive('quoteBlock', function(){
+		return {
+			restrict : 'EA',
+			replace : true,
+			scope : {
+				quote : "=",
+                options : "="
+			},
+			link : function(scope, element, attrs) {
+			},
+			controller : 'quoteBlockController',
+			templateUrl: '/public_html/ngQuotogenic/app/partials/quoteBlock.html'
+		}
+	});

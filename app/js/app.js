@@ -36,7 +36,6 @@ var myApp = angular.module('myApp', [
 				return $q.reject(response);
             }
           )
-          
       }
     })  
   }])

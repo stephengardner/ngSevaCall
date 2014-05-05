@@ -39,13 +39,7 @@ angular.module('myApp.controllers', [])
 		$scope.photoMap = resolvePhotoMap;
 	}])
 	.controller('ratingBarController', ['$parse', '$attrs', '$scope', function($parse, $attrs, $scope){
-		console.log($attrs);
-		//console.log("before");
-		//var value = $.parse($attrs.photo);//($scope);
-		//console.log("after");
-		//console.log(value);
-		//var value = $parse($attrs.photo)($scope);
-		//console.log(value);
-		//console.log($scope);
+	}])
+	.controller('quoteBlockController', ['$parse', '$attrs', '$scope', function($parse, $attrs, $scope){
 	}]);
 	
