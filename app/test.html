@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en" ng-app="myApp">
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <!-- title -->
+    <title>SevaCall | built with angular</title>
+    <script src="/augie/ng/app/vendors/jquery/jquery.js"></script>
+    <link rel="stylesheet" href="/augie/ng/app/vendors/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/vendors/font-awesome/css/font-awesome.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/overlay.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/timetable.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/lock.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/alert.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/mapMarker.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/tables.css"/>
+    <script src="/augie/ng/app/vendors/jquery/jquery.js"></script>
+    <script src="/augie/ng/app/vendors/angular/angular.js"></script>
+
+    <!-- vendor/component css -->
+</head>
+<body class="container">
+<div class="row">
+    <div  ng-controller="test" class="body-animate clearfix">
+        <div id="map_canvas">ok<br/>ok</div>
+        <div id="map_spacer"></div>
+        <div id="company-reviews">
+            <table class="reviews">
+                <tbody>
+                    <tr class="scoreboard-header">
+                        <td class="marker-space">
+                            &nbsp;
+                        </td>
+                        <td class="info">
+                            &nbsp;
+                        </td>
+                        <td class="yelp-logo logo">
+                            <div>&nbsp;</div>
+                        </td>
+                        <td class="citysearch-logo logo">
+                            <div>&nbsp;</div>
+                        </td>
+                        <td class="google-logo logo">
+                            <div>&nbsp;</div>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="company in companies | orderObjectBy:'acceptedOrder':true" ng-show="company.accepted == '1'">
+                        <td class="marker">
+                            <div rel="{{company.markerNumber}}">&nbsp;</div>
+                        </td>
+                        <td class="info">
+                            <div class="name">
+                                    {{company.accepted}} |
+                                {{company.name}}
+                            </div>
+                            <div class="location">
+                                {{company.city}}, {{company.state}}
+                            </div>
+                        </td>
+                        <td class="yelp">
+                            <div class="rating loading">
+                            </div>
+                            <div class="rating stars" ng-style="{'background-position-y' : yelpStarOffset + '%'}">
+                                &nbsp;
+                            </div>
+                            <div class="rating text">
+                                n/a
+                            </div>
+                        </td>
+                        <td class="citysearch">
+                            <div class="rating loading">
+                            </div>
+                            <div class="rating stars" ng-style="{'background-position-y' : yelpStarOffset + '%'}">
+                                &nbsp;
+                            </div>
+                            <div class="rating text">
+                                n/a
+                            </div>
+                        </td>
+                        <td class="google">
+                            <div class="rating loading">
+                            </div>
+                            <div class="rating stars" ng-style="{'background-position-y' : googleStarOffset + '%'}">
+                                &nbsp;
+                            </div>
+                            <div class="rating text">
+                                n/a
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="request-statuses">
+            <table class="statuses">
+                <tbody>
+                    <tr ng-repeat="status in statuses">
+                        <td class="marker">
+                            <div rel="{{status.rel}}">&nbsp;</div>
+                        </td>
+                        <td class="info">
+                            <div class="status">
+                                {{status.requestStatusShort}}
+                            </div>
+                            <div class="name">
+                                {{status.companyName}}
+                            </div>
+                            <div class="location">
+                                {{status.location}}
+                            </div>
+                        </td>
+                        <td class="icon" ng-class="status.iconClass">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/augie/ng/app/angular-components/angular-animate/angular-animate.js"></script>
+<script src="/augie/ng/app/angular-components/angular-cookies/angular-cookies.js"></script>
+<script src="/augie/ng/app/angular-components/angular-ui-router/angular-ui-router.js"></script>
+<script src="/augie/ng/app/angular-components/angular-loading-bar/js/angular-loading-bar.js"></script>
+
+<!-- custom js -->
+<script src="/augie/ng/app/js/app.js"></script>
+<script src="/augie/ng/app/js/services.js"></script>
+<script src="/augie/ng/app/js/SCAPI-service.js"></script>
+<script src="/augie/ng/app/js/controllers.js"></script>
+<script src="/augie/ng/app/js/filters.js"></script>
+<script src="/augie/ng/app/js/directives.js"></script>
+<script src="/augie/ng/app/js/xAlert.js"></script>
+
+
+<script>
+    function loadMapsPlugins(){
+        $.getScript("js/infobox.js", function(){
+            $.getScript("js/xMarker.js");
+        })
+    }
+</script>
+<script src="http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins"></script>
+</body>
+</html>

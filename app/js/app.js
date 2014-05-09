@@ -1,17 +1,17 @@
 'use strict';
-
+String.prototype.capitalize = function () {
+    return this.toLowerCase().replace(/^.|\s\S/g, function (a) {
+        return a.toUpperCase();
+    });
+};
 // Declare app level module which depends on filters, and services
 var myApp = angular.module('myApp', [
 	'myApp.filters',
 	'myApp.services',
 	'myApp.directives',
 	'myApp.controllers',
-	'infinite-scroll',
 	'ui.router',
-	'ngResource',
-	'chieffancypants.loadingBar',
-	'ngAnimate',
-	'ngCookies'
+	'ngAnimate'
 ]).config(function ($httpProvider) {
     $httpProvider.defaults.transformRequest = function(data){
         if (data === undefined) {
@@ -39,23 +39,75 @@ var myApp = angular.module('myApp', [
       }
     })  
   }])
-// laoding bar config
-.config(function(cfpLoadingBarProvider) {
-cfpLoadingBarProvider.includeSpinner = false;
-})
 // UI-router config
 .config(function($stateProvider, $urlRouterProvider) {
+
 	// route to root if no valid route found
-	$urlRouterProvider.otherwise('/');
-	
+	$urlRouterProvider.otherwise('/step1');
+
 	// home: an abstract route, load the home.html
-	var home = {
-		name : 'home',
-		url : '/',
-		abstract : true,
-		templateUrl: '/public_html/ngQuotogenic/app/partials/home.html'
-	};
-	
+
+    var step1 = {
+        name : 'step1',
+        url : '/step1',
+        controller : 'step1Controller',
+        templateUrl: '/augie/ng/app/partials/home.html'
+    };
+    console.log("States");
+    var step2 = {
+        name : 'step2',
+        url : '/step2',
+        controller : 'step2Controller',
+        templateUrl: '/augie/ng/app/partials/step2.html',
+        resolve : {
+            resolveAPI : function(Overlay, $q, SCAPI, $location, Request){
+                if(Request.id)
+                    return true;
+                var deferred = $q.defer();
+                Overlay.add(1);
+                SCAPI.step1().then(function(d){
+                    if(d == "Invalid Location"){
+                        $location.path("/");
+                    }
+                    console.log("aPI returned: ", d);
+                    Overlay.remove();
+                    deferred.resolve(d);
+                });
+                return deferred.promise;
+            }
+        }
+    };
+    var step3 = {
+        name : 'step3',
+        url : '/step3',
+        controller : 'step3Controller',
+        templateUrl: '/augie/ng/app/partials/step3.html'
+    };
+    var timetable = {
+        name : 'timetable',
+        url : '/timetable',
+        controller : 'timeTableController',
+        templateUrl: '/augie/ng/app/partials/timetable.html'
+    };
+    var step2a = {
+        name : 'step2a',
+        url : '/step2a',
+        controller : 'step2aController',
+        templateUrl: '/augie/ng/app/partials/step2a.html'
+    };
+    var settings = {
+        name : 'settings',
+        url : '/settings',
+        controller : 'step2aController',
+        templateUrl: '/augie/ng/app/partials/step2a.html'
+    };
+    var information = {
+        name : 'information',
+        url : '/information',
+        controller : 'informationController',
+        templateUrl: '/augie/ng/app/partials/information.html'
+    };
+	/*
 	// sidebar, load popular items
 	var sidebar = {
 		name : 'sidebar',
@@ -83,7 +135,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 			}
 		}
 	};
-	
+
 	// body, the feed and content body
 	var body = {
 		name : 'body',
@@ -96,7 +148,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 				resolve : {
 					resolveQuotes : function(AuthenticateService, QuoteFilter, QuoteFactory, $http, $q) {
 						var deferred = $q.defer();
-						
+
 						var auth = new AuthenticateService();
 						auth.authenticate().then(function(){
 							if(QuoteFactory.quotes.length == 0) {
@@ -118,8 +170,8 @@ cfpLoadingBarProvider.includeSpinner = false;
 			}
 		}
 	};
-	
-	// filter, the state for filtering quotes by tag/quthor 
+
+	// filter, the state for filtering quotes by tag/quthor
 	var filter = {
 		name : 'filter',
 		url : '^/{type:tag|author}/:value',
@@ -148,7 +200,7 @@ cfpLoadingBarProvider.includeSpinner = false;
 			}
 		}
 	};
-	
+
 	var photo = {
 		name : 'photo',
 		url : '^/photo/:id',
@@ -169,12 +221,41 @@ cfpLoadingBarProvider.includeSpinner = false;
 	};
 	
 	// add all states to the app
-	$stateProvider.state(home);
+	*/
+    $stateProvider.state(step1);
+    $stateProvider.state(step2);
+    $stateProvider.state(step3);
+    $stateProvider.state(timetable);
+    $stateProvider.state(step2a);
+    $stateProvider.state(settings);
+    $stateProvider.state(information);
+    /*
 	$stateProvider.state(sidebar);
 	$stateProvider.state(body);
 	$stateProvider.state(filter);
 	$stateProvider.state(photo);
-});
+	*/
+}).run(function(SCAPI, Request, $rootScope, Menu){
+    SCAPI.init(Request);
+    $rootScope.$on('$stateChangeSuccess',
+    function(event, toState, toParams, fromState, fromParams){
+            Menu.active = false;
+        console.log("State Change: State change success!");
+    })
+}).filter('orderObjectBy', function() {
+        return function(items, field, reverse) {
+            var filtered = [];
+            angular.forEach(items, function(item) {
+                filtered.push(item);
+            });
+            filtered.sort(function (a, b) {
+                return (a[field] > b[field]);
+            });
+            if(reverse) filtered.reverse();
+            return filtered;
+        };
+    });
+
 
 myApp.filter('reverse', function() {
   return function(items) {

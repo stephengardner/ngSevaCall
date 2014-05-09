@@ -1,0 +1,26 @@
+<div id="map_canvas"></div>
+<div id="map_spacer">&nbsp;</div>
+<div id="request-statuses">
+    <table class="statuses">
+        <tbody>
+        <tr ng-repeat="status in statuses">
+            <td class="marker">
+                <div rel="{{status.rel}}">&nbsp;</div>
+            </td>
+            <td class="info">
+                <div class="status">
+                    {{status.requestStatusShort}}
+                </div>
+                <div class="name">
+                    {{status.companyName}}
+                </div>
+                <div class="location">
+                    {{status.location}}
+                </div>
+            </td>
+            <td class="icon" ng-class="status.iconClass">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
