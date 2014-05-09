@@ -1,271 +1,386 @@
-/* app css stylesheet */
-h1, h2, h3 {
-	margin:0px;
+body, .ui-view-container {
+    background:#F2F7FD;
+    font-family:arial;
+}
+/**** begin angular css ***/
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],
+.ng-cloak, .x-ng-cloak,
+.ng-hide {
+    display: none !important;
 }
 
-.title {
-	letter-spacing:-.12em; 
-	font-size:2em; 
-	font-weight:bold;
+ng\:form {
+    display: block;
 }
 
-.header {
-	margin:1em 0em;
+/*** end angular css ***/
+
+.setting-wrapper {
+    padding-right:4.4em;
+    position:relative;
+}
+.container {
+    width:100%;
 }
 
-.highlight {
-	color: rgb(0, 219, 228);
-	font-style: normal;
+.menu-cover {
+    position:fixed;
+    width:100%;
+    height:100vh;
+    z-index:1;
+    background:#F2F7FD;
 }
 
-.photo-meta {
-	padding-top:1em;
-	padding-bottom:1em;
+.ui-view-container{
+    z-index:2!important;
+}
+.time-button.active {
+    background:#003366;
+    color:white;
+}
+input, select, textarea {
+    border-radius:4px;
+    border-style:outset;
+    border:1px solid #ddd;
 }
 
-.photo-single .single, .photo-single .quote-box, .photo-single .photo-meta  {
-	margin:0 auto!important;
-	max-width:700px;
+.timetable {
+    width:100%;
+    text-align:center;
 }
-.quote {
-	text-align:center;
-}
-.single .photo {
-	width:100%;
-	text-align:center;
-}
-.feed1 {
-	padding: 1em;
-	background: rgb(0, 84, 111);
-	margin-bottom: 1em;
-	border-radius:8px;
+.timetable .aside {
+    text-align: center;
+    padding: .3em .3em .3em 0em;
+    white-space: nowrap;
 }
 
-.feed-object {
-	margin-bottom:.75em;
+.timetable .head {
+    width:33%;
+}
+textarea {
+    font-size:1.2em;
+    padding:3px 5px;
 }
 
-.feed-object ~ .feed-object {
-	margin-top:.75em;
+.afterHeader {
+    position:relative;
 }
 
-.quote-window {
-	border-radius:5px;
-	background:white;
-	color:black;
-	padding:1em;
+#sc-menu {
+    position:absolute;
+    top:55px;
+    bottom:0;
+    width:70%;
+    right:15px;
+    background:#003366;
+    color:white;
 }
 
-.menu-buttons {
-	text-align:right;
+ul {
+    -webkit-margin-after:0px;
+    -webkit-padding-start:0px;
 }
 
-.popular a, .quote-tag a {
-	text-decoration: none;
-	color:white;
+#sc-menu ul li {
+    border-top:1px solid;
+    padding:.8em 0em;
 }
 
-.rating-block {
-	float:left;
-	text-align:center;
+#sc-menu i {
+    vertical-align:middle;
 }
 
-.quote-tag {
-	margin-right: 20px;
-	border-top-left-radius: 4px;
-	font-size: .8em;
-	border-bottom-left-radius: 4px;
-	position: relative;
-	padding: 2px 7px 2px 7px;
-	background: #01a3bb;
-	color: white;
-	display:inline-block;
+#sc-menu ul li span {
+    font-weight:bold;
+    font-size:1.25em;
+    display:inline-block;
+    vertical-align:middle;
 }
 
-.quote-tag:after {
-	position: absolute;
-	display: inline-block;
-	content: "";
-	background-image: url('../img/tag2.png');
-	background-size: 12px 19px;
-	background-repeat: no-repeat;
-	width: 20px;
-	height: 20px;
-	top: 0;
-	right: -20px;
+#sc-menu ul li:last-of-type {
+    border-bottom:1px solid;
 }
 
-.media a {
-	color:#888;
-	font-weight:bold;
+#sc-menu i {
+    display:inline-block;
+    font-size:1.5em;
+    text-align:center;
+    width:2em;
 }
 
-.quote {
-	font-size:1.1em;
-	font-weight:bold;
-	cursor:pointer;
-	text-align:center;
-	position:relative;
+li {
+    list-style-type:none;
 }
 
-.photo-meta .username {
-	float:left;
+.body-wrapper {
+    margin:0px 8px;
 }
 
-.photo-meta .timestamp {
-	float:right;
+h1,h2,h3 {
+    margin:0;
 }
 
-.directive-rating-bar.large .thumbs-up, .directive-rating-bar.large .thumbs-down {
-	font-size:1.5em!important;
-}
-.directive-rating-bar.large .rating-wrapper {
-	padding-left:25px!important;
-	padding-right:25px!important;
-}
-.directive-rating-bar.large .rating-bar-wrapper {
-	top:12px!important;
-}
-.quote-window .quotation, .quote-box .quotation {
-	color:#ddd;
+.btn:hover {
+    color:#F2F7FD;
 }
 
-.quote-window .quotation-left, .quote-box .quotation-left {
-	position: absolute;
-	left: -.5em;
-	top: -.5em;
+input {
+    width:100%;
+}
+.sep {
+    margin-top:25px;
+}
+.sep-buttons {
+    margin-top:30px;
 }
 
-.quote-window .quotation-right, .quote-box .quotation-right {
-	position: absolute;
-	right: -.5em;
-	bottom: -.5em;
+.time {
+    text-align:center;
+    border:1px solid;
 }
 
-.quote-window .favorite , .quote-box .favorite{
-	font-size:1.7em;
-	float:right;
+.time-buttons div:not(:first-child) {
+    margin-left:1%;
 }
 
-.nopadding {
-   padding: 0 !important;
-   margin: 0 !important;
+.time-button {
+    display:inline-block;
+    width:32.66%;
+    text-align:center;
+    background:white;
+    border:2px solid #ddd;
+    color:#003366;
+    border-radius:5px;
+    padding:14px 0;
+    float: left;
+    font: bold 12px Arial!important;
+    max-width: 32.66%!important;
+}
+.time-button.selected {
+    background-color:#003366;
+}
+#step2 textarea {
+    height:108px;
+    width:100%;
+    -webkit-appearance: none;
+    resize:none;
+    outline:none;
+}
+#back img {
+    height:22px;
+    width:30px;
+}
+/* fonts */
+@font-face {
+    font-family: 'League_Gothic';
+    src: url("/augie/ng/League-Gothic-fontfacekit/League_Gothic-webfont.ttf"),
+    url('/augie/ng/League-Gothic-fontfacekit/League_Gothic-webfont.eot'), /* IE9 */
+    url('/augie/ng/League-Gothic-fontfacekit/League_Gothic-webfont.woff');
 }
 
-.row.no-gutter {
-  margin-left: 0;
-  margin-right: 0;
+h1{
+    font-family:League_Gothic;
+    color:#003366;
 }
 
-.row.no-gutter [class*='col-']:not(:first-child),
-.row.no-gutter [class*='col-']:not(:last-child) {
-	padding-right: 0;
-	padding-left: 0;
+h3 {
+    font-style:italic;
+    font-size:.9em;
+    text-align:center;
 }
 
-.row.no-gutter { 
-	margin-left:0;
-	margin-right:0; 
+header .icon {
+    display:inline-block;
 }
 
-.quote-window .photo {
-	padding-right: .5em!important;
+#back {
+    float:left;
+    margin-top:7px;
 }
 
-.quote-window .photo ~ .photo{
-	padding-right: 0em!important;
-	padding-left:.5em!important;
+#loader {
+    float:left;
 }
 
-.header h1 {
-	margin:0px;
-}
-.header {
-	text-align:center;
-}
-.header .menu-buttons {
-	float:right;
+#menu {
+    float:right;
+    font-size:25px;
 }
 
-.thumbs-down {
-	float:right;
+#logo img {
+    height:30px;
 }
 
-.thumbs-up {
-	float:left;
+header {
+    position:relative;
+    background: #003366;
+    color:white;
+    padding:10px;
 }
 
-.next-page {
-	padding:1em;
-	text-align:center;
-	background:#ddd;
-	border-radius:6px;
+#logo {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100px;
+    margin:0 auto;
+    text-align: center;
 }
 
-.rating-wrapper {
-	padding-left:20px;
-	padding-right:20px;
-	position:relative;
+.action-button {
+    border-radius: 4px;
+    background: #003366;
+    cursor: pointer;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-family: arial;
+    font-size: 1.5em;
+    padding: 15px;
+    -webkit-appearance: none;
+    border: 1px solid rgb(0, 30, 107);
+    box-shadow: inset 0px 1px 1px 0px rgb(147, 186, 255);
+    -webkit-box-shadow: inset 0px 1px 1px 0px rgb(147, 186, 255);
+    border-style: outset;
 }
 
-.rating-bar-wrapper {
-	position:relative;
-	top:8px;
-	height:4px;
+select {
+    width:100%;
+    padding:10px 0px;
 }
 
-.rating-bar {
-	width:100%;
-	position:absolute;
-	display:inline-block;
-	height:4px;
-	background:#bbb;
-	margin-bottom:3px;
+.where-text-wrap {
+    padding-right:3em;
+    /*font-size:initial;*/
 }
 
-.rating-bar.active {
-	background:red;
+.where-text-innerwrap {
+    float:left;
+    width:100%;
 }
 
-.rating-bar-painted {
-	position:absolute;
-	left:0px;
-	display:inline-block;
-	height:4px;
-	background:green;
-	margin-bottom:3px;
+.where-button-image {
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background: url(/augie/ng/app/img/geolocate.png);
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:60%;
 }
 
-/* 
-  Allow angular.js to be loaded in body, hiding cloaked elements until 
-  templates compile.  The !important is important given that there may be 
-  other selectors that are more specific or come later and might alter display.  
- */
-[ng\:cloak], [ng-cloak], .ng-cloak {
-  display: none !important;
+#where-button {
+    position:relative;
+    float:right;
+    padding: 1.18em;
+    background:#003366;
+    border-radius:4px;
 }
 
-.ng-cloak {
-  display: none  !important;
+input {
+    padding:8px 5px;
+}
+.input-em {
+    font-size:1.4em;
 }
 
-.vote.active {
-	color:green;
+#step2a input {
+    font-size:1.5em;
 }
 
-.sidebar {
-	padding: 0em 1em;
-}
-.sidebar  h2 {
-	margin-bottom:.2em;
-	font-size:1.5em;
-	font-weight:bold;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ANIMATIONS */
+.well[ui-view]{
+    min-height: 100%;
 }
 
-.load-more {
-	margin-top:.4em;
+.ui-view-container {
+    position: relative;
 }
 
-.sidebar .popular-wrapper ~ .popular-wrapper {
-	margin-top:1em;
+[ui-view].ng-enter, [ui-view].ng-leave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    -webkit-transition:all .5s ease-in-out;
+    -moz-transition:all .5s ease-in-out;
+    -o-transition:all .5s ease-in-out;
+    transition:all .5s ease-in-out;
+}
+
+[ui-view].ng-enter {
+    opacity: 0;
+    -webkit-transform:scale3d(0.5, 0.5, 0.5);
+    -moz-transform:scale3d(0.5, 0.5, 0.5);
+    transform:scale3d(0.5, 0.5, 0.5);
+}
+
+[ui-view].ng-enter-active {
+    opacity: 1;
+    -webkit-transform:scale3d(1, 1, 1);
+    -moz-transform:scale3d(1, 1, 1);
+    transform:scale3d(1, 1, 1);
+}
+
+[ui-view].ng-leave {
+    opacity: 1;
+    /*padding-left: 0px;*/
+    -webkit-transform:translate3d(0, 0, 0);
+    -moz-transform:translate3d(0, 0, 0);
+    transform:translate3d(0, 0, 0);
+}
+
+[ui-view].ng-leave-active {
+    opacity: 0;
+    /*padding-left: 100px;*/
+    -webkit-transform:translate3d(100px, 0, 0);
+    -moz-transform:translate3d(100px, 0, 0);
+    transform:translate3d(100px, 0, 0);
+}
+.menu-cover {
+    -webkit-transition:all .3s ease-in-out!important;
+    -moz-transition:all .3s ease-in-out!important;
+    -o-transition:all .3s ease-in-ou!importantt;
+    transition:all .3s ease-in-out!important;
+    position:absolute;
+    left:0;
+}
+.body-animate {
+    position:relative;
+    z-index:1;
+    left:0;
+    -webkit-transition:all .3s ease-in-out!important;
+    -moz-transition:all .3s ease-in-out!important;
+    -o-transition:all .3s ease-in-ou!importantt;
+    transition:all .3s ease-in-out!important;
+}
+.menuActive {
+    left: -70%;
+}
+.hidden {
+    display:none;
 }

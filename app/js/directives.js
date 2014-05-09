@@ -7,27 +7,24 @@ angular.module('myApp.directives', []).
 			elm.text(version);
 		};
 	}])
-	.directive('loadMore', function(){
+	.directive('scHeader', function(){
 		return {
 			restrict: 'EA',
 			replace: true,
-			scope: {
-				eventHandler: '&ngClick'
-			},
-			template: '<div class="load-more btn btn-default btn-xs">Load More</div>'
+            controller : 'headerController',
+			templateUrl: '/augie/ng/app/partials/header.html'
 		}
 	})
-	.directive('igLogin', ['User', function(User){
+	.directive('actionButton', function(User){
 		return {
 			restrict: 'EA',
 			replace: true,
-			scope: {
-				eventHandler: '&ngClick'
-			},
-			controller : 'login',
-			templateUrl: '/public_html/ngQuotogenic/app/partials/login.html'
+            scope : {
+                text: "="
+            },
+			templateUrl: '/augie/ng/app/partials/button.html'
 		}
-	}])
+	})
 	.directive('ratingBar', ['User', function(User){
 		return {
 			restrict : 'EA',
@@ -58,4 +55,29 @@ angular.module('myApp.directives', []).
 			controller : 'quoteBlockController',
 			templateUrl: '/public_html/ngQuotogenic/app/partials/quoteBlock.html'
 		}
-	});
+	})
+    .directive('scMenu', function(){
+        return {
+            restrict : 'EA',
+            replace : true,
+            controller : 'menuController',
+            templateUrl: '/augie/ng/app/partials/menu.html'
+        }
+    })
+    .directive('phoneInput', function(){
+        return {
+            restrict : 'EA',
+            link : function(sc, el, at) {
+                el.bind('keydown keypress', function(e){
+                    /*console.log($(el).val());
+
+                    if(sc.User.phone.length >= 10) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }*/
+                });
+            },
+            replace : true,
+            template: '<input id="phone" maxlength="10" type="phone" ng-model="User.phone"/>'
+        }
+    });

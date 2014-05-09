@@ -5,51 +5,69 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width">
 		<!-- title -->
-		<title>Quotogenic | built with angular (dev_1)</title>
+		<title>SevaCall | built with angular</title>
+        <link rel="stylesheet" href="/augie/ng/app/vendors/bootstrap/css/bootstrap.css"/>
+        <link rel="stylesheet" href="css/app.css"/>
+        <link rel="stylesheet" href="/augie/ng/app/vendors/font-awesome/css/font-awesome.css"/>
+        <link rel="stylesheet" href="/augie/ng/app/css/overlay.css"/>
+        <link rel="stylesheet" href="/augie/ng/app/css/timetable.css"/>
+        <link rel="stylesheet" href="/augie/ng/app/css/lock.css"/>
+        <link rel="stylesheet" href="/augie/ng/app/css/alert.css"/>
+        <link rel="stylesheet" href="/augie/ng/app/css/mapMarker.css"/>
+        <link rel="stylesheet" href="/augie/ng/app/css/tables.css"/>
+        <script src="/augie/ng/app/vendors/jquery/jquery.js"></script>
+        <script src="/augie/ng/app/vendors/angular/angular.js"></script>
 		<!-- vendor/component css -->
-		<link rel="stylesheet" href="/public_html/ngQuotogenic/app/vendors/bootstrap/css/bootstrap.css"/>
-		<link rel="stylesheet" href="/public_html/ngQuotogenic/app/vendors/font-awesome/css/font-awesome.css"/>
-		<link rel="stylesheet" href="/public_html/ngQuotogenic/app/angular-components/angular-loading-bar/css/angular-loading-bar.css"/>
-		<!-- custom css -->
-		<link rel="stylesheet" href="/public_html/ngQuotogenic/app/css/app.css"/>
-		<link rel="stylesheet" href="/public_html/ngQuotogenic/app/css/media.css"/>
-		<link rel="stylesheet" href="/public_html/ngQuotogenic/app/css/sidebar.css"/>
-		<!-- vendor js -->
-		<script src="/public_html/ngQuotogenic/app/vendors/jquery/jquery.js"></script>
-		<script src="/public_html/ngQuotogenic/app/vendors/angular/angular.js"></script>
 	</head>
-	<body>
+	<body class="container">
+        <div class="row">
+            <div  ng-controller="bodyController" class="body-animate clearfix">
+                <div class="body-wrapper">
+                    <div class="span12 clearfix">
+                        <div class="menu-cover" ng-class="{menuActive : Menu.active}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 		<!-- begin header -->
-		<div class="header col-md-12">
-			<h1 class="title nopadding col-md-8 block m-0-box tc ">
-				<a class="nodecoration autocolor" ui-sref="body">
-					<em class="highlight">q</em>uotogenic
-				</a>
-			</h1>
-			<div class="hidden-xs nopadding col-md-4 menu-buttons">
-				<ig-login></ig-login>
-			</div>
-		</div>
+		<div sc-header style="position:relative; z-index:1;"></div>
 		<!-- end header -->
-		
-		<!-- begin main view -->
-		<div class="index">
-			<div ui-view></div>
-		</div>
+
+        <!-- begin main view -->
+        <div class="row">
+            <div  ng-controller="bodyController" ng-class="{menuActive : Menu.active}" class="body-animate clearfix">
+                <div class="body-wrapper">
+                    <div class="span12 ui-view-container clearfix">
+                        <div ui-view class="slide"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 		<!-- end main view -->
-		
-		<!-- component js -->
-		<script src="/public_html/ngQuotogenic/app/angular-components/ngInfiniteScroll/ng-infinite-scroll.js"></script>
-		<script src="/public_html/ngQuotogenic/app/angular-components/angular-resource/angular-resource.js"></script>
-		<script src="/public_html/ngQuotogenic/app/angular-components/angular-ui-router/angular-ui-router.js"></script>
-		<script src="/public_html/ngQuotogenic/app/angular-components/angular-animate/angular-animate.js"></script>
-		<script src="/public_html/ngQuotogenic/app/angular-components/angular-cookies/angular-cookies.js"></script>
-		<script src="/public_html/ngQuotogenic/app/angular-components/angular-loading-bar/js/angular-loading-bar.js"></script>
-		<!-- custom js -->
-		<script src="/public_html/ngQuotogenic/app/js/app.js"></script>
-		<script src="/public_html/ngQuotogenic/app/js/services.js"></script>
-		<script src="/public_html/ngQuotogenic/app/js/controllers.js"></script>
-		<script src="/public_html/ngQuotogenic/app/js/filters.js"></script>
-		<script src="/public_html/ngQuotogenic/app/js/directives.js"></script>
+        <div sc-menu class="row"></div>
+        <script src="/augie/ng/app/angular-components/angular-animate/angular-animate.js"></script>
+        <script src="/augie/ng/app/angular-components/angular-cookies/angular-cookies.js"></script>
+        <script src="/augie/ng/app/angular-components/angular-ui-router/angular-ui-router.js"></script>
+        <script src="/augie/ng/app/angular-components/angular-loading-bar/js/angular-loading-bar.js"></script>
+
+        <script src="/augie/ng/app/vendors/jquery/jquery.js"></script>
+
+        <!-- custom js -->
+        <script src="/augie/ng/app/js/app.js"></script>
+        <script src="/augie/ng/app/js/SCAPI-service.js"></script>
+        <script src="/augie/ng/app/js/services.js"></script>
+        <script src="/augie/ng/app/js/controllers.js"></script>
+        <script src="/augie/ng/app/js/filters.js"></script>
+        <script src="/augie/ng/app/js/directives.js"></script>
+        <script src="/augie/ng/app/js/xAlert.js"></script>
+
+        <script>
+            function loadMapsPlugins(){
+                $.getScript("js/infobox.js", function(){
+                    $.getScript("js/xMarker.js");
+                })
+            }
+        </script>
+        <script src="http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins"></script>
 	</body>
 </html>
