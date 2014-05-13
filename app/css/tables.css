@@ -39,6 +39,7 @@
     margin-top:1em;
     table-layout: fixed;
     border-collapse: collapse;
+    min-width: 350px;
 }
 
 .statuses .info {
@@ -181,7 +182,41 @@
 }
 .rating.stars {
     text-align:center;
-    background: url("../img/yelp_sprite.png");
     background-position-x: center;
+    background-position-x: 20%;
+    background-size:100%;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    max-width: 85px;
+    min-width:30px;
     background-position-y: 2%;
+    background-size: cover!important;
+}
+
+.yelp .stars {
+    background: url("../img/yelp_sprite.png");
+}
+
+.google .stars {
+    background: url("../img/yahoo_sprite.png");
+}
+
+.citysearch .stars {
+    background: url("../img/citysearch_sprite.png");
+}
+
+.rating.loading {
+    height: 20px;
+    width: 40px;
+    background: url("../img/ajax-loader-small.gif");
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    text-align: center;
+    background-position: center;
+}
+.rating .num-ratings {
+    font-size:.8em;
+}
+.rating .n-a {
+    font-size:1.1em;
 }

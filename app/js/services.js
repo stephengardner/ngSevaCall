@@ -412,6 +412,7 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
         statuses : [],
         statusThrottle : [],
         numCompaniesAccepted : 0,
+        complete : false,
         isDescriptionValid : function(){
             if(this.description) {
                 var word = /\b[^\s]+\b/g;
@@ -420,6 +421,13 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
                     return true;
             }
             return false;
+        },
+
+        reset : function() {
+            this.id = false;
+            this.statuses = [];
+            this.companies = {};
+            this.complete = false;
         },
 
         addCompany : function(){
@@ -447,6 +455,7 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
 
         pingStatusesStart : function(){
             var self = this;
+            Request.processing = true;
             self.interval = $interval(function(){
                 SCAPI.getRequestStatus().then(function(d){
                     self.setStatusThrottle(d);
@@ -460,12 +469,17 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
                             status.rel = Request.companies[status.companyID].markerNumber;
                             status.iconClass = status.requestStatusShort.toLowerCase().replace(" ", "");
                             Request.companies[status.companyID].status = status.requestStatusShort;
-                            self.statuses.push(status);
+                            self.statuses.unshift(status); // add it to the front so that angular pushes it to the front of the html list
                             //Request.companies[status.companyID].accepted = 1;
 
                             if(status.requestStatusShort == "Answered") {
+                                SCAPI.getRatings(Request.companies[status.companyID]).then(function(d){
+                                    console.log("finished getting all ratings for company");
+                                });
                                 Request.companies[status.companyID].accepted = 1;
-                                Request.companies[status.companyID].acceptedOrder = ++self.numCompaniesAccepted;
+
+                                Request.companies[status.companyID].acceptedOrder = self.numCompaniesAccepted;
+                                self.numCompaniesAccepted++;
                                 console.log("Request.numCompaniesAccepted is: " + self.numCompaniesAccepted);
                             }
                             console.log(status.requestStatusShort);
@@ -473,6 +487,7 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
                         }
                         else {
                             // if companyID is 0, its completed
+                            self.requestComplete();
                             self.pingStatusesStop();
                         }
                     }
@@ -481,10 +496,22 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
             }, 1000);
         },
 
+        requestComplete : function() {
+            this.complete = true;
+        },
+
         pingStatusesStop : function() {
+            Request.processing = false;
             $interval.cancel(this.interval);
         },
 
+        submit : function() {
+            var deferred = $q.defer();
+            this.setID(112669);
+            this.pingStatusesStart();
+            deferred.resolve(true);
+            return deferred.promise;
+        },
         setStatusThrottle : function(statusResponse) {
             function statusIDIsIn(requestStatusID, arrayOfObjects){
                 for(var i = 0; i < arrayOfObjects.length; i++){
@@ -522,7 +549,23 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
    };
     return Request;
 });
-
+myApp.factory('Storage', function(User, Request){
+    var Storage = {
+        name : false,
+        email : false,
+        phone : false,
+        zip : false,
+        saveUser : function(){
+            this.name = User.name;
+            this.email = User.email;
+            this.phone = User.phone;
+        },
+        saveZip : function() {
+            this.zip = User.zipcode;
+        }
+    };
+    return Storage;
+});
 myApp.factory('User', function(){
     var User = {
         nameValidate : /[a-zA-Z]{2,}/,

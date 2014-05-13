@@ -1,5 +1,98 @@
 <div id="map_canvas"></div>
-<div id="map_spacer">&nbsp;</div>
+<div id="map_spacer"></div>
+<div id="company-reviews" ng-show="request.numCompaniesAccepted > 0">
+    <table class="reviews">
+        <tbody>
+        <tr class="scoreboard-header">
+            <td class="marker-space">
+                &nbsp;
+            </td>
+            <td class="info">
+                &nbsp;
+            </td>
+            <td class="yelp-logo logo">
+                <div>&nbsp;</div>
+            </td>
+            <td class="citysearch-logo logo">
+                <div>&nbsp;</div>
+            </td>
+            <td class="google-logo logo">
+                <div>&nbsp;</div>
+            </td>
+        </tr>
+        <tr ng-repeat="company in companies | orderObjectBy:'acceptedOrder':true" ng-show="company.accepted == 1">
+            <td class="marker">
+                <div rel="{{company.markerNumber}}">&nbsp;</div>
+            </td>
+            <td class="info">
+                <div class="name">
+                    {{company.name}}
+                </div>
+                <div class="location">
+                    {{company.city}}, {{company.state}}
+                </div>
+            </td>
+            <td class="yelp">
+                <div ng-show="company.isYelpLoaded == 0" class="rating loading">
+                </div>
+                <div ng-show="company.isYelpLoaded == 1">
+                    <div class="rating stars" ng-show="company.ratingYelp" ng-style="{'background-position-y' : company.yelpStarOffset + '%'}">
+                        &nbsp;
+                    </div>
+                    <div class="rating text">
+                        <!--
+                        <div class="num-ratings" ng-show="company.numRatingsYelp > 0">
+                            {{company.numRatingsYelp}} ratings
+                        </div>
+                        -->
+                        <div class="n-a" ng-show="company.numRatingsYelp <= 0">
+                            n/a
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="citysearch">
+                <div ng-show="company.isCitysearchLoaded == 0" class="rating loading">
+                </div>
+                <div ng-show="company.isCitysearchLoaded == 1">
+                    <div class="rating stars" ng-show="company.ratingCitysearch" ng-style="{'background-position-y' : company.citysearchStarOffset + '%'}">
+                        &nbsp;
+                    </div>
+                    <div class="rating text">
+                        <!--
+                        <div class="num-ratings" ng-show="company.numRatingsCitysearch > 0">
+                            {{company.numRatingsCitysearch}} ratings
+                        </div>
+                        -->
+                        <div class="n-a" ng-show="company.numRatingsCitysearch <= 0">
+                            n/a
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="google">
+                <div ng-show="company.isGoogleLoaded == 0" class="rating loading">
+                </div>
+                <div ng-show="company.isGoogleLoaded == 1">
+                    <div class="rating stars" ng-show="company.ratingGoogle" ng-style="{'background-position-y' : company.googleStarOffset + '%'}">
+                        &nbsp;
+                    </div>
+                    <div class="rating text">
+                        <!--
+                        <div class="num-ratings" ng-show="company.numRatingsGoogle > 0">
+                            {{company.numRatingsGoogle}} ratings
+                        </div>
+                        -->
+                        <div class="n-a" ng-show="company.numRatingsGoogle <= 0">
+                            n/a
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 <div id="request-statuses">
     <table class="statuses">
         <tbody>

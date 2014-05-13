@@ -235,13 +235,84 @@ var myApp = angular.module('myApp', [
 	$stateProvider.state(filter);
 	$stateProvider.state(photo);
 	*/
-}).run(function(SCAPI, Request, $rootScope, Menu){
+}).run(function(SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location){
     SCAPI.init(Request);
     $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams){
             Menu.active = false;
         console.log("State Change: State change success!");
-    })
+    });
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, $event){
+
+       if(Request.id && toState.name == "step1") {
+           event.preventDefault();
+           new xAlert("Returning to step 1 will cancel your current request, continue?",
+               function(button){
+                   if(button == 1){
+                       Request.reset();
+                       $state.go("step1");
+                       $urlRouter.sync(); // not sure what this does at the moment
+                   }
+                   console.log(button);
+               },
+               "Leave this page?",
+               "Yes, Cancel"
+           );
+           return false;
+       }
+    });
+    $rootScope.$on('$locationChangeStart',
+        function(event, toState, toParams, fromState, fromParams, $event){
+            if(Request.id && toState.indexOf("step1") != -1) {
+                event.preventDefault();
+               // $event.stopPropagation();
+                new xAlert("Returning to step 1 will cancel your current request, continue?",
+                    function(button){
+                        if(button == 1){
+                            Request.reset();
+                            $state.go("step1");
+                            $urlRouter.sync(); // not sure what this does at the moment
+                        }
+                        console.log(button);
+                    },
+                    "Leave this page?",
+                    "Yes, Cancel"
+                );
+                return false;
+            }
+            Menu.active = false;
+                /*
+                event.preventDefault();
+                new xAlert("Returning to step 1 will cancel your current request.",
+                    function(button){
+                        if(button == 1){
+                            Request.id = false;
+                            $state.go("step1");
+                            $urlRouter.sync(); // not sure what this does at the moment
+                        }
+                        else  {
+                            var state = $.extend({}, fromState);
+                            //console.log(fromState);
+                            console.log("history state", $window.history.);
+                            console.log("toState", toState);
+                            $window.history.pushState(toState);
+                            $state.reload("step2");
+                            //$state.go($state.current, fromParams, {reload: true});
+                            alert();
+                        }
+
+                        console.log(button);
+                    },
+                    "Leave this page?",
+                    "Yes, Cancel");
+                //event.stopPropagation();
+                return false;
+
+            }
+            Menu.active = false;
+            console.log("State Change: State change success!");
+            */
+    });
 }).filter('orderObjectBy', function() {
         return function(items, field, reverse) {
             var filtered = [];

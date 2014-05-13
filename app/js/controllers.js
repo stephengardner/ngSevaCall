@@ -22,22 +22,25 @@ angular.module('myApp.controllers', [])
             });
         });
         */
+
         $scope.companies = Request.companies;
         $scope.request = Request;
+
         var companyRating = 3;
+        /*
         $scope.yelpStarOffset = -4.25 + (companyRating * 12.5);
         $scope.citysearchStarOffset = -4.25 + (companyRating * 12.5);
         $scope.googleStarOffset = -4.25 + (companyRating * 12.5);
         $timeout(function(){
             console.log("ok");
         }, 5000);
+        */
         Request.setID(112669);
+        $scope.numCompaniesAccepted = Request.numCompaniesAccepted;
+        console.log("Request is: ", Request);
         SCAPI.getCompaniesList().then(function(){
             Request.pingStatusesStart();
             GoogleMap.init();
-            SCAPI.getRatings(Request.companies['495861']).then(function(d){
-                console.log("finished getting all ratings for company");
-            });
         });
         //Request.pingStatusesStart();
        // $scope.statuses = Request.statuses;
@@ -51,9 +54,11 @@ angular.module('myApp.controllers', [])
         */
     }])
     .controller('step3Controller', ['GoogleMap', 'Request', '$scope', function(GoogleMap, Request, $scope){
-        Request.setID(112669);
+        $scope.companies = Request.companies;
+        $scope.request = Request;
         GoogleMap.init();
-        Request.pingStatusesStart();
+        //if(!Request.complete && !Request.processing)
+        //    Request.pingStatusesStart();
         $scope.statuses = Request.statuses;
     }])
 	.controller('step1Controller', ['$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', function($state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location) {
@@ -110,25 +115,37 @@ angular.module('myApp.controllers', [])
         };
         $scope.categories = Categories;
 	}])
-	.controller('step2Controller', ['SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function(SCAPI, Times, $scope, User, Request, $state) {
-        SCAPI.getCompaniesList();
+	.controller('step2Controller', ['$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function($timeout, SCAPI, Times, $scope, User, Request, $state) {
+        if(jQuery.isEmptyObject(Request.companies))
+            SCAPI.getCompaniesList();
         console.log("STEP 2");
+       // $timeout(function(){
+        //    $state.go("step1");
+       // }, 3000);
         $scope.Times = Times;
         $scope.Request = Request;
+        $scope.timeButtonActive = Times.timesActive.length > 0;
         $scope.timetable = function(){
             console.log("clicked");
-            //if(Times.buttons['pick_time']){
-            //    console.log("going to pick time");
-                $state.go('timetable');
-            //}
+            $state.go('timetable');
         };
         $scope.next = function(){
             if(!Request.isDescriptionValid()){
-                // alert
-                alert("Description must be 7 words");
+                new xAlert("Description must be 7 words");
+                return false;
             }
             if(User.isEmailValid() && User.isNameValid() && User.isPhoneValid()){
-                $state.go("step3");
+                new xAlert("Call companies now? You may receive up to three calls",
+                    function(button) {
+                        if(button == 2) {
+                            Request.submit().then(function(){
+                                $state.go("step3");
+                            });
+                        }
+                    },
+                    "Alert",
+                    "Cancel,Ok"
+                );
             }
             else {
                 $state.go("step2a");
@@ -145,9 +162,10 @@ angular.module('myApp.controllers', [])
     .controller('menuController', ['$parse', '$attrs', '$scope', 'Menu', function($parse, $attrs, $scope, Menu){
         $scope.Menu = Menu;
     }])
-    .controller('headerController', ['$rootScope', '$state', '$window', 'Menu', '$attrs', '$scope', function($rootScope, $state, $window, Menu, $attrs, $scope){
+    .controller('headerController', ['Request', '$rootScope', '$state', '$window', 'Menu', '$attrs', '$scope', function(Request, $rootScope, $state, $window, Menu, $attrs, $scope){
         $scope.$state = $state;
         $scope.Menu = Menu;
+        $scope.request = Request;
         $scope.back = function(){
             $rootScope.$broadcast('back');
             $window.history.back();
@@ -164,7 +182,7 @@ angular.module('myApp.controllers', [])
 
         console.log("TIMES:" + Times.postify());
     }])
-    .controller('step2aController', ['$rootScope', 'User', 'Times', '$scope', function($rootScope, User, Times, $scope){
+    .controller('step2aController', ['$rootScope', 'User', 'Times', '$scope', 'Request', '$state', function($rootScope, User, Times, $scope, Request, $state){
         var UserBackup = angular.copy(User);
         var cleanUpFunction = $rootScope.$on('back', function(){
             console.log("------------------------- rootscope back --------------------------------");
@@ -181,6 +199,30 @@ angular.module('myApp.controllers', [])
         $scope.$on('$destroy', function() {
             cleanUpFunction();
         });
+        $scope.next = function(){
+            if(!User.isEmailValid()) {
+                new xAlert("Invalid name");
+            }
+            else if(!User.isEmailValid()) {
+                new xAlert("Invalid email");
+            }
+            else if(!User.isPhoneValid()) {
+                new xAlert("Invalid phone number");
+            }
+            else {
+                new xAlert("Call companies now? You may receive up to three calls",
+                    function(button) {
+                        if(button == 2) {
+                            Request.submit().then(function(){
+                                $state.go("step3");
+                            });
+                        }
+                    },
+                    "Alert",
+                    "Cancel,Ok"
+                );
+            }
+        }
     }])
     .controller('informationController', ['$scope', '$window', function($scope, $window){
         function resizeVideo() {

@@ -79,10 +79,13 @@ myApp.factory('SCAPI', function(User, $http, $q){
                         infoBoxEvent: function () {
                         },
                         ratingYelp: 0,
+                        isYelpLoaded : 0,
                         numRatingsYelp: "",
                         ratingCitysearch: 0,
+                        isCitysearchLoaded : false,
                         numRatingsCitysearch: "",
                         ratingGoogle: 0,
+                        isGoogleLoaded: 0,
                         numRatingsGoogle: "",
                         reviewsLoaded: 0,
                         reviewsHTML: "",
@@ -168,6 +171,7 @@ myApp.factory('SCAPI', function(User, $http, $q){
         getRatings : function(company) {
             var self = this;
             var deferred = $q.defer();
+
             function parseCompany(){
                 var params = {
                     companyName : company.name,
@@ -187,6 +191,26 @@ myApp.factory('SCAPI', function(User, $http, $q){
                     headers : {'Content-Type': 'application/json'}
                 }).success(function(d){
                     deferred.resolve(d);
+                    var ratingSplit = d.split("|");
+                    var rating = ratingSplit[0];
+                    var numRatings = ratingSplit[1];
+                    /*
+                    if(source == "google") {
+                        company.ratingGoogle = rating;
+                        company.numRatingsGoogle = numRatings;
+                        company.googleStarOffset = -4.25 + (rating * 12.5);
+                    }
+                    if(source == "citysearch") {
+                        company.ratingCitysearch = rating;
+                        company.numRatingsCitysearch = numRatings;
+                        company.citysearchStarOffset = -4.25 + (rating * 12.5);
+                    }
+                    if(source == "yelp") {
+                        company.ratingYelp = rating;
+                        company.numRatingsYelp = numRatings;
+                        company.yelpStarOffset = -4.25 + (rating * 12.5);
+                    }
+                    */
                     console.log("success getting " + source + "ratings: " + d);
                 }).error(function(d){
                     console.log("error: " + d);
@@ -202,16 +226,29 @@ myApp.factory('SCAPI', function(User, $http, $q){
             getRating("yelp").then(function(d){
                 var data = d.split("|");
                 company.ratingYelp = data[0] > 0 ? data[0] : 0;
+                company.numRatingsYelp = data[1];
+                company.yelpStarOffset = -4.66 + (data[0] * 12.66);
+                company.isYelpLoaded = 1;
                 gotRating();
             });
             getRating("citysearch").then(function(d){
                 var data = d.split("|");
-                company.ratingCitysearch = data[0] > 0 ? data[0] : 0;
+                var companyRating = d[0];
+               // companyRating /= 2;
+                companyRating = Math.floor(companyRating) + ( Math.round((companyRating - Math.floor(companyRating))) ? 0.5 : 0.0 );
+                company.ratingCitysearch = companyRating;
+                var starOffset = -4.66 + (companyRating * 12.66);
+                company.citysearchStarOffset = starOffset;
+                company.numRatingsCitysearch = data[1];
+                company.isCitysearchLoaded = 1;
                 gotRating();
             });
             getRating("google").then(function(d){
                 var data = d.split("|");
                 company.ratingGoogle = data[0] > 0 ? data[0] : 0;
+                company.googleStarOffset = -4.66 + (data[0] * 12.66);
+                company.numRatingsGoogle = data[1];
+                company.isGoogleLoaded = 1;
                 gotRating();
             });
             return deferred.promise;
