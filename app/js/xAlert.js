@@ -3,7 +3,17 @@
  * @author: Stephen Gardner
  * @arguments: (str) message, (func) callback, (str) opt_title, (str) opt_buttons
  * @description: Helper JS Class to display a custom alert popup box for either a web-based or phonegap-based application 
-**/ 
+**/
+Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
+}
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+    for(var i = 0, len = this.length; i < len; i++) {
+        if(this[i] && this[i].parentElement) {
+            this[i].parentElement.removeChild(this[i]);
+        }
+    }
+}
 function xAlert(options) {
 	var self = this;
 	self.defaults = {	
@@ -58,12 +68,15 @@ xAlert.prototype = {
 	
 	create : function( ) {
 		var self = this;
+        $(".alert-wrapper").remove();
+        $(".alert-overlay").remove();
 		// necessary to blur inputs on some android phones where the input element forces a higher z-index than the alert box
 		$("input").blur();
 		//PageSnap();
 		//$("body").animate({ scrollTop: 1 }, 400);
 		// append overlay and alert container
 		//
+
 		document.body.appendChild(self.overlay);
 		document.body.appendChild(self.popup);
 		

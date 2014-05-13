@@ -10,6 +10,11 @@ body, .ui-view-container {
     display: none !important;
 }
 
+.GPUAccel {
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+}
+
 ng\:form {
     display: block;
 }
@@ -113,7 +118,11 @@ li {
     list-style-type:none;
 }
 
-.body-wrapper {
+.body {
+    margin-bottom:30px;
+}
+
+.body-margin {
     margin:0px 8px;
 }
 
@@ -203,6 +212,10 @@ header .icon {
     float:left;
 }
 
+.loaderButton {
+    margin-top: 4px;
+    margin-left: 8px;
+}
 #menu {
     float:right;
     font-size:25px;

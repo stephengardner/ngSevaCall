@@ -2,7 +2,7 @@
     <div id="back" class="icon" ng-class="{ hidden : $state.current.name == 'step1'}" ng-click="back()">
         <img height="25px" width="35px" src="/augie/ng/app/img/back.png"/>
     </div>
-    <div id="loader" class="hidden icon">
+    <div id="loader" ng-show="request.processing == true" class="icon">
         <div class="loaderButton">
             <img height="28px" width="28px" src="/augie/ng/app/img/ajax-loader2.gif"/>
         </div>

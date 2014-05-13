@@ -24,9 +24,8 @@
 <body class="container">
 <div class="row">
     <div  ng-controller="test" class="body-animate clearfix">
-        <div id="map_canvas">ok<br/>ok</div>
         <div id="map_spacer"></div>
-        <div id="company-reviews">
+        <div id="company-reviews" ng-show="request.numCompaniesAccepted > 0">
             <table class="reviews">
                 <tbody>
                     <tr class="scoreboard-header">
@@ -52,7 +51,6 @@
                         </td>
                         <td class="info">
                             <div class="name">
-                                    {{company.accepted}} |
                                 {{company.name}}
                             </div>
                             <div class="location">
@@ -60,33 +58,54 @@
                             </div>
                         </td>
                         <td class="yelp">
-                            <div class="rating loading">
+                            <div ng-show="company.isYelpLoaded == 0" class="rating loading">
                             </div>
-                            <div class="rating stars" ng-style="{'background-position-y' : yelpStarOffset + '%'}">
-                                &nbsp;
-                            </div>
-                            <div class="rating text">
-                                n/a
+                            <div ng-show="company.isYelpLoaded == 1">
+                                <div class="rating stars" ng-show="company.ratingYelp" ng-style="{'background-position-y' : company.yelpStarOffset + '%'}">
+                                    &nbsp;
+                                </div>
+                                <div class="rating text">
+                                    <div class="num-ratings" ng-show="company.numRatingsYelp > 0">
+                                        {{company.numRatingsYelp}} ratings
+                                    </div>
+                                    <div class="n-a" ng-show="company.numRatingsYelp <= 0">
+                                        n/a
+                                    </div>
+                                </div>
                             </div>
                         </td>
                         <td class="citysearch">
-                            <div class="rating loading">
+                            <div ng-show="company.isCitysearchLoaded == 0" class="rating loading">
                             </div>
-                            <div class="rating stars" ng-style="{'background-position-y' : yelpStarOffset + '%'}">
-                                &nbsp;
-                            </div>
-                            <div class="rating text">
-                                n/a
+                            <div ng-show="company.isCitysearchLoaded == 1">
+                                <div class="rating stars" ng-show="company.ratingCitysearch" ng-style="{'background-position-y' : company.citysearchStarOffset + '%'}">
+                                    &nbsp;
+                                </div>
+                                <div class="rating text">
+                                    <div class="num-ratings" ng-show="company.numRatingsCitysearch > 0">
+                                        {{company.numRatingsCitysearch}} ratings
+                                    </div>
+                                    <div class="n-a" ng-show="company.numRatingsCitysearch <= 0">
+                                        n/a
+                                    </div>
+                                </div>
                             </div>
                         </td>
                         <td class="google">
-                            <div class="rating loading">
+                            <div ng-show="company.isGoogleLoaded == 0" class="rating loading">
                             </div>
-                            <div class="rating stars" ng-style="{'background-position-y' : googleStarOffset + '%'}">
-                                &nbsp;
-                            </div>
-                            <div class="rating text">
-                                n/a
+                            <div ng-show="company.isGoogleLoaded == 1">
+                                <div class="rating stars" ng-show="company.ratingGoogle" ng-style="{'background-position-y' : company.googleStarOffset + '%'}">
+                                    &nbsp;
+                                </div>
+                                <div class="rating text">
+                                    <div class="num-ratings" ng-show="company.numRatingsGoogle > 0">
+                                        {{company.numRatingsGoogle}} ratings
+                                    </div>
+                                    <div class="n-a" ng-show="company.numRatingsGoogle <= 0">
+                                        n/a
+                                    </div>
+                                </div>
                             </div>
                         </td>
                     </tr>

@@ -11,7 +11,7 @@
         <div class="time-button" ng-class="{active : Times.buttons.anytime}" ng-click="Times.changeTime('anytime');">
             ANYTIME
         </div>
-        <div class="time-button" ng-class="{active : Times.buttons.pick_time}" ng-click="Times.changeTime('pick_time'); timetable()">
+        <div class="time-button" ng-class="{active : timeButtonActive}" ng-click="Times.changeTime('pick_time'); timetable()">
            PICK TIME
         </div>
     </div>
