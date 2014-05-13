@@ -6,6 +6,7 @@ myApp.factory('Menu', function(){
     var Menu = {
         active : false,
         toggle : function(){
+            //$("#sc-menu").css("height", $("body").height());
             this.active = !this.active;
         },
         close : function(){
@@ -62,27 +63,27 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
                 self.addMarkers();
             });
             /*
-            function getLatLongByZip(callback) {
-                var geocoder = new google.maps.Geocoder();
-                geocoder.geocode({ 'address': "20854" }, function (results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        self.latLng = results[0].geometry.location;
+             function getLatLongByZip(callback) {
+             var geocoder = new google.maps.Geocoder();
+             geocoder.geocode({ 'address': "20854" }, function (results, status) {
+             if (status == google.maps.GeocoderStatus.OK) {
+             self.latLng = results[0].geometry.location;
 
-                        if (callback)
-                            callback();
-                    }
-                });
-            };
-            getLatLongByZip(function(){
-                var mapOptions = {
-                    center: self.latLng,
-                    zoom: 12,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    disableDefaultUI: true
-                };
-                self.googleMap = new google.maps.Map(document.getElementById("map_canvas"));
-            })
-            */
+             if (callback)
+             callback();
+             }
+             });
+             };
+             getLatLongByZip(function(){
+             var mapOptions = {
+             center: self.latLng,
+             zoom: 12,
+             mapTypeId: google.maps.MapTypeId.ROADMAP,
+             disableDefaultUI: true
+             };
+             self.googleMap = new google.maps.Map(document.getElementById("map_canvas"));
+             })
+             */
         },
 
         mapFitBounds: function () {
@@ -113,11 +114,11 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
 
             self.map.fitBounds(self.bounds);
             /*
-            old max zoom level function
-            google.maps.event.addListenerOnce(self.map, 'idle', function() {
-                self.map.setZoom(self.map.getZoom() - 1);
-            });
-            */
+             old max zoom level function
+             google.maps.event.addListenerOnce(self.map, 'idle', function() {
+             self.map.setZoom(self.map.getZoom() - 1);
+             });
+             */
         },
 
         setInfoBox: function (companyObj) {
@@ -235,56 +236,56 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
                     self.setInfoBox(this.company);
                 });
 
-               // var marker = new xMarker(new google.maps.LatLng(Request.companies[p].lat, Request.companies[p].lon), self.map);
+                // var marker = new xMarker(new google.maps.LatLng(Request.companies[p].lat, Request.companies[p].lon), self.map);
                 /*
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(Request.companies[p].lat, Request.companies[p].lon),
-                    map: self.map,
-                    title:"Hello World!"
-                });
-                */
+                 var marker = new google.maps.Marker({
+                 position: new google.maps.LatLng(Request.companies[p].lat, Request.companies[p].lon),
+                 map: self.map,
+                 title:"Hello World!"
+                 });
+                 */
             }
 
-           // self.mapFitBounds();
+            // self.mapFitBounds();
             document.addEventListener("click", function () {
                 self.infoBox.close();
 
             }, true);
 
             //if (callback)
-             //   callback();
+            //   callback();
         }
         /*
-        getLatLongByZip : function () {
-            var mapOptions = {
-                center: self.latLong,
-                zoom: 12,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                disableDefaultUI: true
-            };
-            try {
-                self.googleMap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-                // remove the new .gm styling for google maps - the new maps styles break our custom infobox layout
-                google.maps.event.addListener(self.googleMap, 'idle', function () {
-                    $('style').remove();
-                });
-            }
-            catch (err) {
-                TRACK("STEP3_MAP_LOADING_FAILED", "FatalError");
-            }
-            try {
-                google.maps.event.addListenerOnce(self.googleMap, 'idle', function () {
-                    TRACK("STEP3_MAP_LOADING_SUCCESS");
-                    self.setCompanyMarkers();
-                    if (mapLoadedCallback)
-                        mapLoadedCallback();
-                });
-            }
-            catch (err) {
-                console.log("Error: " + err);
-            }
-        }
-        */
+         getLatLongByZip : function () {
+         var mapOptions = {
+         center: self.latLong,
+         zoom: 12,
+         mapTypeId: google.maps.MapTypeId.ROADMAP,
+         disableDefaultUI: true
+         };
+         try {
+         self.googleMap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+         // remove the new .gm styling for google maps - the new maps styles break our custom infobox layout
+         google.maps.event.addListener(self.googleMap, 'idle', function () {
+         $('style').remove();
+         });
+         }
+         catch (err) {
+         TRACK("STEP3_MAP_LOADING_FAILED", "FatalError");
+         }
+         try {
+         google.maps.event.addListenerOnce(self.googleMap, 'idle', function () {
+         TRACK("STEP3_MAP_LOADING_SUCCESS");
+         self.setCompanyMarkers();
+         if (mapLoadedCallback)
+         mapLoadedCallback();
+         });
+         }
+         catch (err) {
+         console.log("Error: " + err);
+         }
+         }
+         */
     };
     return GoogleMap;
 });
@@ -314,13 +315,20 @@ myApp.factory('Times', function(){
             }
             return times;
         },
+
         isFull : function(){
             var isNowActive = this.buttons.now ? 1 : 0;
             return this.timesActive.length + isNowActive >= 5;
         },
+
         fullAlert : function(){
             new xAlert("Please select a maximum of 5 times");
         },
+
+        isEmpty : function() {
+            return this.timesActive == [] && $.isEmptyObject(this.buttons);
+        },
+
         empty : function() {
             this.timesActive = [];
         },
@@ -340,7 +348,7 @@ myApp.factory('Times', function(){
                 this.empty();
             }
             if(time == "pick_time" && this.buttons['pick_time'] == 1)
-               this.buttons.anytime = 0;
+                this.buttons.anytime = 0;
         },
         find : function(row, col){
             //console.log("row-col: " + row + "-" + col);
@@ -400,14 +408,14 @@ myApp.factory('Times', function(){
                 this.timesActive.splice(index, 1);
             }
         }
-};
+    };
     Times.init();
     console.log(Times.dates);
     return Times;
 });
 
 myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
-   var Request = {
+    var Request = {
         companies : {},
         statuses : [],
         statusThrottle : [],
@@ -450,7 +458,7 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
         },
 
         setID : function(id){
-           this.id = id;
+            this.id = id;
         },
 
         pingStatusesStart : function(){
@@ -512,6 +520,7 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
             deferred.resolve(true);
             return deferred.promise;
         },
+
         setStatusThrottle : function(statusResponse) {
             function statusIDIsIn(requestStatusID, arrayOfObjects){
                 for(var i = 0; i < arrayOfObjects.length; i++){
@@ -532,36 +541,63 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
         },
 
         setCompanies : function(companies) {
-           this.companies = companies;
+            this.companies = companies;
         },
 
         setCategory : function(category) {
-           this.category = category;
+            this.category = category;
         },
 
         setStatus : function(status){
-           this.status = status;
+            this.status = status;
         },
 
         setDescription : function(description){
-           this.description = description;
+            this.description = description;
         }
-   };
+    };
     return Request;
 });
-myApp.factory('Storage', function(User, Request){
+myApp.factory('Storage', function(User, Request, localStorageService){
     var Storage = {
         name : false,
         email : false,
         phone : false,
         zip : false,
+
         saveUser : function(){
             this.name = User.name;
             this.email = User.email;
             this.phone = User.phone;
+            this.set();
         },
+
+        import : function() {
+            console.log(localStorageService);
+            User.name = localStorageService.get('sc-user-name');
+            User.email = localStorageService.get('sc-user-email');
+            User.phone = localStorageService.get('sc-user-phone');
+            User.zip = localStorageService.get('sc-user-zip');
+            this.name = localStorageService.get('sc-user-name');
+            this.email = localStorageService.get('sc-user-email');
+            this.phone = localStorageService.get('sc-user-phone');
+            this.zip = localStorageService.get('sc-user-zip');
+        },
+
         saveZip : function() {
             this.zip = User.zipcode;
+            this.set();
+        },
+
+        set : function() {
+            localStorageService.set('sc-user-name',this.name);
+            localStorageService.set('sc-user-email',this.email);
+            localStorageService.set('sc-user-phone',this.phone);
+            localStorageService.set('sc-user-zip',this.zip);
+        },
+
+        empty : function() {
+            localStorageService.clearAll();
         }
     };
     return Storage;
@@ -730,7 +766,7 @@ myApp.factory('Location', function(User, $q, $http){
     return Location;
 });
 
-myApp.factory('Categories', function(){
+myApp.factory('Categories', function() {
     var Categories =  [
         { id : '6745', name : 'Test Spin'},
         { id : '13', name : 'Accountants'},

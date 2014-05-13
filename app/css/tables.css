@@ -188,7 +188,9 @@
     background-repeat: no-repeat;
     margin: 0 auto;
     max-width: 85px;
+    /*
     min-width:30px;
+    */
     background-position-y: 2%;
     background-size: cover!important;
 }

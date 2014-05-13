@@ -2,6 +2,11 @@ body, .ui-view-container {
     background:#F2F7FD;
     font-family:arial;
 }
+
+select {
+    -webkit-appearance: none;
+    background: white;
+}
 /**** begin angular css ***/
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],
@@ -32,7 +37,7 @@ ng\:form {
 .menu-cover {
     position:fixed;
     width:100%;
-    height:100vh;
+    height:100%;
     z-index:1;
     background:#F2F7FD;
 }
@@ -73,7 +78,7 @@ textarea {
 }
 
 #sc-menu {
-    position:absolute;
+    position:fixed;
     top:55px;
     bottom:0;
     width:70%;
@@ -119,7 +124,7 @@ li {
 }
 
 .body {
-    margin-bottom:30px;
+    padding-bottom:30px;
 }
 
 .body-margin {
@@ -137,9 +142,11 @@ h1,h2,h3 {
 input {
     width:100%;
 }
+
 .sep {
     margin-top:25px;
 }
+
 .sep-buttons {
     margin-top:30px;
 }
@@ -236,7 +243,7 @@ header {
     position: absolute;
     left: 0;
     right: 0;
-    width: 100px;
+    width: 150px;
     margin:0 auto;
     text-align: center;
 }
@@ -260,7 +267,7 @@ header {
 
 select {
     width:100%;
-    padding:10px 0px;
+    padding:10px 4px;
 }
 
 .where-text-wrap {
@@ -288,13 +295,13 @@ select {
 #where-button {
     position:relative;
     float:right;
-    padding: 1.18em;
+    padding: 1.28em;
     background:#003366;
     border-radius:4px;
 }
 
 input {
-    padding:8px 5px;
+    padding:11px 5px;
 }
 .input-em {
     font-size:1.4em;
@@ -303,8 +310,6 @@ input {
 #step2a input {
     font-size:1.5em;
 }
-
-
 
 
 
@@ -379,7 +384,9 @@ input {
     -moz-transition:all .3s ease-in-out!important;
     -o-transition:all .3s ease-in-ou!importantt;
     transition:all .3s ease-in-out!important;
+    /*
     position:absolute;
+    */
     left:0;
 }
 .body-animate {

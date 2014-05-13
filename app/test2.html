@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/augie/ng/app/css/alert.css"/>
     <link rel="stylesheet" href="/augie/ng/app/css/mapMarker.css"/>
     <link rel="stylesheet" href="/augie/ng/app/css/tables.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/recording.css"/>
     <script src="/augie/ng/app/vendors/jquery/jquery.js"></script>
     <script src="/augie/ng/app/vendors/angular/angular.js"></script>
     <script src="/augie/ng/app/angular-components/angular-local-storage/angular-local-storage.js"></script>
@@ -23,15 +24,6 @@
 </head>
 <body class="container">
 
-<div class="row">
-    <div  ng-controller="bodyController" class="GPUAccel body-animate clearfix">
-        <div class="body-wrapper">
-            <div class="span12 clearfix">
-                <div class="menu-cover" ng-class="{menuActive : Menu.active}"></div>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- begin header -->
 <div style="height:55px" class="clearfix">
     <div sc-header style="position:fixed; width:100%; z-index:2;" class="clearfix"></div>
@@ -41,10 +33,25 @@
 <!-- begin main view -->
 <div class="row body">
     <div class="menu-cover" ng-class="{menuActive : Menu.active}" style="top:0;"></div>
-    <div  ng-controller="bodyController" ng-class="{menuActive : Menu.active}" class="GPUAccel body-animate clearfix">
+    <div  ng-controller="test2" ng-class="{menuActive : Menu.active}" class="GPUAccel body-animate clearfix">
         <div class="body-margin">
             <div class="span12 ui-view-container clearfix">
-                <div ui-view class="slide"></div>
+                <div class="sep"></div>
+                <div class="microphone"></div>
+                <div class="sep"></div>
+                <div class="sep"></div>
+                <div class="recording-box clearfix">
+                    <div class="recording-circle">
+                        <div class="recording-button">
+                        </div>
+                    </div>
+                    <div class="recording-time">0:00</div>
+                    <div class="recording-status-wrapper">
+                        <div class="recording-status">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="sep"></div>
+                <div ng-click="next()" action-button text="'Save'"></div>
             </div>
         </div>
     </div>
@@ -60,7 +67,7 @@
 
 <!-- custom js -->
 <script src="/augie/ng/app/js/app.js"></script>
-<script src="/augie/ng/app/js/scapi-service.js"></script>
+<script src="/augie/ng/app/js/SCAPI-service.js"></script>
 <script src="/augie/ng/app/js/services.js"></script>
 <script src="/augie/ng/app/js/controllers.js"></script>
 <script src="/augie/ng/app/js/filters.js"></script>
