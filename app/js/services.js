@@ -635,7 +635,7 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
     };
     return Request;
 });
-myApp.factory('Storage', function(User, Request, localStorageService){
+myApp.factory('Storage', function(User, Request, $localStorage){
     var Storage = {
         name : false,
         email : false,
@@ -650,15 +650,15 @@ myApp.factory('Storage', function(User, Request, localStorageService){
         },
 
         import : function() {
-            console.log(localStorageService);
-            User.name = localStorageService.get('sc-user-name');
-            User.email = localStorageService.get('sc-user-email');
-            User.phone = localStorageService.get('sc-user-phone');
-            User.zip = localStorageService.get('sc-user-zip');
-            this.name = localStorageService.get('sc-user-name');
-            this.email = localStorageService.get('sc-user-email');
-            this.phone = localStorageService.get('sc-user-phone');
-            this.zip = localStorageService.get('sc-user-zip');
+            console.log($localStorage);
+            User.name = $localStorage.sc_user_name;
+            User.email = $localStorage.sc_user_email;
+            User.phone = $localStorage.sc_user_phone;
+            User.zip = $localStorage.sc_user_zip;
+            this.name = $localStorage.sc_user_name;
+            this.email = $localStorage.sc_user_phone;
+            this.phone = $localStorage.sc_user_phone;
+            this.zip = $localStorage.sc_user_zip;
         },
 
         saveZip : function() {
@@ -667,14 +667,14 @@ myApp.factory('Storage', function(User, Request, localStorageService){
         },
 
         set : function() {
-            localStorageService.set('sc-user-name',this.name);
-            localStorageService.set('sc-user-email',this.email);
-            localStorageService.set('sc-user-phone',this.phone);
-            localStorageService.set('sc-user-zip',this.zip);
+            $localStorage.sc_user_name = this.name;
+            $localStorage.sc_user_email = this.email;
+            $localStorage.sc_user_phone = this.phone;
+            $localStorage.sc_user_zip = this.zip;
         },
 
         empty : function() {
-            localStorageService.clearAll();
+            $localStorage.reset();
         }
     };
     return Storage;
