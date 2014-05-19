@@ -31,22 +31,29 @@
 .reviews td.info {
     width: 30%;
 }
-.statuses, .reviews {
+
+#searching-for-businesses {
+    margin-top:1em;
+}
+#company-reviews, #request-statuses {
     width:100%;
     background:white;
     border:2px solid #ddd;
     border-radius:10px;
     margin-top:1em;
+}
+.statuses, .reviews {
+    width:100%;
     table-layout: fixed;
     border-collapse: collapse;
-    min-width: 350px;
+    /*min-width: 350px;*/
 }
 
 .statuses .info {
     padding:.4em;
 }
 .reviews .info {
-    padding: 1.3em; /* pads the logos */
+    padding: 1.3em 0em; /* pads the logos */
 }
 .reviews .info {
     font-size:.85em;
@@ -54,6 +61,11 @@
 
 .reviews .logo {
     width:20%;
+}
+.info .name, .info .location {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .statuses tr:not(:last-of-type),
 .reviews tr:not(:last-of-type){
@@ -216,9 +228,24 @@
     text-align: center;
     background-position: center;
 }
+
 .rating .num-ratings {
     font-size:.8em;
 }
+
 .rating .n-a {
     font-size:1.1em;
 }
+
+/* this might make it so you cannot scroll when items are added to the page, need to figure this out........ */
+/*
+.ng-enter {
+    -webkit-transition: .65s linear all;
+    transition: .65s linear all;
+    opacity: 0;
+}
+
+.ng-enter-active {
+    opacity: 1;
+}
+*/

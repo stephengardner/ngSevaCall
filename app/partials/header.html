@@ -1,5 +1,5 @@
 <header class="row mobile clearfix">
-    <div id="back" class="icon" ng-class="{ hidden : $state.current.name == 'step1'}" ng-click="back()">
+    <div id="nav" class="icon" ng-class="{ forward : navigation.direction == 'forward' }" ng-click="nav()">
         <img height="25px" width="35px" src="/augie/ng/app/img/back.png"/>
     </div>
     <div id="loader" ng-show="request.processing == true" class="icon">

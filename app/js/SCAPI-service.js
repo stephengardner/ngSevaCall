@@ -1,24 +1,29 @@
-myApp.factory('SCAPI', function(User, $http, $q){
+myApp.factory('SCAPI', function($timeout, User, $http, $q){
     var SCAPI = {
         init : function(Request) {
             this.Request = Request;
         },
         busy : false,
         urls : {
-            step1 : "/api/mobile/v2/searchAction1.php",
-            getCompaniesList : "/api/mobile/v2/getCompaniesList.php",
-            seachAction3 : "/api/mobile/v2/searchAction3.php",
-            getRequestStatus : "/api/mobile/v4/request/status",
-            getYelpRating :'/api/mobile/v2/getRating.php?source=yelp',// + source + '&companyName=' + encodeURIComponent(company.name) + '&companyZipcode=' + encodeURIComponent(company.zip) + '&companyPhone=' + encodeURIComponent(company.phone);
-            getCitysearchRating :'/api/mobile/v2/getRating.php?source=citysearch',
-            getGoogleRating :'/api/mobile/v2/getRating.php?source=google',
-            getRating : '/api/mobile/v2/getRating.php'
+            step1 : api_root + "api/mobile/v2/searchAction1.php",
+            getCompaniesList : api_root + "api/mobile/v2/getCompaniesList.php",
+            seachAction3 : api_root + "api/mobile/v2/searchAction3.php",
+            getRequestStatus : api_root + "api/mobile/v4/request/status",
+            getYelpRating : api_root + 'api/mobile/v2/getRating.php?source=yelp',// + source + '&companyName=' + encodeURIComponent(company.name) + '&companyZipcode=' + encodeURIComponent(company.zip) + '&companyPhone=' + encodeURIComponent(company.phone);
+            getCitysearchRating : api_root + 'api/mobile/v2/getRating.php?source=citysearch',
+            getGoogleRating : api_root + 'api/mobile/v2/getRating.php?source=google',
+            getRating : api_root + 'api/mobile/v2/getRating.php',
+            timeSaved : api_root + 'api/mobile/v4/request/time_saved'
         },
         data : { key : "tmp", boxType : "get", demoNumber : "3018764913" },
         step1 : function(){
-            console.log("step1");
             var self = this;
-            if (self.busy) return; // return if the http status is busy
+            console.log("step1");
+            var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
+            if (self.busy) {
+                deferred.resolve(false);
+                return; // return if the http status is busy
+            }
             self.busy = true; // set the http status to busy
             self.data.category_short = self.Request.category;
             self.data.search_location = User.zipcode;
@@ -26,7 +31,6 @@ myApp.factory('SCAPI', function(User, $http, $q){
             var url = self.postifyUrl(self.urls.step1);
             console.log(url);
             console.log("step1 url: " + url);
-            var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
             self.data.pagesInclusive = 0; // nextPage() will never want all the inclusive quotes, only the next page.
             $http({
                 url : url,
@@ -131,18 +135,45 @@ myApp.factory('SCAPI', function(User, $http, $q){
             self.data.requestID = self.Request.id;
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
             var url =  self.postifyUrl(self.urls.seachAction3) + self.postifyUser();
+            console.log("SeachAction3 URL : " + url);
+            if(testing) {
+                $timeout(function(){
+                    deferred.resolve(true);
+                }, 2000);
+            }
+            else {
+                $http({
+                    url : url,
+                    method : "GET",
+                    headers : {'Content-Type': 'application/json'}
+                }).success(function(d) {
+                    deferred.resolve(d);
+                }).error(function(d){
+                    deferred.resolve(d);
+                });
+            }
+            return deferred.promise;
+        },
+        timeSaved : function() {
+            var self = this;
+            self.data.requestID = self.Request.id;
+            //var url =  self.urls.getCompaniesList + "?" + $.param(self.data); // create the url to ping
+            var url = self.postifyUrl(self.urls.timeSaved);
+            var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
             $http({
                 url : url,
                 method : "GET",
                 headers : {'Content-Type': 'application/json'}
             }).success(function(d) {
-                deferred.resolve(d);
-            }).error(function(d){
-                deferred.resolve(d);
+                console.log("success:", d);
+                //self.setRequestStatus(d.data);
+                deferred.resolve(d.data); // resolve the $q promise
+            }).error(function(d) {
+                console.log("error:", d);
+                deferred.resolve(d); // resolve the $q promise
             });
-            return deferred.promise;
+            return deferred.promise; // once the http callback has been fulfilled, this function returns the satisfied promise
         },
-
         setRequestStatus : function(d){
             this.Request.setStatuses(d);
         },

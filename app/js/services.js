@@ -2,6 +2,15 @@
 /* Services */
 // Register the services:
 angular.module('myApp.services', []);
+myApp.factory('Nav', function(){
+    var Nav = {
+        direction : "back",
+        reset : function() {
+            this.direction = "back";
+        }
+    };
+    return Nav;
+});
 myApp.factory('Menu', function(){
     var Menu = {
         active : false,
@@ -19,8 +28,7 @@ myApp.factory('Menu', function(){
 myApp.factory('Ratings', function(Request){
     var Ratings = {
         getRating : function(company){
-            var url = 'api/mobile/v2/getRating.php?source=' + source + '&companyName=' + encodeURIComponent(company.name) + '&companyZipcode=' + encodeURIComponent(company.zip) + '&companyPhone=' + encodeURIComponent(company.phone);
-
+            var url = api_root + 'api/mobile/v2/getRating.php?source=' + source + '&companyName=' + encodeURIComponent(company.name) + '&companyZipcode=' + encodeURIComponent(company.zip) + '&companyPhone=' + encodeURIComponent(company.phone);
         }
     };
     return Ratings;
@@ -50,6 +58,7 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
                     };
                     self.map = new google.maps.Map(document.getElementById("map_canvas"),
                         mapOptions);
+                    Request.GoogleMap = self;
                     // remove the automatic google map styling including roboto font
                     google.maps.event.addListener(self.map, 'idle', function () {
                         $('style').remove();
@@ -326,13 +335,33 @@ myApp.factory('Times', function(){
         },
 
         isEmpty : function() {
-            return this.timesActive == [] && $.isEmptyObject(this.buttons);
+            console.log(this.timesActive);
+            console.log(this.buttons);
+            console.log($.isEmptyObject(this.buttons));
+            function emptyButtons() {
+                for(var i in this.buttons){
+                    if(i != false) {
+                        console.log("i is: ", i);
+                        return false;
+                    }
+                }
+                console.log("true");
+                return true;
+            }
+            console.log("true is: " , this.timesActive == []);
+            return (this.timesActive == [] && emptyButtons());
         },
 
         empty : function() {
+            this.buttons = {};
             this.timesActive = [];
+            return this;
         },
+
         changeTime : function(time){
+            if(time == "now" && this.buttons['anytime'] == 1){
+                this.buttons['anytime'] = 0;
+            }
             if(time == "now" && this.isFull() && !this.buttons.now) {
                 this.fullAlert();
                 return false;
@@ -344,20 +373,23 @@ myApp.factory('Times', function(){
             }
             this.buttons[time] = !this.buttons[time];
             if(time == "anytime" && this.buttons['anytime'] == 1) {
-                this.buttons = { anytime : 1 };
                 this.empty();
+                this.buttons = { anytime : 1 };
             }
             if(time == "pick_time" && this.buttons['pick_time'] == 1)
                 this.buttons.anytime = 0;
         },
+
         find : function(row, col){
             //console.log("row-col: " + row + "-" + col);
             //console.log(this.timesActive);
             return this.timesActive.indexOf(row + "-" + col) != -1;
         },
+
         findInactive : function(row, col) {
             return this.timesInactive.indexOf(row + "-" + col) != -1;
         },
+
         setDays : function(){
             var self = this;
             var today = new Date();
@@ -390,6 +422,7 @@ myApp.factory('Times', function(){
             if (self.hourOfDay >= 19)
                 self.timesInactive.push("1-3");
         },
+
         toggleTime : function(row, col) {
             if(this.findInactive(row,col)) {
                 return false;
@@ -414,12 +447,16 @@ myApp.factory('Times', function(){
     return Times;
 });
 
-myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
+myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q, Times){
     var Request = {
+        initialized : false,
         companies : {},
         statuses : [],
         statusThrottle : [],
         numCompaniesAccepted : 0,
+        numCompaniesCalled : 0,
+        numCompaniesRejected : 0,
+        processing : false,
         complete : false,
         isDescriptionValid : function(){
             if(this.description) {
@@ -432,9 +469,17 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
         },
 
         reset : function() {
+            this.pingStatusesStop();
+            this.verifiedTimeoutStop();
+            this.description = "";
+            Times.empty();
             this.id = false;
             this.statuses = [];
+            this.numCompaniesCalled = 0;
+            this.numConpaniesRejected = 0;
+            this.numCompaniesAccepted = 0;
             this.companies = {};
+            this.processing = false;
             this.complete = false;
         },
 
@@ -460,6 +505,24 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
         setID : function(id){
             this.id = id;
         },
+        verifiedTimeoutStart : function() {
+            var self = this;
+            self.timeSpentWaiting = 0;
+            self.verifiedTimeout = $interval(function(){
+                self.timeSpentWaiting++;
+                if(self.timeSpentWaiting == 60) {
+                    new xAlert("To ensure the highest quality matches your request needs to be verified, which may take up to 15 minutes. If you need service right away please call us at 1-877-987-SEVA (7382)");
+                }
+                else if(self.timeSpentWaiting == (15 * 60)) {
+                    new xAlert("We're sorry, but your request was unsuccessful.  If you still need service you may try again, or call us at 1-877-987-SEVA (7382)");
+                }
+            }, 1000);
+        },
+
+        verifiedTimeoutStop : function() {
+            this.timeSpentWaiting = 0;
+            $interval.cancel(this.verifiedTimeout);
+        },
 
         pingStatusesStart : function(){
             var self = this;
@@ -467,7 +530,8 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
             self.interval = $interval(function(){
                 SCAPI.getRequestStatus().then(function(d){
                     self.setStatusThrottle(d);
-                    if(self.statusThrottle.length > 0) {
+                    if(self.statusThrottle.length > 0 && !$.isEmptyObject(self.companies)) {
+                        self.verifiedTimeoutStop();
                         var status = self.statusThrottle[0];
                         if(status.companyID != 0) {
                             console.log(Request.companies);
@@ -479,8 +543,13 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
                             Request.companies[status.companyID].status = status.requestStatusShort;
                             self.statuses.unshift(status); // add it to the front so that angular pushes it to the front of the html list
                             //Request.companies[status.companyID].accepted = 1;
-
-                            if(status.requestStatusShort == "Answered") {
+                            if(status.requestStatusShort == "Calling") {
+                                Request.numCompaniesCalled++;
+                            }
+                            if(status.requestStatusShort == "Declined") {
+                                Request.numCompaniesRejected++;
+                            }
+                            if(status.requestStatusShort == "Accepted") {
                                 SCAPI.getRatings(Request.companies[status.companyID]).then(function(d){
                                     console.log("finished getting all ratings for company");
                                 });
@@ -492,6 +561,8 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
                             }
                             console.log(status.requestStatusShort);
                             self.statusThrottle.shift();
+                            console.log("THE MAP IS: ", self.map);
+                            self.GoogleMap.setInfoBox(Request.companies[status.companyID]);
                         }
                         else {
                             // if companyID is 0, its completed
@@ -505,6 +576,7 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
         },
 
         requestComplete : function() {
+            $rootScope.$broadcast('requestCompleted');
             this.complete = true;
         },
 
@@ -514,10 +586,15 @@ myApp.factory('Request', function(SCAPI, $interval, User, $http, $q){
         },
 
         submit : function() {
+            var self = this;
             var deferred = $q.defer();
-            this.setID(112669);
-            this.pingStatusesStart();
-            deferred.resolve(true);
+            //
+            if(testing)
+                this.setID(112669);
+            SCAPI.searchAction3().then(function(d){
+                self.pingStatusesStart();
+                deferred.resolve(d);
+            });
             return deferred.promise;
         },
 
@@ -668,7 +745,7 @@ myApp.factory('Overlay', function(){
         body : $("body"),
         isActive : false,
         isActiveWithSpinner : false,
-        overlaySpinner : $("<div class='overlay-spinner'><img src='/augie/ng/app/img/ajax_loader.gif'/></div>"),
+        overlaySpinner : $("<div class='overlay-spinner'><img src='" + root + "img/ajax_loader.gif'/></div>"),
         overlayBackground : $("<div class='overlay'></div>"),
         add : function(opt_spinner) {
             if(opt_spinner && !this.isActiveWithSpinner) {

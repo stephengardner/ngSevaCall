@@ -1,28 +1,32 @@
 <div id="step1">
-    <div class="sep"></div>
-    <h1>I NEED A</h1>
-    <div class="input-em">
-        <select ng-options="category.id as category.name for category in categories" ng-model="Request.categoryID" ng-change="change()">
-            <option id="disabled" ng-selected="" value="">Choose category</option>
-        </select>
-    </div>
-    <div class="sep"></div>
-    <h1>NEAR</h1>
-    <div class="input-em">
-        <div class="noGPUAccel where-text-wrap">
-            <div class="noGPUAccel where-text-innerwrap">
-                <input ng-model="User.zipcode" class="where-text" type="text" placeholder="Zipcode" style="width:100%;"/>
+    <form ng-submit="next()">
+        <div class="sep"></div>
+        <h1>I NEED A</h1>
+        <div class="input-em">
+            <select ng-class="{disabled : menu.active}" ng-options="category.id as category.name for category in categories" ng-model="Request.categoryID" ng-change="change()">
+                <option id="disabled" ng-selected="" value="">Choose category</option>
+            </select>
+        </div>
+        <div class="sep"></div>
+        <h1>NEAR</h1>
+        <div class="input-em">
+            <div class="noGPUAccel where-text-wrap">
+                <div class="noGPUAccel where-text-innerwrap">
+                    <div class="shadow">
+                        <input ng-class="{disabled : menu.active}" ng-model="User.zipcode" class="where-text" type="phone" placeholder="Zipcode" style="width:100%;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="button" id="where-button" ng-click="getLocation()" ng-class="{disabled : menu.active}">
+                <div class="where-button-image" >
+                </div>
+                <a href="#"></a>
             </div>
         </div>
-        <div class="button" id="where-button" ng-click="getLocation()">
-            <div class="where-button-image">
-            </div>
-            <a href="#"></a>
-        </div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="sep"></div>
-    <h3>We'll connect you with local businesses instantly!</h3>
-    <div class="sep"></div>
-    <div ng-click="next()" action-button text="'Next'"></div>
+        <div class="clearfix"></div>
+        <div class="sep"></div>
+        <h3>We'll connect you with local businesses instantly!</h3>
+        <div class="sep"></div>
+        <input action-button menu="menu" value="Next" text="'Next'"/>
+    </form>
 </div>

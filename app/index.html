@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="/augie/ng/app/css/alert.css"/>
     <link rel="stylesheet" href="/augie/ng/app/css/mapMarker.css"/>
     <link rel="stylesheet" href="/augie/ng/app/css/tables.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/summary.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/media.css"/>
+    <link rel="stylesheet" href="/augie/ng/app/css/recording.css"/>
     <script src="/augie/ng/app/vendors/jquery/jquery.js"></script>
     <script src="/augie/ng/app/vendors/angular/angular.js"></script>
     <script src="/augie/ng/app/angular-components/angular-local-storage/angular-local-storage.js"></script>
@@ -23,8 +26,9 @@
 </head>
 <body class="container">
 
+<!-- begin menu cover
 <div class="row">
-    <div  ng-controller="bodyController" class="GPUAccel body-animate clearfix">
+    <div class="GPUAccel body-animate clearfix">
         <div class="body-wrapper">
             <div class="span12 clearfix">
                 <div class="menu-cover" ng-class="{menuActive : Menu.active}"></div>
@@ -32,6 +36,7 @@
         </div>
     </div>
 </div>
+-->
 <!-- begin header -->
 <div style="height:55px" class="clearfix">
     <div sc-header style="position:fixed; width:100%; z-index:2;" class="clearfix"></div>
@@ -41,10 +46,10 @@
 <!-- begin main view -->
 <div class="row body">
     <div class="menu-cover" ng-class="{menuActive : Menu.active}" style="top:0;"></div>
-    <div  ng-controller="bodyController" ng-class="{menuActive : Menu.active}" class="GPUAccel body-animate clearfix">
+    <div ng-click="click($event)" ng-controller="bodyController" ng-class="{menuActive : Menu.active}" class="GPUAccel body-animate clearfix">
         <div class="body-margin">
             <div class="span12 ui-view-container clearfix">
-                <div ui-view class="slide"></div>
+                <div ui-view class="slide" ng-class="{disabled : Menu.active}"></div>
             </div>
         </div>
     </div>
@@ -62,6 +67,7 @@
 <script src="/augie/ng/app/js/app.js"></script>
 <script src="/augie/ng/app/js/scapi-service.js"></script>
 <script src="/augie/ng/app/js/services.js"></script>
+<script src="/augie/ng/app/js/recording-service.js"></script>
 <script src="/augie/ng/app/js/controllers.js"></script>
 <script src="/augie/ng/app/js/filters.js"></script>
 <script src="/augie/ng/app/js/directives.js"></script>

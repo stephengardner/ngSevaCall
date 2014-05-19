@@ -1,0 +1,50 @@
+<div id="summary">
+    <div class="sep"></div>
+    <h1>REQUEST COMPLETED, SHARE!</h1>
+    <div class="share">
+        <span id="facebook" ng-click="facebookShare()">
+            <img height="60px" width="60px" class="block" src="img/facebook_80x80.png"/>
+        </span>
+        <span id="twitter" ng-click="twitterShare()">
+            <img height="60px" width="60px" class="block" src="img/twitter_80x80.png"/>
+        </span>
+    </div>
+    <div class="sep"></div>
+    <h1>CALL STATISTICS</h1>
+
+    <div class="summary-row">
+        <img src="img/phone_40x40.png"/>
+        <strong>
+            {{request.numCompaniesCalled}}
+        </strong>
+        <span>Pros Called</span>
+        <div class="indent">
+            <img width="25px" height="25px" class="block" src="img/accepted_40x40.png"/>
+            <strong>
+                {{request.numCompaniesAccepted}}
+            </strong>
+            <span>Pros Accepted</span>
+            <div class="sep"></div>
+            <img width="25px" height="25px" class="block" src="img/declined_40x40.png"/>
+            <strong>
+                {{request.numCompaniesRejected}}
+            </strong>
+            <span>Pros Rejected</span>
+        </div>
+    </div>
+
+    <div class="summary-row">
+        <img src="img/check_40x40.png"/>
+        <strong>{{acceptanceRate}}</strong>
+        <span>Acceptance Rate</span>
+    </div>
+
+    <div class="summary-row">
+        <img src="img/clock_40x40.png"/>
+        <span>
+            <img height="25px" width="25px" class="block final-spinner" src="img/ajax_loader.gif" ng-show="!timeSaved"/>
+            <strong>{{timeSaved}}</strong>
+            <span>Time Saved</span>
+        </span>
+    </div>
+</div>

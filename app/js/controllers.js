@@ -2,8 +2,15 @@
 
 /* Controllers */
 angular.module('myApp.controllers', [])
-    .controller('test2', ['$scope', function(){
+    .controller('test2', ['$scope', 'Recording', function($scope, Recording){
+        $scope.recording = Recording;
 
+        var num, sales, count;
+        num = 1;
+        sales = 52;
+        count = 1;
+        num += count == 1 ? sales : count * sales;
+        console.log(num);
     }])
     .controller('test', ['$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         /*
@@ -22,7 +29,8 @@ angular.module('myApp.controllers', [])
          console.log("Submitted Request, response:", d);
          });
          });
-         });
+         });.3
+         .
          */
         $scope.companies = Request.companies;
         $scope.request = Request;
@@ -51,6 +59,14 @@ angular.module('myApp.controllers', [])
          Request.pingStatusesStart();
          });
          */
+    }])
+    .controller('bodyController', ['$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location', function($rootScope, Request, Menu, $attrs, $scope, $location){
+        if(!testing)
+            $location.path("/step1");
+        $scope.menu = Menu;
+        $scope.click = function($event) {
+            Menu.active = false;
+        };
     }])
     .controller('step1Controller', ['$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', function($state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location) {
         $scope.User = User;
@@ -107,27 +123,33 @@ angular.module('myApp.controllers', [])
         $scope.categories = Categories;
     }])
     .controller('step2Controller', ['$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function($timeout, SCAPI, Times, $scope, User, Request, $state) {
+        $scope.isPhoneGap = isPhoneGap;
+
         if(jQuery.isEmptyObject(Request.companies))
             SCAPI.getCompaniesList();
         console.log("STEP 2");
         $scope.Times = Times;
         $scope.Request = Request;
-        $scope.timeButtonActive = Times.timesActive.length > 0;
         $scope.timetable = function(){
-            console.log("clicked");
             $state.go('timetable');
         };
+
+
         $scope.next = function(){
             if(!Request.isDescriptionValid()){
                 new xAlert("Description must be 7 words");
                 return false;
             }
-            if(User.isEmailValid() && User.isNameValid() && User.isPhoneValid()){
+            else if(Times.isEmpty()){
+                new xAlert("Please select a time");
+                return false;
+            }
+            else if(User.isEmailValid() && User.isNameValid() && User.isPhoneValid()){
                 new xAlert("Call companies now? You may receive up to three calls",
                     function(button) {
                         if(button == 2) {
+                            $state.go("step3");
                             Request.submit().then(function(){
-                                $state.go("step3");
                             });
                         }
                     },
@@ -140,7 +162,7 @@ angular.module('myApp.controllers', [])
             }
         }
     }])
-    .controller('step2aController', ['Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', function(Storage, $rootScope, User, Times, $scope, Request, $state){
+    .controller('step2aController', ['Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window', function(Storage, $rootScope, User, Times, $scope, Request, $state, $window){
         var UserBackup = angular.copy(User);
         $scope.User = User;
         $scope.Times = Times;
@@ -158,7 +180,7 @@ angular.module('myApp.controllers', [])
             cleanUpFunction();
         });
         $scope.next = function(){
-            if(!User.isEmailValid()) {
+            if(!User.isNameValid()) {
                 new xAlert("Invalid name");
             }
             else if(!User.isEmailValid()) {
@@ -173,8 +195,8 @@ angular.module('myApp.controllers', [])
                     new xAlert("Call companies now? You may receive up to three calls",
                         function(button) {
                             if(button == 2) {
+                                $state.go("step3");
                                 Request.submit().then(function(){
-                                    $state.go("step3");
                                 });
                             }
                         },
@@ -183,28 +205,73 @@ angular.module('myApp.controllers', [])
                     );
                 }
                 else {
-                    $state.go("step2");
+                    console.log("OK, going back");
+                    $window.history.back();
+                    //$state.go("step2");
                 }
             }
         }
     }])
-    .controller('step3Controller', ['GoogleMap', 'Request', '$scope', function(GoogleMap, Request, $scope){
+    .controller('step3Controller', ['$state', 'Nav', 'GoogleMap', 'Request', '$scope', function($state, Nav, GoogleMap, Request, $scope){
+        if(Request.complete) {
+            Nav.direction = "forward";
+        }
+        console.log("Nav is: ", Nav);
         $scope.companies = Request.companies;
         $scope.request = Request;
         GoogleMap.init();
         $scope.statuses = Request.statuses;
     }])
-    .controller('bodyController', ['Menu', '$attrs', '$scope', function(Menu, $attrs, $scope){
-        //$scope.Menu = Menu;
-
+    .controller('summaryController', ['Request', 'SCAPI', '$scope', function(Request, SCAPI, $scope){
+        Request.setID(112669);
+        $scope.request = Request;
+        $scope.acceptanceRate = Request.numCompaniesCalled ?  Math.round(((parseFloat( Request.numCompaniesAccepted  /  Request.numCompaniesCalled * 100)))) + "%" : "0%";
+        SCAPI.timeSaved().then(function(d){
+            $scope.timeSaved = d.timeSaved;
+        });
+        $scope.twitterMessage = encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
+        $scope.twitterShare = function(){
+            var url = "https://twitter.com/intent/tweet?url=http://www.sevacall.com&text="
+            url += encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
+            window.open(url, '_system');
+        }
+        $scope.facebookShare = function() {
+            var url = "http://facebook.com/dialog/feed";
+            url += "?app_id=543995755650717";
+            url += "&link=www.sevacall.com";
+            url += "&name= Seva Call - Tell us what and when, we'll find the professionals!";
+            url += "&description=Seva Call works to find local businesses that can help you with your service need instantly, like a free personal concierge service. Within minutes you will be connected to providers that can service your specific problem, on your schedule, at your location.";
+            url += "&redirect_uri=http://sevacall.com";
+            console.log("popping up fb url: " + url);
+            window.open("http://www.facebook.com/dialog/feed?app_id=543995755650717&link=http://www.sevacall.com&name="
+                + encodeURIComponent("Seva Call - Tell us what and when, we'll find the professionals!") + "&redirect_uri=http://sevacall.com", '_system');
+            return false;
+        }
     }])
-    .controller('menuController', ['$parse', '$attrs', '$scope', 'Menu', function($parse, $attrs, $scope, Menu){
+    .controller('menuController', ['$rootScope', '$parse', '$attrs', '$scope', 'Menu', function($rootScope, $parse, $attrs, $scope, Menu){
         $scope.Menu = Menu;
+        $rootScope.$on("click",function(){
+            Menu.active = false;
+        });
     }])
-    .controller('headerController', ['Request', '$rootScope', '$state', '$window', 'Menu', '$attrs', '$scope', function(Request, $rootScope, $state, $window, Menu, $attrs, $scope){
-        $scope.back = function(){
-            $rootScope.$broadcast('back');
-            $window.history.back();
+    .controller('headerController', ['Nav', 'Request', '$rootScope', '$state', '$window', 'Menu', '$attrs', '$scope', function(Nav, Request, $rootScope, $state, $window, Menu, $attrs, $scope){
+        $scope.$on("$stateChangeSuccess", function(event, state){
+            // weird bug -- reading the "state.name" object in the partial for ng-show will cause this page to flash
+            if(state.name == "step1")
+                $("#nav").hide();
+            else
+                $("#nav").show();
+        });
+        $scope.navigation = Nav;
+        $scope.nav = function(){
+            if(Nav.direction == "forward") {
+                $rootScope.$broadcast('forward');
+                $state.go("summary");
+            }
+            else {
+                $rootScope.$broadcast('back');
+                $window.history.back();
+            }
         };
         $scope.menuToggle = function(){
             Menu.active = 1;
@@ -243,5 +310,23 @@ angular.module('myApp.controllers', [])
         angular.element($window).bind('resize',function(){
             resizeVideo();
         });
+    }])
+    .controller('recordingController', ['$rootScope', '$state', 'Recording', '$scope', function($rootScope, $state, Recording, $scope){
+        $scope.recording = Recording;
+        $scope.next = function(){
+            $state.go("step2");
+        };
+        /*
+        we actually don't delete the recording on back anymore
+        var tempRecording = angular.copy(Recording);
+        var cleanUpFunction = $rootScope.$on('back', function(){
+            if(Recording.saved)
+            console.log("------------------------- rootscope back (reset timeTable)to times: --------------------------------", tempTimes);
+            Recording = tempRecording;
+        });
+        $scope.$on('$destroy', function() {
+            cleanUpFunction();
+        });
+        */
     }]);
 	
