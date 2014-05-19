@@ -12,7 +12,7 @@ angular.module('myApp.directives', []).
             restrict: 'EA',
             replace: true,
             controller : 'headerController',
-            templateUrl: '/augie/ng/app/partials/header.html'
+            templateUrl: 'partials/header.html'
         }
     })
     .directive('actionButton', function(User){
@@ -22,38 +22,7 @@ angular.module('myApp.directives', []).
             scope : {
                 text: "="
             },
-            templateUrl: '/augie/ng/app/partials/button.html'
-        }
-    })
-    .directive('ratingBar', ['User', function(User){
-        return {
-            restrict : 'EA',
-            replace : true,
-            scope : {
-                photo : "=",
-                photoMap : "@photoMap",
-                size : "="
-            },
-            link : function(scope, element, attrs) {
-                console.log(scope);
-                console.log("PHOTO IS:", scope.photo);
-            },
-            controller : 'ratingBarController',
-            templateUrl: '/public_html/ngQuotogenic/app/partials/ratingBar.html'
-        }
-    }])
-    .directive('quoteBlock', function(){
-        return {
-            restrict : 'EA',
-            replace : true,
-            scope : {
-                quote : "=",
-                options : "="
-            },
-            link : function(scope, element, attrs) {
-            },
-            controller : 'quoteBlockController',
-            templateUrl: '/public_html/ngQuotogenic/app/partials/quoteBlock.html'
+            templateUrl: 'partials/button.html'
         }
     })
     .directive('scMenu', function(){
@@ -61,7 +30,7 @@ angular.module('myApp.directives', []).
             restrict : 'EA',
             replace : true,
             controller : 'menuController',
-            templateUrl: '/augie/ng/app/partials/menu.html'
+            templateUrl: 'partials/menu.html'
         }
     })
     .directive('phoneInput', function(){

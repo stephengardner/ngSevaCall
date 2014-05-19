@@ -72,6 +72,7 @@ angular.module('myApp.controllers', [])
         $scope.User = User;
         $scope.Request = Request;
         if(!User.zipcode) {
+        	console.log("Getting location");
             Location.geoLocate().then(function(d){
                 $scope.User.setZipcode(d);
             });
