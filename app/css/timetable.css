@@ -1,3 +1,7 @@
+.timetable {
+    font-size:.8em;
+}
+
 .timetable .blank {
     background:white;
     cursor:pointer;

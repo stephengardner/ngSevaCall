@@ -113,13 +113,12 @@
     box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.4);
 }
 
-.recording-time {
+.recording-time, .recording-position {
     font-family: Verdana;
     font-weight: bold;
     float: left;
     margin-left: 10%;
     line-height: 2.7em;
-    display:none;
 }
 
 .recording-status {
@@ -182,4 +181,67 @@
 .recording-box {
     margin-top: 48px;
     margin-bottom: 53px;
+}
+
+#description-button {
+    border-radius:4px;
+    position:relative;
+    cursor:pointer;
+    padding: 52px;
+    float: left;
+}
+#description-button:before{
+    position: absolute;
+    content: "";
+    left: 50%;
+    top: 50%;
+    margin-left: -10px;
+    height: 12px;
+    width: 21px;
+    border-style: solid;
+    border-width: 0px 3px 3px 3px;
+    border-color: white;
+    border-bottom-right-radius: 50px;
+    border-bottom-left-radius: 50px;
+}
+
+#description-button:after {
+    position: absolute;
+    content: "";
+    left: 50%;
+    top: 50%;
+    margin-top: -17px;
+    margin-left: -5px;
+    background: white;
+    height: 24px;
+    width: 11px;
+    border-radius: 50px;
+}
+
+#description-button a:before{
+    position: absolute;
+    content: "";
+    left: 50%;
+    top: 50%;
+    margin-top: 10px;
+    margin-left: -1px;
+    background: white;
+    height: 8px;
+    width: 3px;
+    border-radius: 50px;
+}
+
+#description-button a:after{
+    position: absolute;
+    content: "";
+    left: 50%;
+    top: 50%;
+    margin-top: 17px;
+    margin-left: -7px;
+    background: white;
+    height: 3px;
+    width: 15px;
+}
+.description-wrapper.active {
+    padding-left: 120px;
 }

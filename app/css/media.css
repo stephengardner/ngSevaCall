@@ -1,0 +1,13 @@
+/* iPhone 5 */
+@media screen and (device-aspect-ratio: 40/71) {
+    #step2a input[type="text"] {
+        padding:8px!important;
+    }
+
+    #step2a  h1 {
+        font-size:2.2em!important;
+    }
+    #step2a  .sep {
+        margin-top:20px!important;
+    }
+}

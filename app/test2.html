@@ -42,12 +42,13 @@
                 <div class="sep"></div>
                 <div class="recording-box clearfix">
                     <div class="recording-circle">
-                        <div class="recording-button">
+                        <div class="recording-button" ng-class="{stop : recording.recording}" ng-click="recording.toggleRecord()">
                         </div>
                     </div>
-                    <div class="recording-time">0:00</div>
+                    <div class="recording-time" ng-show="recording.length && !recording.playing && !recording.paused">{{recording.lengthToString}}</div>
+                    <div class="recording-position" ng-show="recording.playing || recording.paused">{{recording.positionToString}}</div>
                     <div class="recording-status-wrapper">
-                        <div class="recording-status">&nbsp;</div>
+                        <div class="recording-status" ng-click="recording.togglePlay()" ng-class="{ pause : recording.playing == true, play : recording.length && recording.recording == false && recording.playing == false }" ng-show="recording.length && recording.recording == false">&nbsp;</div>
                     </div>
                 </div>
                 <div class="sep"></div>
@@ -68,6 +69,7 @@
 <!-- custom js -->
 <script src="/augie/ng/app/js/app.js"></script>
 <script src="/augie/ng/app/js/SCAPI-service.js"></script>
+<script src="/augie/ng/app/js/recording-service.js"></script>
 <script src="/augie/ng/app/js/services.js"></script>
 <script src="/augie/ng/app/js/controllers.js"></script>
 <script src="/augie/ng/app/js/filters.js"></script>

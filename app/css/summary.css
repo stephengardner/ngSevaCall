@@ -1,0 +1,33 @@
+.share {
+    text-align:center;
+}
+#twitter {
+    margin-left:2em;
+}
+.indent {
+    margin-left:50px;
+}
+#summary strong {
+    font-size:1.3em;
+}
+#summary span, #summary strong {
+    vertical-align: middle;
+}
+#summary span {
+    font-size:1.1em;
+}
+.indent .sep {
+    margin-top:.5em;
+}
+
+.summary-row ~ .summary-row{
+    margin-top:.75em;
+}
+
+#summary .indent {
+    font-size:.9em;
+}
+
+#summary .indent strong {
+    margin-left:.2em;
+}
