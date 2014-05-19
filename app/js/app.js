@@ -33,7 +33,8 @@ var myApp = angular.module('myApp', [
         'myApp.controllers',
         'ui.router',
         'ngAnimate',
-        'LocalStorageModule'
+        'ngStorage'
+
     ]).config(function ($httpProvider) {
     $httpProvider.defaults.transformRequest = function(data){
         if (data === undefined) {
