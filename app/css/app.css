@@ -204,9 +204,9 @@ input {
 /* fonts */
 @font-face {
     font-family: 'League_Gothic';
-    src: url("/augie/ng/League-Gothic-fontfacekit/League_Gothic-webfont.ttf"),
-    url('/augie/ng/League-Gothic-fontfacekit/League_Gothic-webfont.eot'), /* IE9 */
-    url('/augie/ng/League-Gothic-fontfacekit/League_Gothic-webfont.woff');
+    src: url("../../League-Gothic-fontfacekit/League_Gothic-webfont.ttf"),
+    url('../../League-Gothic-fontfacekit/League_Gothic-webfont.eot'), /* IE9 */
+    url('../../League-Gothic-fontfacekit/League_Gothic-webfont.woff');
 }
 
 h1{
@@ -335,7 +335,7 @@ select {
     bottom:0;
     left:0;
     right:0;
-    background: url(/augie/ng/app/img/geolocate.png);
+    background: url(../img/geolocate.png);
     background-repeat:no-repeat;
     background-position:center;
     background-size:60%;
