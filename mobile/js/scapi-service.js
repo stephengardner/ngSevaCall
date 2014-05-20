@@ -20,10 +20,13 @@ myApp.factory('SCAPI', function($timeout, User, $http, $q){
             var self = this;
             console.log("step1");
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
+            /*
             if (self.busy) {
+                self.busy = false; //comment this out
                 deferred.resolve(false);
-                return; // return if the http status is busy
+                return deferred.promise; // return if the http status is busy
             }
+            */
             self.busy = true; // set the http status to busy
             self.data.category_short = self.Request.category;
             self.data.search_location = User.zipcode;
@@ -37,17 +40,17 @@ myApp.factory('SCAPI', function($timeout, User, $http, $q){
                 method : "GET",
                 headers : {'Content-Type': 'application/json'}
             }).
-                success(function(d) {
-                    self.busy = false; // reset http status, allow future pings
-                    // transform the step1 result
-                    var results = d.split("|");
-                    self.Request.setID(results[1]);
-                    deferred.resolve(d); // resolve the $q promise
-                }).
-                error(function(d){
-                    alert("err"); // testing, simply return an alert for now
-                    deferred.resolve(d); // resolve the $q promise
-                });
+            success(function(d) {
+                self.busy = false; // reset http status, allow future pings
+                // transform the step1 result
+                var results = d.split("|");
+                self.Request.setID(results[1]);
+                deferred.resolve(d); // resolve the $q promise
+            }).
+            error(function(d){
+                self.busy = false; // reset http status, allow future pings
+                deferred.reject("what"); // resolve the $q promise
+            });
             return deferred.promise; // once the http callback has been fulfilled, this function returns the satisfied promise
         },
         getCompaniesList : function() {
@@ -225,23 +228,6 @@ myApp.factory('SCAPI', function($timeout, User, $http, $q){
                     var ratingSplit = d.split("|");
                     var rating = ratingSplit[0];
                     var numRatings = ratingSplit[1];
-                    /*
-                    if(source == "google") {
-                        company.ratingGoogle = rating;
-                        company.numRatingsGoogle = numRatings;
-                        company.googleStarOffset = -4.25 + (rating * 12.5);
-                    }
-                    if(source == "citysearch") {
-                        company.ratingCitysearch = rating;
-                        company.numRatingsCitysearch = numRatings;
-                        company.citysearchStarOffset = -4.25 + (rating * 12.5);
-                    }
-                    if(source == "yelp") {
-                        company.ratingYelp = rating;
-                        company.numRatingsYelp = numRatings;
-                        company.yelpStarOffset = -4.25 + (rating * 12.5);
-                    }
-                    */
                     console.log("success getting " + source + "ratings: " + d);
                 }).error(function(d){
                     console.log("error: " + d);

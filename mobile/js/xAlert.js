@@ -99,10 +99,10 @@ xAlert.prototype = {
 
         // after fade out, remove DOM elements
         //
-        setTimeout(function(){
+        //setTimeout(function(){
             document.body.removeChild(self.popup);
             document.body.removeChild(self.overlay);
-        }, 100);
+        //}, 100);
 
         self.enableScrolling();
 

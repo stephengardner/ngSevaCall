@@ -154,6 +154,10 @@ input {
     margin-top:25px;
 }
 
+.sep-sm {
+    margin-top:12px;
+}
+
 .sep-buttons {
     margin-top:30px;
 }
@@ -269,7 +273,7 @@ header .icon {
 
 .loaderButton {
     margin-top: 4px;
-    margin-left: 8px;
+    margin-left: -8px;
 }
 
 #menu {
@@ -335,7 +339,7 @@ select {
     bottom:0;
     left:0;
     right:0;
-    background: url(/augie/ng/app/img/geolocate.png);
+    background: url(../img/geolocate.png);
     background-repeat:no-repeat;
     background-position:center;
     background-size:60%;

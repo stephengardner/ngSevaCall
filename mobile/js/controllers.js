@@ -2,15 +2,17 @@
 
 /* Controllers */
 angular.module('myApp.controllers', [])
-    .controller('test2', ['$scope', 'Recording', function($scope, Recording){
-        $scope.recording = Recording;
+    .controller('test2', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
+        Request.reset();
+        Request.setID(112669);
+        SCAPI.getCompaniesList().then(function(){
+            $state.go("step2").then(function(){
+                $state.go("step3");
+            });
+            Request.pingStatusesStart();
+            GoogleMap.init();
+        });
 
-        var num, sales, count;
-        num = 1;
-        sales = 52;
-        count = 1;
-        num += count == 1 ? sales : count * sales;
-        console.log(num);
     }])
     .controller('test', ['$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         /*
@@ -61,22 +63,34 @@ angular.module('myApp.controllers', [])
          */
     }])
     .controller('bodyController', ['$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location', function($rootScope, Request, Menu, $attrs, $scope, $location){
-        if(!testing)
-            $location.path("/step1");
+        $location.path("/step1");
         $scope.menu = Menu;
         $scope.click = function($event) {
             Menu.active = false;
         };
     }])
-    .controller('step1Controller', ['$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', function($state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location) {
+    .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
+        console.log("params: ", $stateParams);
+        Request.reset();
         $scope.User = User;
         $scope.Request = Request;
         if(!User.zipcode) {
-            Location.geoLocate().then(function(d){
-                $scope.User.setZipcode(d);
+            $(document).ready(function(){
+                Location.geoLocate().then(function(d){
+                    $scope.User.setZipcode(d);
+                });
             });
         }
 
+        var categoryFromParams = $location.search().source;
+        if(categoryFromParams) {
+            for(var i = 0; i < Categories.length; i++){
+                if (Categories[i].name == categoryFromParams) {
+                    Request.categoryID = Categories[i].id;
+                }
+            }
+            Request.setCategory(categoryFromParams);
+        }
         $scope.change = function(){
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {
@@ -107,14 +121,11 @@ angular.module('myApp.controllers', [])
         $scope.next = function(){
             var deferred = $q.defer();
             Overlay.add(1);
+            console.log("SCAPI: ", SCAPI);
             SCAPI.step1().then(function(d){
                 console.log("aPI returned: ", d);
                 Overlay.remove();
                 deferred.resolve(d);
-                if(d.indexOf("|") == -1) {
-                    new xAlert(d);
-                    return false;
-                }
                 $state.go("step2");
             });
             return deferred.promise;
@@ -125,7 +136,7 @@ angular.module('myApp.controllers', [])
     .controller('step2Controller', ['$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function($timeout, SCAPI, Times, $scope, User, Request, $state) {
         $scope.isPhoneGap = isPhoneGap;
 
-        if(jQuery.isEmptyObject(Request.companies))
+        if($.isEmptyObject(Request.companies))
             SCAPI.getCompaniesList();
         console.log("STEP 2");
         $scope.Times = Times;
@@ -133,7 +144,6 @@ angular.module('myApp.controllers', [])
         $scope.timetable = function(){
             $state.go('timetable');
         };
-
 
         $scope.next = function(){
             if(!Request.isDescriptionValid()){
@@ -205,14 +215,60 @@ angular.module('myApp.controllers', [])
                     );
                 }
                 else {
-                    console.log("OK, going back");
                     $window.history.back();
-                    //$state.go("step2");
                 }
             }
         }
     }])
-    .controller('step3Controller', ['$state', 'Nav', 'GoogleMap', 'Request', '$scope', function($state, Nav, GoogleMap, Request, $scope){
+    .controller('step3Controller', ['$urlRouter', '$rootScope', '$state', 'Nav', 'GoogleMap', 'Request', '$scope', function($urlRouter, $rootScope, $state, Nav, GoogleMap, Request, $scope){
+        var cleanUpFunction = $rootScope.$on('$stateChangeStart', function(event, toState){
+            function alertOnChange() {
+                console.log(" -------------------- preventing default change on state change -------------------------");
+                event.preventDefault();
+                new xAlert(abandon_request,
+                    function(button){
+                        if(button == 1){
+                            console.log(" -------------------- resetting request and changing path -------------------------");
+                            Request.reset();
+                            cleanUpFunction();
+                            $state.go(toState.name);
+                            $urlRouter.sync(); // not sure what this does at the moment
+                        }
+                        console.log(button);
+
+                    },
+                    abandon_request_title,
+                    "Yes, Cancel"
+                );
+                return false;
+            }
+            if(toState.name != "summary" && toState.name != "step1")
+                alertOnChange();
+        });
+        var cleanUpFunctionTwo = $rootScope.$on('$locationChangeStart', function(event, toState){
+            if(toState.indexOf("step3") == -1 && toState.indexOf("step1") == -1 && toState.indexOf("summary") == -1) {
+                event.preventDefault();
+                new xAlert(abandon_request,
+                    function(button) {
+                        if(button == 1) {
+                            console.log(" -------------------- resetting request and changing path -------------------------");
+                            Request.reset();
+                            $state.go("step1");
+                            $urlRouter.sync();
+                        }
+                        console.log(button);
+                    },
+                    abandon_request_title,
+                    "Yes, Cancel"
+                );
+                return false;
+            }
+        });
+
+        $scope.$on('$destroy', function() {
+            cleanUpFunction();
+            cleanUpFunctionTwo();
+        });
         if(Request.complete) {
             Nav.direction = "forward";
         }
@@ -255,6 +311,7 @@ angular.module('myApp.controllers', [])
         });
     }])
     .controller('headerController', ['Nav', 'Request', '$rootScope', '$state', '$window', 'Menu', '$attrs', '$scope', function(Nav, Request, $rootScope, $state, $window, Menu, $attrs, $scope){
+        $scope.request = Request; // this might case a bug on iphones, please check
         $scope.$on("$stateChangeSuccess", function(event, state){
             // weird bug -- reading the "state.name" object in the partial for ng-show will cause this page to flash
             if(state.name == "step1")
@@ -316,17 +373,5 @@ angular.module('myApp.controllers', [])
         $scope.next = function(){
             $state.go("step2");
         };
-        /*
-        we actually don't delete the recording on back anymore
-        var tempRecording = angular.copy(Recording);
-        var cleanUpFunction = $rootScope.$on('back', function(){
-            if(Recording.saved)
-            console.log("------------------------- rootscope back (reset timeTable)to times: --------------------------------", tempTimes);
-            Recording = tempRecording;
-        });
-        $scope.$on('$destroy', function() {
-            cleanUpFunction();
-        });
-        */
     }]);
 	
