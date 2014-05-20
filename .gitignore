@@ -6,3 +6,5 @@ tmp
 .DS_Store
 .idea
 app/api/v2/api-config.php
+test
+mobile/custom-modules

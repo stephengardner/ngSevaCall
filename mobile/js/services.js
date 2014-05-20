@@ -458,6 +458,7 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
         numCompaniesRejected : 0,
         processing : false,
         complete : false,
+
         isDescriptionValid : function(){
             if(this.description) {
                 var word = /\b[^\s]+\b/g;
@@ -475,8 +476,9 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
             Times.empty();
             this.id = false;
             this.statuses = [];
+            this.statusThrottle = [];
             this.numCompaniesCalled = 0;
-            this.numConpaniesRejected = 0;
+            this.numCompaniesRejected = 0;
             this.numCompaniesAccepted = 0;
             this.companies = {};
             this.processing = false;
@@ -505,6 +507,7 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
         setID : function(id){
             this.id = id;
         },
+
         verifiedTimeoutStart : function() {
             var self = this;
             self.timeSpentWaiting = 0;
@@ -635,6 +638,7 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
     };
     return Request;
 });
+
 myApp.factory('Storage', function(User, Request, $localStorage){
     var Storage = {
         name : false,
@@ -679,6 +683,7 @@ myApp.factory('Storage', function(User, Request, $localStorage){
     };
     return Storage;
 });
+
 myApp.factory('User', function(){
     var User = {
         nameValidate : /[a-zA-Z]{2,}/,
@@ -740,6 +745,7 @@ myApp.factory('User', function(){
     }
     return User;
 });
+
 myApp.factory('Overlay', function(){
     var Overlay = {
         body : $("body"),
@@ -770,7 +776,8 @@ myApp.factory('Overlay', function(){
     };
     return Overlay;
 });
-myApp.factory('Location', function(User, $q, $http){
+
+myApp.factory('Location', function(User, $q, $http, Overlay) {
     var Location = {
         busy : false,
         complete : function() {
@@ -817,8 +824,9 @@ myApp.factory('Location', function(User, $q, $http){
                                 else {
                                     //TRACK("REVERSE_GEOCODING_DELEGATE_FAILED", "Notification");
                                     //self.deactivateSpinner();
-                                    //new xAlert("Unable to obtain location");
-                                    self.error();
+                                    Overlay.remove();
+                                    new xAlert("Unable to obtain location");
+                                    //self.error();
                                     console.log(results);
                                 }
                             });
@@ -828,14 +836,16 @@ myApp.factory('Location', function(User, $q, $http){
                         }
                     }
                     catch (err) {
-                        self.error();
                         console.log(err);
+                        Overlay.remove();
+                        //self.error();
                         //self.deactivateSpinner(); //failed here
-                        //new xAlert("Could not obtain location");
+                        new xAlert("Unable to obtain location");
                     }
                 },
                 function(){
-                    self.error();
+                    Overlay.remove();
+                    new xAlert("Unable to obtain location");
                 });
             return this.deferred.promise;
         }
@@ -898,3 +908,13 @@ myApp.factory('Categories', function() {
     ];
     return Categories;
 });
+
+myApp.service('Session',[ '$cookieStore', function($cookieStore) {
+
+    this.currentUser = function() {
+        return $cookieStore.get('_angular_devise_user');
+    }
+    this.signedIn = function() {
+        return !!this.currentUser();
+    }
+}]);

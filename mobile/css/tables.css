@@ -10,7 +10,7 @@
 
 .location {
     color:#aaa;
-    font-weight:.9em;
+    font-size:.9em;
 }
 
 .statuses td.info {
@@ -238,7 +238,6 @@
 }
 
 /* this might make it so you cannot scroll when items are added to the page, need to figure this out........ */
-/*
 .ng-enter {
     -webkit-transition: .65s linear all;
     transition: .65s linear all;
@@ -248,4 +247,3 @@
 .ng-enter-active {
     opacity: 1;
 }
-*/
