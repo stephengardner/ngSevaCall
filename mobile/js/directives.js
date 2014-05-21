@@ -49,4 +49,12 @@ angular.module('myApp.directives', []).
             replace : true,
             template: '<input id="phone" maxlength="10" type="tel" ng-model="User.phone"/>'
         }
+    })
+    .directive('ios7StatusBar', function() {
+        return {
+            restrict : 'EA',
+            replace : true,
+            controller : 'ios7StatusBarController',
+            templateUrl: 'partials/statusBar.html'
+        }
     });

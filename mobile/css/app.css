@@ -498,3 +498,13 @@ select, input, textarea {
     border-radius:4px;
     box-shadow: 0px 0px 7px 0px #aaa;
 }
+
+.ios7 header {
+	top:20px;
+}
+.ios7 #header-wrapper {
+ 	height:75px!important;
+}
+.ios7 #sc-menu {
+	top:75px!important;
+}

@@ -10,3 +10,6 @@ test
 mobile/custom-modules
 mobile/test.html
 mobile/test2.html
+mobile/cordova.js
+mobile/cordova_plugins.js
+plugins

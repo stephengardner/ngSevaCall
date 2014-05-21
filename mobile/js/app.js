@@ -1,8 +1,8 @@
 'use strict';
-var isPhoneGap = false;
+var isPhoneGap = true;
 var testing = false;
 var testingType = "step3";
-var environment = "local", root, api_root;
+var environment = "development", root, api_root;
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"
@@ -280,7 +280,7 @@ var myApp = angular.module('myApp', [
             function alertOnChange() {
                 console.log(" -------------------- preventing default change on state change -------------------------");
                 event.preventDefault();
-                new xAlert(abandon_request,
+                new xAlert(alerts.abandon.body,
                     function(button){
                         if(button == 1){
                             console.log(" -------------------- resetting request and changing path -------------------------");
@@ -290,7 +290,7 @@ var myApp = angular.module('myApp', [
                         }
                         console.log(button);
                     },
-                    abandon_request_title,
+                    alerts.abandon.title,
                     "Yes, Cancel"
                 );
                 return false;

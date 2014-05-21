@@ -721,11 +721,14 @@ myApp.factory('Location', function(User, $q, $http, Overlay) {
         geoLocate : function(opt_overlay) {
             var self = this;
             this.deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
-            if (self.busy) {
+        	console.log("-------1-------");
+            /*if (self.busy) {
+        		console.log("-------busy-------");
                 this.deferred.resolve(false);
                 return;
             } // return if the http status is busy
             self.busy = true; // set the http status to busy
+            */
             navigator.geolocation.getCurrentPosition(
                 function (position) {
                     try {
