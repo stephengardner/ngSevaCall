@@ -30,6 +30,15 @@ angular.module('myApp.controllers', [])
         $scope.click = function($event) {
             Menu.active = false;
         };
+       	
+    }])
+    .controller('wrapperController', ['$scope', function($scope){
+        if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
+        	$scope.ios7 = true;
+        }
+        else {
+        	$scope.ios7 = false;
+        }
     }])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
@@ -67,7 +76,9 @@ angular.module('myApp.controllers', [])
         }, 1);
 
         $scope.getLocation = function(){
+        	console.log("-------1-------");
             Overlay.add(1);
+        	console.log("-------2-------");
             Location.geoLocate().then(function(d){
                 if(d) {
                     console.log("resovled to: ", d)
@@ -77,6 +88,7 @@ angular.module('myApp.controllers', [])
                     console.log("d is false");
                 Overlay.remove();
             });
+        	console.log("-------3-------");
         };
 
         $scope.next = function(){
