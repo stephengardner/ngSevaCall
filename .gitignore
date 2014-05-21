@@ -8,3 +8,5 @@ tmp
 app/api/v2/api-config.php
 test
 mobile/custom-modules
+mobile/test.html
+mobile/test2.html

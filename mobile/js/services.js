@@ -2,6 +2,7 @@
 /* Services */
 // Register the services:
 angular.module('myApp.services', []);
+
 myApp.factory('Nav', function(){
     var Nav = {
         direction : "back",
@@ -11,6 +12,7 @@ myApp.factory('Nav', function(){
     };
     return Nav;
 });
+
 myApp.factory('Menu', function(){
     var Menu = {
         active : false,
@@ -33,6 +35,7 @@ myApp.factory('Ratings', function(Request){
     };
     return Ratings;
 });
+
 myApp.factory('GoogleMap', function($timeout, $q, Request){
     var GoogleMap = {
         bounds : [],
@@ -71,28 +74,6 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
                 self.mapFitBounds();
                 self.addMarkers();
             });
-            /*
-             function getLatLongByZip(callback) {
-             var geocoder = new google.maps.Geocoder();
-             geocoder.geocode({ 'address': "20854" }, function (results, status) {
-             if (status == google.maps.GeocoderStatus.OK) {
-             self.latLng = results[0].geometry.location;
-
-             if (callback)
-             callback();
-             }
-             });
-             };
-             getLatLongByZip(function(){
-             var mapOptions = {
-             center: self.latLng,
-             zoom: 12,
-             mapTypeId: google.maps.MapTypeId.ROADMAP,
-             disableDefaultUI: true
-             };
-             self.googleMap = new google.maps.Map(document.getElementById("map_canvas"));
-             })
-             */
         },
 
         mapFitBounds: function () {
@@ -122,12 +103,6 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             });
 
             self.map.fitBounds(self.bounds);
-            /*
-             old max zoom level function
-             google.maps.event.addListenerOnce(self.map, 'idle', function() {
-             self.map.setZoom(self.map.getZoom() - 1);
-             });
-             */
         },
 
         setInfoBox: function (companyObj) {
@@ -204,7 +179,6 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             self.infoBox.open(self.map, companyObj.marker);
             var loc = self.infoBox.getPosition();
 
-
             google.maps.Map.prototype.panToWithOffset = function (latlng, offsetX, offsetY) {
                 var map = this;
                 var ov = new google.maps.OverlayView();
@@ -244,15 +218,6 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
                 google.maps.event.addListener(Request.companies[p].marker, "click", function () {
                     self.setInfoBox(this.company);
                 });
-
-                // var marker = new xMarker(new google.maps.LatLng(Request.companies[p].lat, Request.companies[p].lon), self.map);
-                /*
-                 var marker = new google.maps.Marker({
-                 position: new google.maps.LatLng(Request.companies[p].lat, Request.companies[p].lon),
-                 map: self.map,
-                 title:"Hello World!"
-                 });
-                 */
             }
 
             // self.mapFitBounds();
@@ -260,44 +225,11 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
                 self.infoBox.close();
 
             }, true);
-
-            //if (callback)
-            //   callback();
         }
-        /*
-         getLatLongByZip : function () {
-         var mapOptions = {
-         center: self.latLong,
-         zoom: 12,
-         mapTypeId: google.maps.MapTypeId.ROADMAP,
-         disableDefaultUI: true
-         };
-         try {
-         self.googleMap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-         // remove the new .gm styling for google maps - the new maps styles break our custom infobox layout
-         google.maps.event.addListener(self.googleMap, 'idle', function () {
-         $('style').remove();
-         });
-         }
-         catch (err) {
-         TRACK("STEP3_MAP_LOADING_FAILED", "FatalError");
-         }
-         try {
-         google.maps.event.addListenerOnce(self.googleMap, 'idle', function () {
-         TRACK("STEP3_MAP_LOADING_SUCCESS");
-         self.setCompanyMarkers();
-         if (mapLoadedCallback)
-         mapLoadedCallback();
-         });
-         }
-         catch (err) {
-         console.log("Error: " + err);
-         }
-         }
-         */
     };
     return GoogleMap;
 });
+
 myApp.factory('Times', function(){
     var Times = {
         timesActive : [],
@@ -381,8 +313,6 @@ myApp.factory('Times', function(){
         },
 
         find : function(row, col){
-            //console.log("row-col: " + row + "-" + col);
-            //console.log(this.timesActive);
             return this.timesActive.indexOf(row + "-" + col) != -1;
         },
 
@@ -678,7 +608,7 @@ myApp.factory('Storage', function(User, Request, $localStorage){
         },
 
         empty : function() {
-            $localStorage.reset();
+            $localStorage.$reset();
         }
     };
     return Storage;
@@ -730,6 +660,7 @@ myApp.factory('User', function(){
             this.email = email;
         },
 
+        // validation
         isNameValid : function() {
             return this.name && this.nameValidate.test(this.getName());
         },
@@ -838,8 +769,6 @@ myApp.factory('Location', function(User, $q, $http, Overlay) {
                     catch (err) {
                         console.log(err);
                         Overlay.remove();
-                        //self.error();
-                        //self.deactivateSpinner(); //failed here
                         new xAlert("Unable to obtain location");
                     }
                 },
@@ -908,13 +837,3 @@ myApp.factory('Categories', function() {
     ];
     return Categories;
 });
-
-myApp.service('Session',[ '$cookieStore', function($cookieStore) {
-
-    this.currentUser = function() {
-        return $cookieStore.get('_angular_devise_user');
-    }
-    this.signedIn = function() {
-        return !!this.currentUser();
-    }
-}]);

@@ -2,12 +2,21 @@
 var isPhoneGap = false;
 var testing = false;
 var testingType = "step3";
-var environment = "development", root, api_root;
-var home_alert_title = "Start Over?";
-var home_alert = "Returning to step 1 will cancel your current request, continue?";
-var step3_change_state_alert = "Are you sure you want to abandon this request?";
-var abandon_request = "Are you sure you want to abandon this request?";
-var abandon_request_title = "Start Over?";
+var environment = "local", root, api_root;
+var alerts = {
+    call_companies :  {
+        body : "Call companies now? You may receive up to three calls"
+    },
+    home : {
+        title : "Start Over?",
+        body : "Returning to step 1 will cancel your current request, continue?"
+    },
+    abandon : {
+        title : "Start Over?",
+        body : "Are you sure you want to abandon this request?"
+    }
+
+};
 if(environment == "local") {
     root = "/augie/ng/mobile/";
     api_root = "http://localhost/";
