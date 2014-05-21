@@ -12,38 +12,10 @@ angular.module('myApp.controllers', [])
             Request.pingStatusesStart();
             GoogleMap.init();
         });
-
     }])
     .controller('test', ['$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
-        /*
-         User.setPhone("3017047437");
-         User.setName("augie");
-         User.setEmail("augie@augie.com");
-         Request.setCategory("Test Spin");
-         Request.description = "Augie is testing 1 2 3 4";
-         User.setZipcode(20854);
-         Times.buttons.now = 1;
-         SCAPI.step1().then(function(d){
-         console.log("got ", d);
-         SCAPI.getCompaniesList().then(function(d){
-         console.log("getCompaniesList:", d);
-         SCAPI.searchAction3().then(function(d){
-         console.log("Submitted Request, response:", d);
-         });
-         });
-         });.3
-         .
-         */
         $scope.companies = Request.companies;
         $scope.request = Request;
-        /*
-         $scope.yelpStarOffset = -4.25 + (companyRating * 12.5);
-         $scope.citysearchStarOffset = -4.25 + (companyRating * 12.5);
-         $scope.googleStarOffset = -4.25 + (companyRating * 12.5);
-         $timeout(function(){
-         console.log("ok");
-         }, 5000);
-         */
         Request.setID(112669);
         $scope.numCompaniesAccepted = Request.numCompaniesAccepted;
         console.log("Request is: ", Request);
@@ -51,16 +23,6 @@ angular.module('myApp.controllers', [])
             Request.pingStatusesStart();
             GoogleMap.init();
         });
-        //Request.pingStatusesStart();
-        // $scope.statuses = Request.statuses;
-        //Request.pingStatusesStop();
-
-        /*
-         SCAPI.getRequestStatus().then(function(d){
-         $scope.Companies = Request.statuses;
-         Request.pingStatusesStart();
-         });
-         */
     }])
     .controller('bodyController', ['$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location', function($rootScope, Request, Menu, $attrs, $scope, $location){
         $location.path("/step1");
@@ -70,7 +32,7 @@ angular.module('myApp.controllers', [])
         };
     }])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
-        console.log("params: ", $stateParams);
+        var categoryFromParams = $location.search().source;
         Request.reset();
         $scope.User = User;
         $scope.Request = Request;
@@ -81,8 +43,6 @@ angular.module('myApp.controllers', [])
                 });
             });
         }
-
-        var categoryFromParams = $location.search().source;
         if(categoryFromParams) {
             for(var i = 0; i < Categories.length; i++){
                 if (Categories[i].name == categoryFromParams) {
@@ -91,6 +51,7 @@ angular.module('myApp.controllers', [])
             }
             Request.setCategory(categoryFromParams);
         }
+
         $scope.change = function(){
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {
@@ -129,7 +90,6 @@ angular.module('myApp.controllers', [])
                 $state.go("step2");
             });
             return deferred.promise;
-
         };
         $scope.categories = Categories;
     }])
@@ -174,18 +134,18 @@ angular.module('myApp.controllers', [])
     }])
     .controller('step2aController', ['Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window', function(Storage, $rootScope, User, Times, $scope, Request, $state, $window){
         var UserBackup = angular.copy(User);
-        $scope.User = User;
-        $scope.Times = Times;
-        $scope.emailKeyup = function(d){
-            d.stopPropagation();
-            console.log(d);
-        };
         var cleanUpFunction = $rootScope.$on('back', function(){
             console.log("------------------------- rootscope back --------------------------------");
             User.setName(UserBackup.getName());
             User.setEmail(UserBackup.getEmail());
             User.setPhone(UserBackup.getPhone());
         });
+        $scope.User = User;
+        $scope.Times = Times;
+        $scope.emailKeyup = function(d){
+            d.stopPropagation();
+            console.log(d);
+        };
         $scope.$on('$destroy', function() {
             cleanUpFunction();
         });
@@ -201,8 +161,9 @@ angular.module('myApp.controllers', [])
             }
             else {
                 Storage.saveUser();
+                UserBackup = angular.copy(User);
                 if(Request.isDescriptionValid() && !Times.isEmpty()) {
-                    new xAlert("Call companies now? You may receive up to three calls",
+                    new xAlert(alerts.call_companies.body,
                         function(button) {
                             if(button == 2) {
                                 $state.go("step3");
@@ -225,7 +186,7 @@ angular.module('myApp.controllers', [])
             function alertOnChange() {
                 console.log(" -------------------- preventing default change on state change -------------------------");
                 event.preventDefault();
-                new xAlert(abandon_request,
+                new xAlert(alerts.abandon.body,
                     function(button){
                         if(button == 1){
                             console.log(" -------------------- resetting request and changing path -------------------------");
@@ -235,9 +196,8 @@ angular.module('myApp.controllers', [])
                             $urlRouter.sync(); // not sure what this does at the moment
                         }
                         console.log(button);
-
                     },
-                    abandon_request_title,
+                    alerts.abandon.title,
                     "Yes, Cancel"
                 );
                 return false;
@@ -248,7 +208,7 @@ angular.module('myApp.controllers', [])
         var cleanUpFunctionTwo = $rootScope.$on('$locationChangeStart', function(event, toState){
             if(toState.indexOf("step3") == -1 && toState.indexOf("step1") == -1 && toState.indexOf("summary") == -1) {
                 event.preventDefault();
-                new xAlert(abandon_request,
+                new xAlert(alerts.abandon.body,
                     function(button) {
                         if(button == 1) {
                             console.log(" -------------------- resetting request and changing path -------------------------");
@@ -258,7 +218,7 @@ angular.module('myApp.controllers', [])
                         }
                         console.log(button);
                     },
-                    abandon_request_title,
+                    alerts.abandon.title,
                     "Yes, Cancel"
                 );
                 return false;
@@ -272,7 +232,6 @@ angular.module('myApp.controllers', [])
         if(Request.complete) {
             Nav.direction = "forward";
         }
-        console.log("Nav is: ", Nav);
         $scope.companies = Request.companies;
         $scope.request = Request;
         GoogleMap.init();
