@@ -21,36 +21,33 @@ myApp.factory('SCAPI', function($timeout, User, $http, $q){
             console.log("step1");
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
             /*
-            if (self.busy) {
-                self.busy = false; //comment this out
-                deferred.resolve(false);
-                return deferred.promise; // return if the http status is busy
-            }
-            */
+             if (self.busy) {
+             self.busy = false; //comment this out
+             deferred.resolve(false);
+             return deferred.promise; // return if the http status is busy
+             }
+             */
             self.busy = true; // set the http status to busy
             self.data.category_short = self.Request.category;
             self.data.search_location = User.zipcode;
             //var url = self.urls.step1 + "?" + $.param(self.data); // create the url to ping
             var url = self.postifyUrl(self.urls.step1);
-            console.log(url);
-            console.log("step1 url: " + url);
-            self.data.pagesInclusive = 0; // nextPage() will never want all the inclusive quotes, only the next page.
             $http({
                 url : url,
                 method : "GET",
                 headers : {'Content-Type': 'application/json'}
             }).
-            success(function(d) {
-                self.busy = false; // reset http status, allow future pings
-                // transform the step1 result
-                var results = d.split("|");
-                self.Request.setID(results[1]);
-                deferred.resolve(d); // resolve the $q promise
-            }).
-            error(function(d){
-                self.busy = false; // reset http status, allow future pings
-                deferred.reject("what"); // resolve the $q promise
-            });
+                success(function(d) {
+                    self.busy = false; // reset http status, allow future pings
+                    // transform the step1 result
+                    var results = d.split("|");
+                    self.Request.setID(results[1]);
+                    deferred.resolve(d); // resolve the $q promise
+                }).
+                error(function(d){
+                    self.busy = false; // reset http status, allow future pings
+                    deferred.reject(false); // resolve the $q promise
+                });
             return deferred.promise; // once the http callback has been fulfilled, this function returns the satisfied promise
         },
         getCompaniesList : function() {
@@ -119,7 +116,6 @@ myApp.factory('SCAPI', function($timeout, User, $http, $q){
         },
 
         postifyUser : function(){
-            var str = "";
             var firstThree = User.phone.substring(0, 3);
             var secondThree = User.phone.substring(3, 6);
             var lastFour = User.phone.substring(6, 10);
@@ -137,7 +133,7 @@ myApp.factory('SCAPI', function($timeout, User, $http, $q){
             var self = this;
             self.data.requestID = self.Request.id;
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
-            var url =  self.postifyUrl(self.urls.seachAction3) + self.postifyUser();
+            var url =  self.postifyUrl(self.urls.seachAction3) + "&" + self.postifyUser();
             console.log("SeachAction3 URL : " + url);
             if(testing) {
                 $timeout(function(){
@@ -251,7 +247,7 @@ myApp.factory('SCAPI', function($timeout, User, $http, $q){
             getRating("citysearch").then(function(d){
                 var data = d.split("|");
                 var companyRating = d[0];
-               // companyRating /= 2;
+                // companyRating /= 2;
                 companyRating = Math.floor(companyRating) + ( Math.round((companyRating - Math.floor(companyRating))) ? 0.5 : 0.0 );
                 company.ratingCitysearch = companyRating;
                 var starOffset = -4.66 + (companyRating * 12.66);
