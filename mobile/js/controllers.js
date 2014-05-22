@@ -196,7 +196,7 @@ angular.module('myApp.controllers', [])
     .controller('step3Controller', ['$urlRouter', '$rootScope', '$state', 'Nav', 'GoogleMap', 'Request', '$scope', function($urlRouter, $rootScope, $state, Nav, GoogleMap, Request, $scope){
         var cleanUpFunction = $rootScope.$on('$stateChangeStart', function(event, toState){
             function alertOnChange() {
-                console.log(" -------------------- preventing default change on state change -------------------------");
+                console.log(" -------------------- preventing default change on state3 change -------------------------");
                 event.preventDefault();
                 new xAlert(alerts.abandon.body,
                     function(button){

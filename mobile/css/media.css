@@ -3,11 +3,29 @@
     #step2a input[type="text"] {
         padding:8px!important;
     }
-
     #step2a  h1 {
         font-size:2.2em!important;
     }
+    #step1 h1 {
+        font-size:44px;
+    }
     #step2a  .sep {
-        margin-top:20px!important;
+        margin-top:22px!important;
+    }
+    #step2a  .sep-buttons {
+        margin-top:25px!important;
+    }
+    #step2a input[type="text"], #phone {
+        padding: 6px 5px!important;
+    }
+    .body {
+        padding-bottom:25px!important;
+    }
+    .timetable {
+        font-size: .74em!important;
+    }
+    .setting-wrapper i {
+        width: 2.8em!important;
+        height: 2.8em!important;
     }
 }
