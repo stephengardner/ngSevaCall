@@ -2,6 +2,23 @@
 
 /* Controllers */
 angular.module('myApp.controllers', [])
+    .controller('testRecording', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
+        Request.setID(112669);
+        //SCAPI.getCompaniesList().then(function(){
+            $state.go("step2").then(function(){
+                $state.go("recording");
+            });
+        //});
+        /*
+        SCAPI.getCompaniesList().then(function(){
+            $state.go("step2").then(function(){
+                $state.go("step3");
+            });
+            Request.pingStatusesStart();
+            GoogleMap.init();
+        });
+        */
+    }])
     .controller('test2', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         Request.reset();
         Request.setID(112669);
