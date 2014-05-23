@@ -49,26 +49,84 @@ angular.module('myApp.controllers', [])
         };
        	
     }])
-    .controller('wrapperController', ['$scope', function($scope){
+    .controller('wrapperController', ['Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function(Uploader, $scope, User, $q, Location, Recording, $timeout){
         if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
         	$scope.ios7 = true;
         }
         else {
         	$scope.ios7 = false;
         }
-    }])
+        function blipsRotate() {
+        	var deferred = $q.defer();
+            var splash, blipImages;
+            if(screen.height <= 480) { // iphone 4 == 480
+                splash = document.getElementById("splashImg-iPhone4");
+                blipImages = [
+                                'img/splash-iphone4-1.jpg',
+                                'img/splash-iphone4-2.jpg',
+                                'img/splash-iphone4-3.jpg',
+                                'img/splash-iphone4-4.jpg'
+                                ];
+            }
+            else {
+                splash = document.getElementById("splashImg-iPhone5");
+                blipImages = [
+                                'img/splash-iphone5-1.jpg',
+                                'img/splash-iphone5-2.jpg',
+                                'img/splash-iphone5-3.jpg',
+                                'img/splash-iphone5-4.jpg'
+                                ];
+            }
+            splash.style.left = 0;
+            var index = 0;
+            var blipping = setInterval(function() {
+                if( index == 0 ) {
+                    splash.src=blipImages[0];
+                    if(navigator.splashscreen) {
+                        navigator.splashscreen.hide();
+                    }
+                }
+                else if( index == blipImages.length ) {
+                    clearInterval(blipping);
+                    $("#splashscreen").hide();
+                    deferred.resolve(true);
+                }
+                else {
+                    splash.src=blipImages[index];
+                }
+                index++;
+            }, 400);
+            return deferred.promise;
+        }
+        function locate() {
+        	if(!User.zipcode) {
+                $(document).ready(function(){
+                    Location.geoLocate().then(function(d){
+                        User.setZipcode(d);
+                    });
+                });
+            }
+        }
+    	
+        // Phonegap specific actions
+        if(isPhoneGap) {
+            blipsRotate().then(function(){
+                Recording.init().then(function(){
+                    console.log("Recording file initialized and ready for recording");
+                });
+                locate();
+            });
+        }
+        else {
+        	locate();
+        }
+            
+	}])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
         Request.reset();
         $scope.User = User;
         $scope.Request = Request;
-        if(!User.zipcode) {
-            $(document).ready(function(){
-                Location.geoLocate().then(function(d){
-                    $scope.User.setZipcode(d);
-                });
-            });
-        }
         if(categoryFromParams) {
             for(var i = 0; i < Categories.length; i++){
                 if (Categories[i].name == categoryFromParams) {
@@ -130,7 +188,7 @@ angular.module('myApp.controllers', [])
         };
         $scope.categories = Categories;
     }])
-    .controller('step2Controller', ['$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function($timeout, SCAPI, Times, $scope, User, Request, $state) {
+    .controller('step2Controller', ['Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function(Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
         $scope.isPhoneGap = isPhoneGap;
 
         if($.isEmptyObject(Request.companies))
@@ -141,6 +199,18 @@ angular.module('myApp.controllers', [])
         $scope.timetable = function(){
             $state.go('timetable');
         };
+        $scope.recordingSaved = Recording.saved;
+        if($scope.recordingSaved) {
+            $("textarea").attr("placeholder", "Recording Saved").val("");
+        	//Request.description = "Describe what you need help with in as much detail as possible...";
+        }
+        /*
+        else {
+        	if(Request.description == "Describe what you need help with in as much detail as possible..."){
+            	Request.description = "";
+            }
+        }
+        */
 
         $scope.next = function(){
             console.log("ALL TIMES:", Times);
