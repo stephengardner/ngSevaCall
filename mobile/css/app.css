@@ -3,6 +3,20 @@ body, .ui-view-container {
     font-family:arial;
 }
 
+#splashscreen {
+	position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:9001;
+}
+
+#splashscreen img {
+	height:100%;
+    width:100%;
+}
+
 .btn.disabled {
     opacity:1 /*bootstrap override */
 }

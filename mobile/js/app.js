@@ -1,8 +1,8 @@
 'use strict';
-var isPhoneGap = false;
-var testing = true;
+var isPhoneGap = true;
+var testing = false;
 var testingType = "recording";
-var environment = "local", root, api_root;
+var environment = "development", root, api_root;
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"
@@ -31,7 +31,9 @@ else if(environment == "production") {
     root = "";
     api_root = "../";
 }
-
+if(isPhoneGap){
+	root = "";
+}
 String.prototype.capitalize = function () {
     return this.toLowerCase().replace(/^.|\s\S/g, function (a) {
         return a.toUpperCase();
