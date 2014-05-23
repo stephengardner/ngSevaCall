@@ -2,7 +2,7 @@
 var isPhoneGap = false;
 var testing = false;
 var testingType = "step3";
-var environment = "local", root, api_root;
+var environment = "production", root, api_root;
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"
@@ -25,9 +25,10 @@ else if(environment == "development"){
     api_root = "http://test.s17.sevacall.com/";
 }
 else if(environment == "production") {
-    console.log = function() {};
-    console.warn = function() {};
-    console.error = function() {};
+
+    console.log = function(msg) {};
+    console.warn = function(msg) {};
+    console.error = function(msg) {};
 
     root = "";
     api_root = "../";
@@ -261,32 +262,6 @@ var myApp = angular.module('myApp', [
             if((toState.name == "step2" || toState.name == "step3") && !Request.id) {
                 $location.path("/step1");
             }
-            /*
-             function alertOnChange() {
-             console.log(" -------------------- preventing default change on state change -------------------------");
-             event.preventDefault();
-             new xAlert(abandon_request,
-             function(button){
-             if(button == 1){
-             console.log(" -------------------- resetting request and changing path -------------------------");
-             Request.reset();
-             $state.go(toState.name);
-             $urlRouter.sync(); // not sure what this does at the moment
-             }
-             console.log(button);
-             },
-             abandon_request_title,
-             "Yes, Cancel"
-             );
-             return false;
-             }
-             if((toState.name == "step3" || toState.name == "step2") && !Request.id){
-             $location.path("/step1");
-             }
-             else if((Request.numCompaniesCalled > 0) && $state.current.name == "step3" && toState.name != "summary") {
-             return alertOnChange();
-             }
-             */
             // MENU BUTTON PRESSED ONLY
             function alertOnChange() {
                 console.log(" -------------------- preventing default change on state change -------------------------");
@@ -343,67 +318,7 @@ var myApp = angular.module('myApp', [
                     $location.path("/step1");
                 }
             }
-        );   /*
-         Menu.active = false;
-         // ABANDON REQUEST ONLY
-         // the first one gets run on browser back button, the second one is a fallback
-         if((Request.numCompaniesCalled > 0) && $state.current.name == "step3") {
-         console.warn("Attempting to leave a request");
-         event.preventDefault();
-         new xAlert(abandon_request,
-         function(button) {
-         if(button == 1) {
-         console.log(" -------------------- resetting request and changing path -------------------------");
-         Request.reset();
-         $urlRouter.sync();
-         }
-         console.log(button);
-         },
-         abandon_request_title,
-         "Yes, Cancel"
-         );
-         return false;
-         }
-         else if(Request.numCompaniesCalled > 0 && toState.indexOf("step2") != -1) {
-         console.log(" -------------------- preventing default change on location start -------------------------");
-         event.preventDefault();
-         new xAlert(abandon_request,
-         function(button) {
-         if(button == 1) {
-         console.log(" -------------------- resetting request and changing path -------------------------");
-         Request.reset();
-         $state.go("step1");
-         $urlRouter.sync();
-         }
-         console.log(button);
-         },
-         abandon_request_title,
-         "Yes, Cancel"
-         );
-         return false;
-         }
-         // BACK BUTTON STEP 1 ONLY
-         if(Request.id && toState.indexOf("step1") != -1) {
-         console.log(" -------------------- preventing default change on location change -------------------------");
-         event.preventDefault();
-         new xAlert("Returning to step 1 will cancel your current request. Continue?",
-         function(button){
-         if(button == 1){
-         console.log(" -------------------- resetting request and changing path -------------------------");
-         Request.reset();
-         $state.go("step1");
-         //$urlRouter.sync(); // not sure what this does at the moment
-         }
-         console.log(button);
-         },
-         "Leave this page?",
-         "Yes, Cancel"
-         );
-         return false;
-         }
-         }
-         );
-         */
+        );
 
         $rootScope.$on('$locationChangeSuccess', function(){
             // only call if the event.preventDefault isn't active from the locationChangeStart

@@ -233,14 +233,6 @@ angular.module('myApp.controllers', [])
                 $state.go("step2a");
             }
         };
-
-        var unMaskPhone = function() {
-            if(User.phone != "")
-                User.phone = String(parseInt(User.phone.replace(/[)( -]/g, "")));
-        };
-        $scope.$on('$destroy', function() {
-            unMaskPhone();
-        });
     }])
     .controller('step2aController', ['Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window', function(Storage, $rootScope, User, Times, $scope, Request, $state, $window){
         var UserBackup = angular.copy(User);
@@ -269,7 +261,6 @@ angular.module('myApp.controllers', [])
         };
 
         $scope.$on('$destroy', function() {
-            unMaskPhone();
             cleanUpFunction();
         });
         $scope.onPhoneFocus = unMaskPhone;
