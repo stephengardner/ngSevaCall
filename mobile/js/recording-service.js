@@ -23,10 +23,10 @@ myApp.factory('Uploader', function($q) {
                 console.log("upload error source " + error.source);
                 console.log("upload error target " + error.target);
             },
-            uploadRecording : function(Recording) {
+            uploadRecording : function(src) {
                 var self = this;
                 var uri = encodeURI(self.url);
-                var fileURL = Recording.src;
+                var fileURL = src;
                 console.log("File url is: " + fileURL);
                 var options = new FileUploadOptions();
                 options.fileKey="file";
@@ -59,62 +59,37 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         positionToString : "",
         playing : 0,
         paused : 0,
-        src : "recording10",
+        //name : "recording11.wav", // NOT the same as the src
         mimeType : "audio/wav",
         init : function(){
             // check for if file exists (it likely wont), so, create it.
             var self = this;
-            console.log("init");
-            self.initialPromise = $q.defer();//$.Deferred();
-            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, self.createFile, function fail(){});
-            //alert();
-            //self.initialPromise.resolve(true);
+            self.initialPromise = $q.defer();
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, self.gotFS, function fail(){});
             return self.initialPromise.promise;
-            
         },
-        createMediaRec : function() {
-            var self = this;
-            /*
-        	alert("!");
-        	var onSuccess = function(){
-             	alert("DONE");
-            };
-            var onError = function() {
-        		alert("err");
-                console.log(err.code)
-            };
-            //self.createMediaRecPromise = $q.defer();
-            */
-            console.log("Creating media rec with src: " + self.getSrc().replace("file://", ""));
-            self.mediaRec = new Media(self.getSrc().replace("file://", ""),
+        gotFS : function(fileSystem) {
+        	var self = this;
+        	fileSystem.root.getFile("sc-recording.wav", {create: true, exclusive: false}, function(fileEntry){
+            	Recording.gotFileEntry(fileEntry)
+                }, function(){
+                	alert("fail");
+                }
+            );
+        },
+        gotFileEntry : function(fileEntry) {
+        	var self = this;
+            self.toURL = fileEntry.toURL();
+            self.src = fileEntry.fullPath;
+            
+        	self.mediaRec = new Media(fileEntry.fullPath,
                 function(){
-                	alert("success");
                 }, function(err){
-                	alert("err");
                     console.log(err.message);
                 }, function(){
-            		alert("stat");
            		}
             );
-            //Recording.createMediaRecPromise.resolve(true);
-            //return self.createMediaRecPromise.promise;
-            return true;
-        },
-        createFile : function(fileSystem) {
-            // create a recording file if it doesn't exist.  This is necessary to record into later.
-            var self = this;
-            var deferred = $q.defer();//$.Deferred();
-            var fileName = "recording10.wav"; // must be set here to be used in .getFile, not on outer scope
-            fileSystem.root.getFile(fileName, {create: true, exclusive: false}, success, fail);
-            function success(entry) {
-                Recording.setSrc(entry.toURI());
-                console.log("-----------------filepath for recording: " + Recording.getSrc());
-                Recording.initialPromise.resolve(true);
-                deferred.resolve(true);
-                //SCRecording.initialPromise.resolve(true);
-            };
-            function fail(){alert("FAIL");console.log("Could not create the recording file");};
-            return deferred.promise;
+            Recording.initialPromise.resolve(true);
         },
         getSrc : function(){
             return this.src;
@@ -125,7 +100,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         },
         send : function(){
             // send the recording to the sevacall server using the Uploader object
-            Uploader.uploadRecording(this);
+            Uploader.uploadRecording(this.mediaRec);
         },
         
         startRecord : function() {
@@ -151,6 +126,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                 "Yes, No");
             }
             else {
+            	self.mediaRec.startRecord(); //
                 self.recording = true;
                 self.interval = $interval(function(){
                     self.length += .1;
@@ -165,6 +141,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         stopRecord : function() {
             var self = this;
             self.recording = false;
+            self.mediaRec.stopRecord(); //
 
             $interval.cancel(self.interval);
             if(self.length < 3) {
@@ -201,6 +178,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             var self = this;
             self.playing = 1;
             self.paused = 0;
+            self.mediaRec.play(); //
             self.playInterval = $interval(function(){
                 self.position += .1;
                 self.positionToString = self.position.toString().toHHMMSS();
@@ -229,6 +207,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
 
         pause : function(){
             var self = this;
+            self.mediaRec.pause(); //
             self.paused = 1;
             self.playing = 0;
             $interval.cancel(self.playInterval);
@@ -236,6 +215,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
 
         stop : function() {
             var self = this;
+            self.mediaRec.stop(); //
             self.playing = 0;
             self.paused = 0;
             self.position = 0;

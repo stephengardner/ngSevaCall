@@ -49,7 +49,7 @@ angular.module('myApp.controllers', [])
         };
        	
     }])
-    .controller('wrapperController', ['$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function($scope, User, $q, Location, Recording, $timeout){
+    .controller('wrapperController', ['Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function(Uploader, $scope, User, $q, Location, Recording, $timeout){
         if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
         	$scope.ios7 = true;
         }
@@ -102,421 +102,18 @@ angular.module('myApp.controllers', [])
         	if(!User.zipcode) {
                 $(document).ready(function(){
                     Location.geoLocate().then(function(d){
-                        $scope.User.setZipcode(d);
+                        User.setZipcode(d);
                     });
                 });
             }
         }
+    	
+        // Phonegap specific actions
         if(isPhoneGap) {
-        	Recording.init().then(function(){
-            	
-                
-function SCRecording() {
-    // Declare global variables
-    this.state = 0; // 0: ready to record, 1: recording or recording stopped and is available
-    this.liveStatus; // updates live, by the Media function
-    this.statusState = 0; // 0 play, 1 pause
-    // this.src = "recording.aiff"; // name of auio file
-    if(device.platform == "Android") {
-        this.src = "recording.amr"; // name of auio file
-        this.mimeType = "audio/amr";
-    }
-    else {
-        this.src = "recording.wav"; // name of auio file
-        this.mimeType = "audio/wav";
-    }
-    this.audioType = this.src.split(".");
-    this.audioType = this.audioType[1];
-    if(this.audioType == "wav")
-        this.audioType = "aiff";
-    //this.extension = this.src.split(".");
-    // override the wav extension in the amazon s3 bucket as a .aiff.  I don't like this, but we're doing it that way.  We've always used .aiff and iphones don't support aiff internally.  So I guess this is a hard-conversion on our end.
-    //this.extension = (this.extension == "wav") ? "aiff" : this.extension[1];
-    //this.extension = this.extension[1];
-    this.mediaRec; // the object for recording and play sound
-    this.directory; // holds a reference for directory reading
-    this.recordingActive = 0;
-    this.init();
-}
-                
-                
-SCRecording.prototype = {
-    // Wait for PhoneGap to load
-    init: function () {
-        var self = this;
-        self.ready();
-    },
-
-    // PhoneGap is ready
-    ready: function () {
-        var self = this;
-        console.log("SCR.ready()");
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
-            self.onFileSystemSuccess(fileSystem);
-        }, function () {
-            self.onError
-        });
-    },
-
-    // clicking of the record button
-    //
-    onClick: function () {
-        var self = this;
-        console.log("onClick() " + self.state);
-        switch (self.state) {
-            case 0:
-                self.startRecording();
-                break;
-            case 1:
-                self.stopRecording();
-                break;
-            case 2:
-                self.deleteAlert(function () {
-                    self.resetRecording();
-                });
-                break;
-            default:
-                console.log("Recycling State");
-                self.state = 0;
-                break;
-        }
-        return false;
-    },
-
-	
-    uploadVoice: function (callback) {
-        var self = this;
-        /*
-        console.log("uploadVoice();");
-        var options = new FileUploadOptions();
-        options.fileKey = "file";
-        options.fileName = self.src;
-        options.mimeType = self.mimeType;
-
-        var params = new Object();
-        params.value1 = "test";
-        params.value2 = "param";
-
-        var win = function (r) {
-            TRACK("DETAILS_RECORDING_SCREEN_AMAZON_UPLOAD_AUDIO_SUCCESS");
-            console.log("Code = " + r.responseCode);
-            console.log("Response = " + r.response);
-            console.log("Sent = " + r.bytesSent);
-            console.log("Final url was: " + $root + "components/audio-upload/upload.php?reqID=" + OOvaCall.requestID + "&audioType=" + self.audioType + "");
-            console.log("now encoding at: " + $root + "api/mobile/v2/encodeAudio.php?requestID=" + OOvaCall.requestID + "&audioType=" + self.audioType + "");
-
-            if (device.platform == "Android") {
-                $.ajax({
-                    url: $root + "api/mobile/v2/encodeAudio.php?requestID=" + OOvaCall.requestID + "&audioType=" + self.audioType + "",
-                    success: function (data) {
-                        TRACK("DETAILS_RECORDING_SCREEN_AMAZON_ENCODE_AUDIO_SUCCESS");
-                        console.log("Successful ajax encoding audio, now calling back");
-                        if (callback)
-                            callback();
-                    },
-                    error: function (xhr, responseText, error) {
-                        TRACK("DETAILS_RECORDING_SCREEN_AMAZON_ENCODE_AUDIO_FAILED", "MediaError");
-                    }
-                });
-            }
-            else {
-                if (callback)
-                    callback();
-            }
-        };
-
-        var fail = function (error) {
-            TRACK("DETAILS_RECORDING_SCREEN_AMAZON_UPLOAD_AUDIO_FAILED", "MediaError");
-        };
-
-        options.params = params;
-
-        var ft = new FileTransfer();
-        console.log("uploading file at location" + self.directory.fullPath + "/" + self.src);
-        console.log("to location: " + $root + "components/audio-upload/upload.php?reqID=" + OOvaCall.requestID + "&audioType=" + this.audioType + "");
-        ft.upload(self.directory.fullPath + "/" + self.src, $root + "components/audio-upload/upload.php?reqID=" + OOvaCall.requestID + "&audioType=" + this.audioType + "", win, fail, options);
-        */
-    },
-
-    deleteAlert: function (okCallback, cancelCallback) {
-        new xAlert("Are you sure you want to delete the details recording",
-            function (button) {
-                if (button == 1) {
-                    if (okCallback)
-                        okCallback();
-                }
-                else if (button == 2) {
-                    if (cancelCallback)
-                        cancelCallback();
-                }
-
-            },
-            "",
-            "Ok,Cancel"
-        );
-
-    },
-
-    statusClick: function () {
-        var self = this;
-        console.log("statusClick() " + self.statusState);
-
-        switch (self.statusState) {
-            case 0:
-                self.statusState++;
-                self.playRecording();
-                break;
-            case 1:
-                self.statusState--;
-                self.pauseRecording();
-                break;
-            default:
-                self.statusState = 0;
-                break;
-        }
-    },
-
-    repaint: function () {
-        var self = this;
-        if (self.recordingActive) {
-            $(".recording-status")[0].className = "recording-status play";
-            $(".recording-time").show();
-            self.setAudioPosition(self.length);
-        }
-    },
-
-    resetRecording: function () {
-        var self = this;
-        console.log("Resetting the recording");
-        $(".recording-time").text("0:00").hide();
-        self.state = 0;
-        $(".recording-button")[0].className = "recording-button";
-        $(".recording-status")[0].className = "recording-status";
-        self.recordingActive = 0;
-    },
-
-    startRecording: function () {
-        var self = this;
-        $(".recording-time").show();
-        $(".recording-button").addClass("stop");
-        self.state = 1;
-
-        //OOvaCall.deactivateButtons(true);
-
-        self.saveDuringRecord = function () {
-            return self.stopRecording();
-        };
-		
-        // $("#actionbutton").bind("click", self.saveDuringRecord); moved to bindButtons
-        
-        console.log("startRecording() with path: " + self.directory.fullPath + "/" + self.src + "");
-        self.fullPath = self.directory.fullPath + "/" + self.src;
-        // Create your Media object
-        setTimeout(function () {
-            self.mediaRec = new Media(self.directory.fullPath + "/" + self.src,
-                // Success callback
-                function () {
-                    console.log("mediaRec -> success");
-                    return true;
-                },
-                // Error callback
-                function (err) {
-                    console.log("mediaRec -> error: " + err.code);
-                },
-                function (status) {
-                	alert("stat");
-                    self.liveStatus = status;
-                });
-            // Record audio
-            self.mediaRec.startRecord();
-            self.length = 0;
-            self.setAudioPosition(self.length);
-
-            self.recInterval = setInterval(function () {
-                self.length += .250;
-                self.setAudioPosition(self.length);
-                console.log("Recording length: " + self.length + " seconds");
-            }, 250);
-
-
-        }, 5);
-    },
-
-    stopRecording: function () {
-        var self = this;
-        self.state = 2;
-        //OOvaCall.activateButtons();
-        // $("#actionbutton").unbind("click", self.saveDuringRecord); moved to bindButtons
-
-        self.clearInterval();
-        self.recInterval = null;
-        console.log("stopRecording()");
-        self.mediaRec.stopRecord();
-        $(".recording-time").text("0:" + (self.length < 10 ? '0' : '') + Math.floor(self.length));
-
-        if (self.length < 3) {
-            new xAlert("Recording must be at least three seconds");
-            self.resetRecording();
-            return false;
-        }
-        else {
-            //self.uploadVoice();
-            $(".recording-button").removeClass("stop");
-            $(".recording-status").removeClass("pause").addClass("play");
-            self.recordingActive = 1;
-            return true;
-        }
-    },
-
-    pauseRecording: function () {
-        var self = this;
-        clearInterval(self.recInterval); // do not set to null
-        $(".recording-status").removeClass("pause").addClass("play");
-        self.mediaRec.pause();
-    },
-
-    setAudioPosition: function (position) {
-        var position = (position) ? position : 0;
-        $(".recording-time").text("0:" + (position < 10 ? '0' : '') + Math.floor(position));
-    },
-
-    clearInterval: function () {
-        var self = this;
-        clearInterval(self.recInterval);
-        self.recInterval = null;
-    },
-
-    resetPlayback: function () {
-        var self = this;
-        self.statusState = 0;
-        self.clearInterval();
-        if (self.mediaRec) {
-            self.mediaRec.stop();
-            if ($(".recording-status").hasClass("pause"))
-                $(".recording-status").removeClass("pause").addClass("play");
-        }
-    },
-
-    playRecording: function () {
-        var self = this;
-        console.log("playRecording()");
-
-        self.mediaRec = new Media(self.directory.fullPath + "/" + self.src, function () {
-        }, function (err) {
-        }, function (status) {
-            self.liveStatus = status;
-        });
-        self.mediaRec.play();
-
-        var playInterval = setInterval(function () {
-            if (self.liveStatus == 1 || self.liveStatus == 2) {
-                $(".recording-status").removeClass("play").addClass("pause");
-                self.mediaRec.getCurrentPosition(function (position) {
-                    if (position >= 0)
-                        self.setAudioPosition((position));
-                    console.log("Playing length: " + position + " seconds");
-                }, function (e) {
-
-                });
-            }
-            else {
-                clearInterval(playInterval);
-                if (self.liveStatus == 4) // reached the end of playback (status: STOPPED)
-                    self.resetPlayback();
-            }
-        }, 100);
-        $(".recording-status").removeClass("play").addClass("pause");
-
-    },
-
-    onFileSystemSuccess: function (fileSystem) {
-        var self = this;
-        console.log("filesystem is: " + fileSystem);
-        console.log("onFileSystemSuccess()");
-        // Get the data directory, creating it if it doesn't exist.
-        fileSystem.root.getDirectory("", {create: true}, function (d) {
-            self.onDirectory(d)
-        }, function (error) {
-            self.onError(error)
-        });
-
-        // Create the lock file, if and only if it doesn't exist.
-        fileSystem.root.getFile(self.src, {create: true, exclusive: false}, function () {
-            self.onFileEntry()
-        }, function (error) {
-            self.onError(error)
-        });
-    },
-
-    onFileEntry: function () {
-        console.log("onFileEntry()");
-    },
-
-    onDirectory: function (d) {
-        var self = this;
-        console.log("onDirectory()");
-        console.log("Directory created: '" + d.name);
-        self.directory = d;
-        var reader = d.createReader();
-        reader.readEntries(function (entries) {
-            self.onDirectoryRead(entries)
-        }, function (error) {
-            self.onError(error)
-        });
-    },
-
-    // Helpful if you want to see if a recording exists
-    onDirectoryRead: function (entries) {
-        var self = this;
-        console.log("The dir has " + entries.length + " entries.");
-        // Scan for audio src
-        for (var i = 0; i < entries.length; i++) {
-            console.log(entries[i].name + ' dir? ' + entries[i].isDirectory);
-            if (entries[i].name == self.src) {
-                console.log("file found");
-            }
-        }
-    },
-
-    onSuccess: function () {
-        console.log("onSuccess()");
-    },
-
-    onError: function (error) {
-        alert('onError(): ' + error.code + '\n' +
-            'message: ' + error.message + '\n');
-    }
-};
-
-        var SCR = new SCRecording();//.init();
-        $timeout(function(){
-        	SCR.startRecording();
-        },1000);
-        $timeout(function(){
-        	SCR.stopRecording();
-            
-        },2000);
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-            });
             blipsRotate().then(function(){
+                Recording.init().then(function(){
+                    console.log("Recording file initialized and ready for recording");
+                });
                 locate();
             });
         }
@@ -583,7 +180,7 @@ SCRecording.prototype = {
         };
         $scope.categories = Categories;
     }])
-    .controller('step2Controller', ['$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function($timeout, SCAPI, Times, $scope, User, Request, $state) {
+    .controller('step2Controller', ['Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function(Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
         $scope.isPhoneGap = isPhoneGap;
 
         if($.isEmptyObject(Request.companies))
@@ -594,6 +191,18 @@ SCRecording.prototype = {
         $scope.timetable = function(){
             $state.go('timetable');
         };
+        $scope.recordingSaved = Recording.saved;
+        if($scope.recordingSaved) {
+            $("textarea").attr("placeholder", "Recording Saved").val("");
+        	//Request.description = "Describe what you need help with in as much detail as possible...";
+        }
+        /*
+        else {
+        	if(Request.description == "Describe what you need help with in as much detail as possible..."){
+            	Request.description = "";
+            }
+        }
+        */
 
         $scope.next = function(){
             if(!Request.isDescriptionValid()){
