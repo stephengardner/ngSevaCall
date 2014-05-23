@@ -50,6 +50,7 @@ angular.module('myApp.controllers', [])
        	
     }])
     .controller('wrapperController', ['Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function(Uploader, $scope, User, $q, Location, Recording, $timeout){
+        $scope.isPhoneGap = isPhoneGap;
         if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
         	$scope.ios7 = true;
         }
@@ -124,6 +125,7 @@ angular.module('myApp.controllers', [])
 	}])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
+        $scope.isPhoneGap = isPhoneGap;
         Request.reset();
         $scope.User = User;
         $scope.Request = Request;
@@ -202,15 +204,7 @@ angular.module('myApp.controllers', [])
         $scope.recordingSaved = Recording.saved;
         if($scope.recordingSaved) {
             $("textarea").attr("placeholder", "Recording Saved").val("");
-        	//Request.description = "Describe what you need help with in as much detail as possible...";
         }
-        /*
-        else {
-        	if(Request.description == "Describe what you need help with in as much detail as possible..."){
-            	Request.description = "";
-            }
-        }
-        */
 
         $scope.next = function(){
             console.log("ALL TIMES:", Times);
@@ -238,7 +232,15 @@ angular.module('myApp.controllers', [])
             else {
                 $state.go("step2a");
             }
-        }
+        };
+
+        var unMaskPhone = function() {
+            if(User.phone != "")
+                User.phone = String(parseInt(User.phone.replace(/[)( -]/g, "")));
+        };
+        $scope.$on('$destroy', function() {
+            unMaskPhone();
+        });
     }])
     .controller('step2aController', ['Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window', function(Storage, $rootScope, User, Times, $scope, Request, $state, $window){
         var UserBackup = angular.copy(User);
@@ -254,9 +256,6 @@ angular.module('myApp.controllers', [])
             d.stopPropagation();
             console.log(d);
         };
-        $scope.$on('$destroy', function() {
-            cleanUpFunction();
-        });
         var unMaskPhone = function() {
             if(User.phone != "")
                 User.phone = String(parseInt(User.phone.replace(/[)( -]/g, "")));
@@ -268,6 +267,11 @@ angular.module('myApp.controllers', [])
             if(User.phone == "NaN")
                 User.phone = "";
         };
+
+        $scope.$on('$destroy', function() {
+            unMaskPhone();
+            cleanUpFunction();
+        });
         $scope.onPhoneFocus = unMaskPhone;
         $scope.onPhoneBlur = maskPhone;
 

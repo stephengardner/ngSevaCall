@@ -56,9 +56,9 @@
             </div>
         </div>
         -->
-        <div id="splashscreen">
-        	<img id="splashImg-iPhone4" src="images/splash-iphone4-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
-    		<img id="splashImg-iPhone5" src="images/splash-iphone5-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
+        <div id="splashscreen" ng-show="isPhoneGap">
+        	<img id="splashImg-iPhone4" src="img/splash-iphone4-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
+    		<img id="splashImg-iPhone5" src="img/splash-iphone5-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
         </div>
         <!-- begin header -->
         <div id="header-wrapper" style="height:55px;" class="clearfix">
@@ -85,25 +85,6 @@
     
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-            
-            document.addEventListener('deviceready',function(){
-                angular.bootstrap(document, ["myApp"]);
-            });
-            function loadMapsPlugins(){
-                $.getScript("js/infobox.js", function(){
-                    $.getScript("js/xMarker.js");
-                })
-            }
-            $(document).ready(function(){
-                FastClick.attach(document.body);
-                // Special Fix: necessary on android phones with awkward z-index placement on transitioning.  This element would hide all other elements below it after transitioning.
-                //if(!isPhoneGap)
-                //    $("#splashBackground").css("display", "none");
-            });
-
-        </script>
         
         <script src="angular-components/angular-animate/angular-animate.js"></script>
         <script src="angular-components/angular-cookies/angular-cookies.js"></script>
@@ -119,7 +100,30 @@
         <script src="js/filters.js"></script>
         <script src="js/directives.js"></script>
         <script src="js/xAlert.js"></script>
-        
+
+        <script type="text/javascript">
+            app.initialize();
+            if(isPhoneGap) {
+                document.addEventListener('deviceready',function(){
+                    angular.bootstrap(document, ["myApp"]);
+                });
+            }
+            else {
+                angular.bootstrap(document, ["myApp"]);
+            }
+            function loadMapsPlugins(){
+                $.getScript("js/infobox.js", function(){
+                    $.getScript("js/xMarker.js");
+                })
+            }
+            $(document).ready(function(){
+                FastClick.attach(document.body);
+                // Special Fix: necessary on android phones with awkward z-index placement on transitioning.  This element would hide all other elements below it after transitioning.
+                //if(!isPhoneGap)
+                //    $("#splashBackground").css("display", "none");
+            });
+
+        </script>
         <script src="http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins"></script>
     </body>
 </html>
