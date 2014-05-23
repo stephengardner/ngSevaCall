@@ -137,6 +137,12 @@ myApp.factory('SCAPI', function(Recording, $timeout, User, $http, $q){
 
         searchAction3 : function(){
             var self = this;
+
+            var unMaskPhone = function() {
+                if(User.phone != "")
+                    User.phone = String(parseInt(User.phone.replace(/[)( -]/g, "")));
+            };
+            unMaskPhone();
             self.data.requestID = self.Request.id;
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
             var url =  self.postifyUrl(self.urls.seachAction3) + "&" + self.postifyUser();
