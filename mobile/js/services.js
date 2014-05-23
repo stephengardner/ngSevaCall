@@ -270,18 +270,20 @@ myApp.factory('Times', function(){
             console.log(this.timesActive);
             console.log(this.buttons);
             console.log($.isEmptyObject(this.buttons));
+            var self = this;
             function emptyButtons() {
-                for(var i in this.buttons){
-                    if(i != false) {
-                        console.log("i is: ", i);
+                for(var i in self.buttons){
+                    if(self.buttons[i] != false) {
+                        console.log("Times is not empty because " + i + " = " + self.buttons[i]);
                         return false;
                     }
                 }
                 console.log("true");
                 return true;
             }
-            console.log("true is: " , this.timesActive == []);
-            return (this.timesActive == [] && emptyButtons());
+            console.log("Times.isEmpty() this.timesActive = ", this.timesActive);
+            console.log("Times.isEmpty() emptyButtons true or false? = " + (1 && emptyButtons()));
+            return (this.timesActive.length == 0 && emptyButtons());
         },
 
         empty : function() {
@@ -369,6 +371,9 @@ myApp.factory('Times', function(){
             }
             else {
                 this.timesActive.splice(index, 1);
+                if(this.timesActive.length == 0) {
+                    this.buttons['pick_time'] = false;
+                }
             }
         }
     };

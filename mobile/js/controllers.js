@@ -113,10 +113,18 @@ angular.module('myApp.controllers', [])
             Overlay.add(1);
             console.log("SCAPI: ", SCAPI);
             SCAPI.step1().then(function(d){
-                console.log("aPI returned: ", d);
                 Overlay.remove();
-                deferred.resolve(d);
-                $state.go("step2");
+                console.log("STEP1 Returned: ", d);
+                var results = d.split("|");
+                // this API formats a response with a pipe ("|") if it is successful
+                if(d.indexOf("|") == -1) {
+                    new xAlert(d);
+                    return false;
+                }
+                else {
+                    deferred.resolve(d);
+                    $state.go("step2");
+                }
             });
             return deferred.promise;
         };
@@ -135,6 +143,7 @@ angular.module('myApp.controllers', [])
         };
 
         $scope.next = function(){
+            console.log("ALL TIMES:", Times);
             if(!Request.isDescriptionValid()){
                 new xAlert("Description must be 7 words");
                 return false;
@@ -178,6 +187,22 @@ angular.module('myApp.controllers', [])
         $scope.$on('$destroy', function() {
             cleanUpFunction();
         });
+        var unMaskPhone = function() {
+            if(User.phone != "")
+                User.phone = String(parseInt(User.phone.replace(/[)( -]/g, "")));
+        };
+
+        var maskPhone = function() {
+            if(User.phone > 0 && User.phone != "" && User.phone != "NaN")
+                User.phone = User.phone.replace(/([\d]{3})([\d]{3})([\d]{4})/, '($1) $2-$3');
+            if(User.phone == "NaN")
+                User.phone = "";
+        };
+        $scope.onPhoneFocus = unMaskPhone;
+        $scope.onPhoneBlur = maskPhone;
+
+        maskPhone();
+
         $scope.next = function(){
             if(!User.isNameValid()) {
                 new xAlert("Invalid name");
