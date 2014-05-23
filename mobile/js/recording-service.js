@@ -10,7 +10,48 @@ String.prototype.toHHMMSS = function () {
     var time    = /*hours+':'+*/minutes+':'+seconds;
     return time;
 }
-myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootScope){
+myApp.factory('Uploader', function($q) {
+		var Uploader = {
+            url : "http://www.sevacall.com/uploadTest.php",
+            success : function(r) {
+                console.log("Code = " + r.responseCode);
+                console.log("Response = " + r.response);
+                console.log("Sent = " + r.bytesSent);
+            },
+            fail : function(error) {
+                alert("An error has occurred when sending your recording: Code = " + error.code);
+                console.log("upload error source " + error.source);
+                console.log("upload error target " + error.target);
+            },
+            uploadRecording : function(Recording) {
+                var self = this;
+                var uri = encodeURI(self.url);
+                var fileURL = Recording.src;
+                console.log("File url is: " + fileURL);
+                var options = new FileUploadOptions();
+                options.fileKey="file";
+                options.fileName=fileURL.substr(fileURL.lastIndexOf('/')+1);
+                options.mimeType="audio/wav";
+                options.headers = {
+                    Connection: "close"
+                }
+                options.chunkedMode = false;
+
+                var ft = new FileTransfer();
+                ft.onprogress = function(progressEvent) {
+                    if (progressEvent.lengthComputable) {
+                      loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
+                    } else {
+                      loadingStatus.increment();
+                    }
+                };
+                ft.upload(fileURL, uri, self.success, self.fail, options);
+            }
+            
+        };
+        return Uploader;
+});
+myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootScope, Uploader){
     var Recording = {
         length : 0,
         position : 0,
@@ -18,11 +59,75 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         positionToString : "",
         playing : 0,
         paused : 0,
-
-        init : function() {
-
+        src : "recording10",
+        mimeType : "audio/wav",
+        init : function(){
+            // check for if file exists (it likely wont), so, create it.
+            var self = this;
+            console.log("init");
+            self.initialPromise = $q.defer();//$.Deferred();
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, self.createFile, function fail(){});
+            //alert();
+            //self.initialPromise.resolve(true);
+            return self.initialPromise.promise;
+            
         },
-
+        createMediaRec : function() {
+            var self = this;
+            /*
+        	alert("!");
+        	var onSuccess = function(){
+             	alert("DONE");
+            };
+            var onError = function() {
+        		alert("err");
+                console.log(err.code)
+            };
+            //self.createMediaRecPromise = $q.defer();
+            */
+            console.log("Creating media rec with src: " + self.getSrc().replace("file://", ""));
+            self.mediaRec = new Media(self.getSrc().replace("file://", ""),
+                function(){
+                	alert("success");
+                }, function(err){
+                	alert("err");
+                    console.log(err.message);
+                }, function(){
+            		alert("stat");
+           		}
+            );
+            //Recording.createMediaRecPromise.resolve(true);
+            //return self.createMediaRecPromise.promise;
+            return true;
+        },
+        createFile : function(fileSystem) {
+            // create a recording file if it doesn't exist.  This is necessary to record into later.
+            var self = this;
+            var deferred = $q.defer();//$.Deferred();
+            var fileName = "recording10.wav"; // must be set here to be used in .getFile, not on outer scope
+            fileSystem.root.getFile(fileName, {create: true, exclusive: false}, success, fail);
+            function success(entry) {
+                Recording.setSrc(entry.toURI());
+                console.log("-----------------filepath for recording: " + Recording.getSrc());
+                Recording.initialPromise.resolve(true);
+                deferred.resolve(true);
+                //SCRecording.initialPromise.resolve(true);
+            };
+            function fail(){alert("FAIL");console.log("Could not create the recording file");};
+            return deferred.promise;
+        },
+        getSrc : function(){
+            return this.src;
+        },
+        setSrc : function(src){
+            console.log("setting source: " + src);
+            this.src = src;
+        },
+        send : function(){
+            // send the recording to the sevacall server using the Uploader object
+            Uploader.uploadRecording(this);
+        },
+        
         startRecord : function() {
             var self = this;
             var deferred = $q.defer();
