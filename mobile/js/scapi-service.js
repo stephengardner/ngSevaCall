@@ -1,4 +1,4 @@
-myApp.factory('SCAPI', function($timeout, User, $http, $q){
+myApp.factory('SCAPI', function(Recording, $timeout, User, $http, $q){
     var SCAPI = {
         init : function(Request) {
             this.Request = Request;
@@ -109,6 +109,12 @@ myApp.factory('SCAPI', function($timeout, User, $http, $q){
 
         postifyUrl : function(url){
             var self = this;
+            if(Recording.saved){
+            	self.data.description = "Describe what you need help with in as much detail as possible...";
+            }
+            else {
+            	self.data.description = self.Request.description;
+            }
             self.data.description = self.Request.description;
             self.data.requestID = self.Request.id;
             var newURL = url + "?" + $.param(self.data);

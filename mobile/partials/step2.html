@@ -6,7 +6,7 @@
             <a href="#"></a>
         </div>
         <div class="description-wrapper" ng-class="{active : isPhoneGap}">
-            <textarea maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>
+            <textarea ng-class="{disabled : recordingSaved}" maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>
         </div>
         <div class="sep"></div>
         <h1>AND WHEN YOU WANT IT</h1>
