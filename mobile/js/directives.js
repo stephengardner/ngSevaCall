@@ -57,4 +57,24 @@ angular.module('myApp.directives', []).
             controller : 'ios7StatusBarController',
             templateUrl: 'partials/statusBar.html'
         }
-    });
+    })
+    .directive('scBlur', ['$parse', function($parse) {
+        return function(scope, element, attr) {
+            var fn = $parse(attr['scBlur']);
+            element.bind('blur', function(event) {
+                scope.$apply(function() {
+                    fn(scope, {$event:event});
+                });
+            });
+        }
+    }])
+    .directive('scFocus', ['$parse', function($parse) {
+        return function(scope, element, attr) {
+            var fn = $parse(attr['scFocus']);
+            element.bind('focus', function(event) {
+                scope.$apply(function() {
+                    fn(scope, {$event:event});
+                });
+            });
+        }
+    }]);
