@@ -1,8 +1,8 @@
 'use strict';
-var isPhoneGap = true;
+var isPhoneGap = false;
 var testing = false;
-var testingType = "recording";
-var environment = "development", root, api_root;
+var testingType = "step3";
+var environment = "local", root, api_root;
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"
@@ -25,9 +25,10 @@ else if(environment == "development"){
     api_root = "http://test.s17.sevacall.com/";
 }
 else if(environment == "production") {
-    window.console = {
-        log : function(nothing){}
-    };
+    console.log = function() {};
+    console.warn = function() {};
+    console.error = function() {};
+
     root = "";
     api_root = "../";
 }

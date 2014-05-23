@@ -465,6 +465,7 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
         pingStatusesStart : function(){
             var self = this;
             Request.processing = true;
+            self.verifiedTimeoutStart();
             self.interval = $interval(function(){
                 SCAPI.getRequestStatus().then(function(d){
                     self.setStatusThrottle(d);
