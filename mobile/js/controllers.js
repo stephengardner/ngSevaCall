@@ -2,22 +2,8 @@
 
 /* Controllers */
 angular.module('myApp.controllers', [])
-    .controller('testRecording', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
-        Request.setID(112669);
-        //SCAPI.getCompaniesList().then(function(){
-            $state.go("step2").then(function(){
-                $state.go("recording");
-            });
-        //});
-        /*
-        SCAPI.getCompaniesList().then(function(){
-            $state.go("step2").then(function(){
-                $state.go("step3");
-            });
-            Request.pingStatusesStart();
-            GoogleMap.init();
-        });
-        */
+    .controller('testRecording', ['Recording', '$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function(Recording, $state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
+        
     }])
     .controller('test2', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         Request.reset();
@@ -49,7 +35,7 @@ angular.module('myApp.controllers', [])
         };
        	
     }])
-    .controller('wrapperController', ['Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function(Uploader, $scope, User, $q, Location, Recording, $timeout){
+    .controller('wrapperController', ['$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function($http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout){
         $scope.isPhoneGap = isPhoneGap;
         if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
         	$scope.ios7 = true;
@@ -110,7 +96,73 @@ angular.module('myApp.controllers', [])
         }
     	
         // Phonegap specific actions
-        if(isPhoneGap) {
+        
+        if(testingType=="recording") {
+            blipsRotate().then(function(){
+                Request.setID(112669);
+                User.setName("Augie Testing");
+                User.setPhone("3017047437");
+                User.setEmail("augie@augie.augie");
+                Request.setCategory("Test Spin");
+                User.setZipcode("20854");
+                SCAPI.step1().then(function(d){
+                	Overlay.remove();
+                    console.log("STEP1 Returned: ", d);
+                    var results = d.split("|");
+                    // this API formats a response with a pipe ("|") if it is successful
+                    if(d.indexOf("|") == -1) {
+                        new xAlert(d);
+                        return false;
+                    }
+                    else {
+                        $state.go("step2");
+                    }
+                    
+                	SCAPI.getCompaniesList().then(function(){
+                        $state.go("recording").then(function(){
+                            Recording.init().then(function(){
+                                console.log("Recording initialized");
+                                Recording.startRecord();
+                                $timeout(function(){
+                                	Recording.stopRecord();
+                                    Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(){
+                                    console.log("done uploading, now going to encode");
+                                        $http({
+                                            url : api_root + "api/mobile/v2/encodeAudio.php?audioType=aiff&requestID=" + Request.id,
+                                            method : "GET",
+                                            headers : {'Content-Type': 'application/json'}
+                                        }).success(function(d){
+                                            console.log("encodeAudio returned: " + d);
+                                            $state.go("step3");
+                            				Request.submit();
+                                        }).error(function(){
+                                            alert("ERROR");
+                                        });
+
+                                    });
+                                    //var deferred = $q.defer();
+                               	}, 2000);
+                            });
+                        });
+                    });
+                });
+                /*
+                SCAPI.getCompaniesList().then(function(){
+                    $state.go("step2").then(function(){
+                        $state.go("recording");
+                        Recording.init().then(function(){
+                        	console.log("Recording initialized");
+                            Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(){
+                            	console.log("----all done----");
+                            });
+                        });
+                    });
+                });
+                */
+            });
+        }
+        else
+        if(isPhoneGap && !testing) {
             blipsRotate().then(function(){
                 Recording.init().then(function(){
                     console.log("Recording file initialized and ready for recording");
@@ -190,7 +242,7 @@ angular.module('myApp.controllers', [])
         };
         $scope.categories = Categories;
     }])
-    .controller('step2Controller', ['Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function(Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
+    .controller('step2Controller', ['Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function(Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
         $scope.isPhoneGap = isPhoneGap;
 
         if($.isEmptyObject(Request.companies))
@@ -220,9 +272,41 @@ angular.module('myApp.controllers', [])
                 new xAlert("Call companies now? You may receive up to three calls",
                     function(button) {
                         if(button == 2) {
-                            $state.go("step3");
-                            Request.submit().then(function(){
-                            });
+                        
+                                Ovarlay.add(1);
+                                var finalStep = function() {
+                           
+                                    Request.submit().then(function(){
+                                        Ovarlay.remove();
+                                        $state.go("step3");
+                                    });
+                                };
+                                /*
+                                function finalStep() {
+                                    Request.submit().then(function(){
+                                        Ovarlay.remove();
+                                        $state.go("step3");
+                                    });
+                                }
+                                */
+                                if(Recording.saved) {
+                                    Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(){
+                                        console.log("done uploading, now going to encode");
+                                        $http({
+                                            url : api_root + "api/mobile/v2/encodeAudio.php?audioType=aiff&requestID=" + Request.id,
+                                            method : "GET",
+                                            headers : {'Content-Type': 'application/json'}
+                                        }).success(function(d){
+                                            console.log("encodeAudio returned: " + d);
+                                            finalStep();
+                                        }).error(function(){
+                                            alert("ERROR");
+                                        });
+                                    });
+                                }
+                                else {
+                               		finalStep();
+                                }
                         }
                     },
                     "Alert",
