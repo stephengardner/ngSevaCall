@@ -1,8 +1,8 @@
 'use strict';
-var isPhoneGap = false;
+var isPhoneGap = true;
 var testing = false;
-var testingType = "step3";
-var environment = "production", root, api_root;
+var testingType = "";
+var environment = "development", root, api_root;
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"
@@ -145,7 +145,7 @@ var myApp = angular.module('myApp', [
                 templateUrl: root + 'partials/home.html'
             };
         }
-        else if(testing && testingType == "recording") {
+        else if(testingType == "recording") {
             var step1 = {
                 name : 'step1',
                 url : '/step1',

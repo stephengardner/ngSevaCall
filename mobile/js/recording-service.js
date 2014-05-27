@@ -12,29 +12,34 @@ String.prototype.toHHMMSS = function () {
 }
 myApp.factory('Uploader', function($q) {
 		var Uploader = {
-            url : "http://www.sevacall.com/uploadTest.php",
+            url : api_root + "components/audio-upload/upload.php",
             success : function(r) {
                 console.log("Code = " + r.responseCode);
                 console.log("Response = " + r.response);
                 console.log("Sent = " + r.bytesSent);
+                Uploader.uploadPromise.resolve(r);
             },
             fail : function(error) {
                 alert("An error has occurred when sending your recording: Code = " + error.code);
                 console.log("upload error source " + error.source);
                 console.log("upload error target " + error.target);
+                Uploader.uploadPromise.reject(error);
             },
-            uploadRecording : function(src) {
+            uploadRecording : function(src, opts) {
                 var self = this;
-                var uri = encodeURI(self.url);
+                self.uploadPromise = $q.defer();
+                var url = encodeURI(self.url + "?" + $.param(opts));
                 var fileURL = src;
                 console.log("File url is: " + fileURL);
                 var options = new FileUploadOptions();
                 options.fileKey="file";
                 options.fileName=fileURL.substr(fileURL.lastIndexOf('/')+1);
                 options.mimeType="audio/wav";
+                /*
                 options.headers = {
                     Connection: "close"
                 }
+                */
                 options.chunkedMode = false;
 
                 var ft = new FileTransfer();
@@ -45,13 +50,14 @@ myApp.factory('Uploader', function($q) {
                       loadingStatus.increment();
                     }
                 };
-                ft.upload(fileURL, uri, self.success, self.fail, options);
+                ft.upload(fileURL, url, self.success, self.fail, options);
+                return self.uploadPromise.promise;
             }
             
         };
         return Uploader;
 });
-myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootScope, Uploader){
+myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootScope){
     var Recording = {
         length : 0,
         position : 0,
@@ -59,18 +65,18 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         positionToString : "",
         playing : 0,
         paused : 0,
-        //name : "recording11.wav", // NOT the same as the src
         mimeType : "audio/wav",
+        audioType : "aiff",
         init : function(){
             // check for if file exists (it likely wont), so, create it.
             var self = this;
             self.initialPromise = $q.defer();
-            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, self.gotFS, function fail(){});
+            window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, self.gotFS, function fail(){});
             return self.initialPromise.promise;
         },
         gotFS : function(fileSystem) {
         	var self = this;
-        	fileSystem.root.getFile("sc-recording.wav", {create: true, exclusive: false}, function(fileEntry){
+        	fileSystem.root.getFile("test2.wav", {create: true, exclusive: false}, function(fileEntry){
             	Recording.gotFileEntry(fileEntry)
                 }, function(){
                 	alert("fail");
@@ -91,18 +97,6 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             );
             Recording.initialPromise.resolve(true);
         },
-        getSrc : function(){
-            return this.src;
-        },
-        setSrc : function(src){
-            console.log("setting source: " + src);
-            this.src = src;
-        },
-        send : function(){
-            // send the recording to the sevacall server using the Uploader object
-            Uploader.uploadRecording(this.mediaRec);
-        },
-        
         startRecord : function() {
             var self = this;
             var deferred = $q.defer();
@@ -144,7 +138,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             self.mediaRec.stopRecord(); //
 
             $interval.cancel(self.interval);
-            if(self.length < 3) {
+            if(self.length < 3 && testingType != "recording") {
                 new xAlert("Recording must be at least 3 seconds");
                 self.reset();
             }
