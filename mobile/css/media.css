@@ -1,3 +1,18 @@
+#step2a input[type="text"], #phone {
+    padding: 6px 5px!important;
+    font-size:1.3em!important;
+}
+#step2a  .sep {
+    margin-top:22px!important;
+}
+#step2a  .sep-buttons {
+    margin-top:27px!important;
+}
+
+#step2a h1 {
+    font-size: 32px;
+}
+    
 /* iPhone 5 */
 @media screen and (device-aspect-ratio: 40/71) {
     #step2a input[type="text"] {
@@ -23,9 +38,5 @@
     }
     .timetable {
         font-size: .74em!important;
-    }
-    .setting-wrapper i {
-        width: 2.8em!important;
-        height: 2.8em!important;
     }
 }
