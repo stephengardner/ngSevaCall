@@ -31,7 +31,7 @@ angular.module('myApp.controllers', [])
         });
     }])
     .controller('bodyController', ['$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location', function($rootScope, Request, Menu, $attrs, $scope, $location){
-        $location.path("/recording");
+        $location.path("/step1");
         $scope.menu = Menu;
         $scope.click = function($event) {
             Menu.active = false;
