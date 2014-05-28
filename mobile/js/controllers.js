@@ -2,9 +2,7 @@
 
 /* Controllers */
 angular.module('myApp.controllers', [])
-    .controller('testRecording', ['Recording', '$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function(Recording, $state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
-        
-    }])
+
     .controller('test2', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         Request.reset();
         Request.setID(112669);
@@ -15,6 +13,11 @@ angular.module('myApp.controllers', [])
             Request.pingStatusesStart();
             GoogleMap.init();
         });
+    }])
+    .controller('test3', ['Splash', 'Test', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function(Splash, Test, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
+
+        Splash.remove();
+    	Test.test1();
     }])
     .controller('test', ['$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         $scope.companies = Request.companies;
@@ -35,7 +38,7 @@ angular.module('myApp.controllers', [])
         };
        	
     }])
-    .controller('wrapperController', ['$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function($http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout){
+    .controller('wrapperController', ['Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function(Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout){
         $scope.isPhoneGap = isPhoneGap;
         if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
         	$scope.ios7 = true;
@@ -43,48 +46,7 @@ angular.module('myApp.controllers', [])
         else {
         	$scope.ios7 = false;
         }
-        function blipsRotate() {
-        	var deferred = $q.defer();
-            var splash, blipImages;
-            if(screen.height <= 480) { // iphone 4 == 480
-                splash = document.getElementById("splashImg-iPhone4");
-                blipImages = [
-                                'img/splash-iphone4-1.jpg',
-                                'img/splash-iphone4-2.jpg',
-                                'img/splash-iphone4-3.jpg',
-                                'img/splash-iphone4-4.jpg'
-                                ];
-            }
-            else {
-                splash = document.getElementById("splashImg-iPhone5");
-                blipImages = [
-                                'img/splash-iphone5-1.jpg',
-                                'img/splash-iphone5-2.jpg',
-                                'img/splash-iphone5-3.jpg',
-                                'img/splash-iphone5-4.jpg'
-                                ];
-            }
-            splash.style.left = 0;
-            var index = 0;
-            var blipping = setInterval(function() {
-                if( index == 0 ) {
-                    splash.src=blipImages[0];
-                    if(navigator.splashscreen) {
-                        navigator.splashscreen.hide();
-                    }
-                }
-                else if( index == blipImages.length ) {
-                    clearInterval(blipping);
-                    $("#splashscreen").hide();
-                    deferred.resolve(true);
-                }
-                else {
-                    splash.src=blipImages[index];
-                }
-                index++;
-            }, 400);
-            return deferred.promise;
-        }
+        
         function locate() {
         	if(!User.zipcode) {
                 $(document).ready(function(){
@@ -96,9 +58,8 @@ angular.module('myApp.controllers', [])
         }
     	
         // Phonegap specific actions
-        
         if(testingType=="recording") {
-            blipsRotate().then(function(){
+            Splash.blip.then(function(){
                 Request.setID(112669);
                 User.setName("Augie Testing");
                 User.setPhone("3017047437");
@@ -161,9 +122,8 @@ angular.module('myApp.controllers', [])
                 */
             });
         }
-        else
-        if(isPhoneGap && !testing) {
-            blipsRotate().then(function(){
+        else if(isPhoneGap) {
+    		Splash.blip().then(function(){
                 Recording.init().then(function(){
                     console.log("Recording file initialized and ready for recording");
                 });
@@ -257,10 +217,16 @@ angular.module('myApp.controllers', [])
         if($scope.recordingSaved) {
             $("textarea").attr("placeholder", "Recording Saved").val("");
         }
-
+		
+        function finalStep() {
+            Request.submit().then(function(){
+                Overlay.remove();
+                $state.go("step3");
+            });
+        }
         $scope.next = function(){
             console.log("ALL TIMES:", Times);
-            if(!Request.isDescriptionValid()){
+            if(!Recording.saved && !Request.isDescriptionValid()){
                 new xAlert("Description must be 7 words");
                 return false;
             }
@@ -272,23 +238,7 @@ angular.module('myApp.controllers', [])
                 new xAlert("Call companies now? You may receive up to three calls",
                     function(button) {
                         if(button == 2) {
-                        
-                                Ovarlay.add(1);
-                                var finalStep = function() {
-                           
-                                    Request.submit().then(function(){
-                                        Ovarlay.remove();
-                                        $state.go("step3");
-                                    });
-                                };
-                                /*
-                                function finalStep() {
-                                    Request.submit().then(function(){
-                                        Ovarlay.remove();
-                                        $state.go("step3");
-                                    });
-                                }
-                                */
+    							Overlay.add(1);
                                 if(Recording.saved) {
                                     Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(){
                                         console.log("done uploading, now going to encode");
@@ -509,6 +459,9 @@ angular.module('myApp.controllers', [])
         });
     }])
     .controller('informationController', ['resolveSize', '$scope', '$window', function(resolveSize, $scope, $window){
+    	// when the info page is generated or the window is resized, fit the video perfectly into the page with no added
+        // black borders.  Meaning is needs a 16/9 aspect ratio.  Calculate the width of the window and adjust the height
+        // accordingly.
         function resizeVideo() {
             var width = $(".ui-view-container").width();
             var height = parseInt(( width / 16 ) * 9) + 2;
@@ -530,10 +483,85 @@ angular.module('myApp.controllers', [])
             resizeVideo();
         });
     }])
-    .controller('recordingController', ['$rootScope', '$state', 'Recording', '$scope', function($rootScope, $state, Recording, $scope){
+    .controller('recordingController', ['$q', '$urlRouter', '$rootScope', '$state', 'Recording', '$scope', function($q, $urlRouter, $rootScope, $state, Recording, $scope){
         $scope.recording = Recording;
+        
+        // when the user tries to navigate away from the page using the menu, catch this event.
+        // if the Recording is in progress, and less than 3 seconds, alert the user and prevent the page from moving
+        // if the Recording is in progress, and greater than 3 seconds, save and proceed as normal
+        var cleanUpFunction = $rootScope.$on('$stateChangeStart', function(event, toState){
+            function alertOnChange() {
+                Recording.stopRecord(1);
+                Recording.reset();
+                $rootScope.$apply();
+                event.preventDefault();
+            	new xAlert("Recording must be at least 3 seconds",
+                    function(button){
+                        $urlRouter.sync();
+                    }
+                );
+            }
+            if(Recording.recording && Recording.length < 3) {
+                alertOnChange();
+            }
+            else if(Recording.recording && Recording.length >= 3) {
+            	Recording.stopRecord;
+            }
+        });
+        
+        // When the back button is clicked, a location chaneg is triggered.
+        // Catch the back button click and make sure that the Recording service is not in the process of recording audio.
+        // if it is, and the recording is less than 3 seconds, prevent the back button and alert the user.
+        // if it is, and the recording is greater than 3 seconds, stop the recording and save it, and then go back.
+        var cleanUpFunctionTwo = $rootScope.$on('$locationChangeStart', function(event, toState){
+        	if(toState.indexOf("recording") == -1 && Recording.recording && Recording.length < 3){
+            	Recording.stopRecord(1);
+                Recording.reset();
+                $rootScope.$apply();
+                event.preventDefault();
+            	new xAlert("Recording must be at least 3 seconds",
+                    function(button){
+                        $urlRouter.sync();
+                    });
+                return false;
+            }
+            else if(Recording.recording && toState.indexOf("recording") == -1){
+            	Recording.stopRecord();
+            }
+        });
+        
+        // when the "Save" button is pressed, check if the recording is in progress.
+        // if it is in progress, and less than three seconds, prevent the state change and stop the recording process.
+        // if it is in progress, and greater than three seconds, stop the recording process and proceed as normal.
         $scope.next = function(){
-            $state.go("step2");
+            if(!Recording.recording) {
+            	$state.go("step2");
+            }
+        	else if(!Recording.recording || Recording.length >= 3) {
+            	Recording.stopRecord();
+            	//alert("Going bv recording.recording is: " + Recording.recording + " and length is: " + Recording.length);
+                $state.go("step2");
+            }
+            else if(Recording.recording && Recording.length < 3){
+            	Recording.stopRecord(1);
+                Recording.reset();
+                $rootScope.$apply();
+                event.preventDefault();
+            	new xAlert("Recording must be at least 3 seconds",
+                    function(button){
+                        $urlRouter.sync();
+                    }
+                );
+            }
+            else {
+                $state.go("step2");
+            }
         };
+        
+        // when the controller is destroyed, remove the rootscope events
+        $scope.$on('$destroy', function() {
+            cleanUpFunction();
+            cleanUpFunctionTwo();
+        });
     }]);
 	

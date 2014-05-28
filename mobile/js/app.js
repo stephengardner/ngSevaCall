@@ -21,20 +21,25 @@ if(environment == "local") {
     api_root = "http://localhost/";
 }
 else if(environment == "development"){
-    root = "http://test.s17.sevacall.com/mobile/";
+    if(isPhoneGap) {
+		root = "";
+    }
+    else {
+    	root = "http://test.s17.sevacall.com/mobile/";
+    }
     api_root = "http://test.s17.sevacall.com/";
 }
 else if(environment == "production") {
-
     console.log = function(msg) {};
     console.warn = function(msg) {};
     console.error = function(msg) {};
-
     root = "";
-    api_root = "../";
-}
-if(isPhoneGap){
-	root = "";
+    if(isPhoneGap) {
+    	api_root = "http://www.sevacall.com/";
+    }
+    else {
+    	api_root = "../";
+    }
 }
 String.prototype.capitalize = function () {
     return this.toLowerCase().replace(/^.|\s\S/g, function (a) {
@@ -150,6 +155,14 @@ var myApp = angular.module('myApp', [
                 name : 'step1',
                 url : '/step1',
                 controller : 'testRecording',
+                templateUrl: root + 'partials/home.html'
+            };
+        }
+        else if(testingType == "times") {
+            var step1 = {
+                name : 'step1',
+                url : '/step1',
+                controller : 'test3',
                 templateUrl: root + 'partials/home.html'
             };
         }

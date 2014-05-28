@@ -1,4 +1,4 @@
-myApp.factory('SCAPI', function(Recording, $timeout, User, $http, $q){
+myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
     var SCAPI = {
         init : function(Request) {
             this.Request = Request;
@@ -27,7 +27,6 @@ myApp.factory('SCAPI', function(Recording, $timeout, User, $http, $q){
              return deferred.promise; // return if the http status is busy
              }
              */
-            self.busy = true; // set the http status to busy
             self.data.category_short = self.Request.category;
             self.data.search_location = User.zipcode;
             //var url = self.urls.step1 + "?" + $.param(self.data); // create the url to ping
@@ -134,7 +133,16 @@ myApp.factory('SCAPI', function(Recording, $timeout, User, $http, $q){
             }
             return $.param(dataToPostify);
         },
-
+		
+        generateURL : function(step) {
+        	var url;
+            var self = this;
+            if(step == "searchAction3") {
+            	url = self.postifyUrl(self.urls.seachAction3) + "&" + self.postifyUser() + Times.postify();
+            }
+            return url;
+        },
+        
         searchAction3 : function(){
             var self = this;
 
@@ -145,7 +153,7 @@ myApp.factory('SCAPI', function(Recording, $timeout, User, $http, $q){
             unMaskPhone();
             self.data.requestID = self.Request.id;
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
-            var url =  self.postifyUrl(self.urls.seachAction3) + "&" + self.postifyUser();
+            var url = self.generateURL("searchAction3");//self.postifyUrl(self.urls.seachAction3) + "&" + self.postifyUser() + Times.postify();
             console.log("SeachAction3 URL : " + url);
             if(testing) {
                 $timeout(function(){

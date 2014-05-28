@@ -3,6 +3,86 @@
 // Register the services:
 angular.module('myApp.services', []);
 
+myApp.factory('Test', function($q, Times, User, Request, SCAPI) {
+	var Test = function() { };
+    Test.prototype = {
+    	test1 : function() {
+            Request.setDescription("test 1 2 3 4 5 6 7");
+            User.setZipcode("20861");
+            Request.setCategory("Test Spin");
+            Times.timesActive = ["4-1", "2-3"];
+            Times.buttons = { now : true };
+            var url = SCAPI.generateURL("searchAction3");
+            console.log("SearchAction3 Test URL: " + url);
+        },
+        test2 : function(){
+        	
+        }
+    };
+    return new Test();
+});
+myApp.factory('Splash', function($q) {
+	var Splash = {
+    	intervalLength : 400,
+    	images : {
+            iphone4 : 	[
+                        'img/splash-iphone4-1.jpg',
+                        'img/splash-iphone4-2.jpg',
+                        'img/splash-iphone4-3.jpg',
+                        'img/splash-iphone4-4.jpg'
+                        ],
+            iphone5 : 	[
+                        'img/splash-iphone5-1.jpg',
+                        'img/splash-iphone5-2.jpg',
+                        'img/splash-iphone5-3.jpg',
+                        'img/splash-iphone5-4.jpg'
+                        ]
+        },
+        remove : function() {
+            clearInterval(this.blipInterval);
+
+            if(navigator.splashscreen) {
+                navigator.splashscreen.hide();
+            }
+            
+            $("#splashscreen").hide();
+        },
+        blip : function() {
+            var deferred = $q.defer();
+            var splash, blipImages;
+            var index = 0;
+            var self = this;
+            if(screen.height <= 480) { // iphone 4 == 480
+                splash = document.getElementById("splashImg-iPhone4");
+                blipImages = this.images.iphone4;
+            }
+            else {
+                splash = document.getElementById("splashImg-iPhone5");
+                blipImages = this.images.iphone5;
+            }
+            splash.style.left = 0;
+            this.blipInterval = setInterval(function() {
+                if( index == 0 ) {
+                    splash.src=blipImages[0];
+                    if(navigator.splashscreen)
+                    	navigator.splashscreen.hide();
+                }
+                else if( index == blipImages.length ) {
+                    self.remove();
+                    deferred.resolve(true);
+                }
+                else {
+                    splash.src=blipImages[index];
+                }
+                index++;
+            }, self.intervalLength);
+            return deferred.promise;
+        }
+    };
+    return Splash;
+	
+});
+
 myApp.factory('Nav', function(){
     var Nav = {
         direction : "back",
@@ -382,7 +462,7 @@ myApp.factory('Times', function(){
     return Times;
 });
 
-myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q, Times){
+myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User, $http, $q, Times){
     var Request = {
         initialized : false,
         companies : {},
@@ -409,6 +489,7 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
             this.verifiedTimeoutStop();
             this.description = "";
             Times.empty();
+            Recording.reset();
             this.id = false;
             this.statuses = [];
             this.statusThrottle = [];
@@ -501,7 +582,13 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
                             console.log(status.requestStatusShort);
                             self.statusThrottle.shift();
                             console.log("THE MAP IS: ", self.map);
-                            self.GoogleMap.setInfoBox(Request.companies[status.companyID]);
+                            
+                            try {
+                            	self.GoogleMap.setInfoBox(Request.companies[status.companyID]);
+                            } catch(e) {
+                            	// if the google map is not defined yet, it means the transition hasn't or will not happen
+                                
+                            }
                         }
                         else {
                             // if companyID is 0, its completed
@@ -530,8 +617,10 @@ myApp.factory('Request', function($rootScope, SCAPI, $interval, User, $http, $q,
             //
             if(testing)
                 this.setID(112669);
+              
             SCAPI.searchAction3().then(function(d){
-                self.pingStatusesStart();
+                Request.pingStatusesStart();
+                console.log(d);
                 deferred.resolve(d);
             });
             return deferred.promise;

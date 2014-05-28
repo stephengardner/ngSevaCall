@@ -107,7 +107,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                 new xAlert("Are you sure you want to delete the details recording?",
                 function(button){
                     if(button == 1) {
-                        self.recording = 0;
+                        self.recording = false;
                         self.reset();
                         $rootScope.$apply(); // necessary to call this on the asynchronous service xAlert. the promises are not taking care of this
                         deferred.resolve(self);
@@ -131,14 +131,25 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             }
             return deferred.promise;
         },
-
-        stopRecord : function() {
+		reset : function() {
+        	this.length = 0;
+            this.position = 0;
+            this.lengthToString = "";
+            this.positionToString = "";
+            this.playing = 0;
+            this.paused = 0;
+            this.saved = 0;
+        },
+        stopRecord : function(opt_disableAlert) {
             var self = this;
             self.recording = false;
             self.mediaRec.stopRecord(); //
-
+            // if we call stopRecord to switch pages and this item is playing, stop it.
+			if(self.playing) {
+            	self.stop();
+            }
             $interval.cancel(self.interval);
-            if(self.length < 3 && testingType != "recording") {
+            if(self.length < 3 && testingType != "recording" && !opt_disableAlert) {
                 new xAlert("Recording must be at least 3 seconds");
                 self.reset();
             }
