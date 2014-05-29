@@ -114,7 +114,6 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
             else {
             	self.data.description = self.Request.description;
             }
-            self.data.description = self.Request.description;
             self.data.requestID = self.Request.id;
             var newURL = url + "?" + $.param(self.data);
             return newURL;

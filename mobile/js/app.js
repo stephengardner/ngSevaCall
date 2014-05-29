@@ -2,7 +2,7 @@
 var isPhoneGap = true;
 var testing = false;
 var testingType = "";
-var environment = "development", root, api_root;
+var environment = "production", root, api_root;
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"

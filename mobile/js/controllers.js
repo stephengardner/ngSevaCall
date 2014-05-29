@@ -40,6 +40,13 @@ angular.module('myApp.controllers', [])
     }])
     .controller('wrapperController', ['Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function(Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout){
         $scope.isPhoneGap = isPhoneGap;
+		var iphone4 = (window.screen.height == (960 / 2));
+		var iphone5 = (window.screen.height == (1136 / 2));
+        if(iphone4)
+        	$scope.iphone4 = true;
+        else if(iphone5)
+        	$scope.iphone5 = true;
+            
         if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
         	$scope.ios7 = true;
         }
@@ -214,8 +221,12 @@ angular.module('myApp.controllers', [])
             $state.go('timetable');
         };
         $scope.recordingSaved = Recording.saved;
-        if($scope.recordingSaved) {
+        if(Recording.saved) {
+        	Request.setDescription("");
             $("textarea").attr("placeholder", "Recording Saved").val("");
+        }
+        else {
+            $("textarea").attr("placeholder", "Describe what you need help with in as much detail as possible...");
         }
 		
         function finalStep() {
@@ -235,26 +246,34 @@ angular.module('myApp.controllers', [])
                 return false;
             }
             else if(User.isEmailValid() && User.isNameValid() && User.isPhoneValid()){
-                new xAlert("Call companies now? You may receive up to three calls",
+                new xAlert(alerts.call_companies.body,
                     function(button) {
                         if(button == 2) {
     							Overlay.add(1);
                                 if(Recording.saved) {
+                                	Overlay.message("Uploading Recording...");
                                     Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(){
                                         console.log("done uploading, now going to encode");
+                                		Overlay.message("Encoding Recording...");
                                         $http({
                                             url : api_root + "api/mobile/v2/encodeAudio.php?audioType=aiff&requestID=" + Request.id,
                                             method : "GET",
                                             headers : {'Content-Type': 'application/json'}
                                         }).success(function(d){
                                             console.log("encodeAudio returned: " + d);
+                                    		Overlay.message("Preparing Request...");
                                             finalStep();
                                         }).error(function(){
-                                            alert("ERROR");
+                                            alert("Error Encoding Recording");
                                         });
+                                    }, function(){
+                                    	// if the recording upload was rejected due to a bad internet connection.
+                                    	Overlay.remove();
+                                        
                                     });
                                 }
                                 else {
+                                    Overlay.message("Preparing Request...");
                                		finalStep();
                                 }
                         }
@@ -268,7 +287,7 @@ angular.module('myApp.controllers', [])
             }
         };
     }])
-    .controller('step2aController', ['Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window', function(Storage, $rootScope, User, Times, $scope, Request, $state, $window){
+    .controller('step2aController', ['$http', 'Uploader', 'Overlay', 'Recording', 'Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window', function($http, Uploader, Overlay, Recording, Storage, $rootScope, User, Times, $scope, Request, $state, $window){
         var UserBackup = angular.copy(User);
         var cleanUpFunction = $rootScope.$on('back', function(){
             console.log("------------------------- rootscope back --------------------------------");
@@ -301,7 +320,13 @@ angular.module('myApp.controllers', [])
         $scope.onPhoneBlur = maskPhone;
 
         maskPhone();
-
+        
+		function finalStep() {
+            Request.submit().then(function(){
+                Overlay.remove();
+                $state.go("step3");
+            });
+        }
         $scope.next = function(){
             if(!User.isNameValid()) {
                 new xAlert("Invalid name");
@@ -315,13 +340,34 @@ angular.module('myApp.controllers', [])
             else {
                 Storage.saveUser();
                 UserBackup = angular.copy(User);
-                if(Request.isDescriptionValid() && !Times.isEmpty()) {
-                    new xAlert(alerts.call_companies.body,
+                
+                if((Request.isDescriptionValid() || Recording.saved) && !Times.isEmpty()) {
+                	new xAlert(alerts.call_companies.body,
                         function(button) {
                             if(button == 2) {
-                                $state.go("step3");
-                                Request.submit().then(function(){
-                                });
+                                Overlay.add(1);
+                                if(Recording.saved) {
+                                	Overlay.message("Uploading Recording...");
+                                    Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(){
+                                        console.log("done uploading, now going to encode");
+                                		Overlay.message("Encoding Recording...");
+                                        $http({
+                                            url : api_root + "api/mobile/v2/encodeAudio.php?audioType=aiff&requestID=" + Request.id,
+                                            method : "GET",
+                                            headers : {'Content-Type': 'application/json'}
+                                        }).success(function(d){
+                                            console.log("encodeAudio returned: " + d);
+                                			Overlay.message("Preparing Request...");
+                                            finalStep();
+                                        }).error(function(){
+                                            alert("Error Encoding Recording");
+                                        });
+                                    });
+                                }
+                                else {
+                                    Overlay.message("Preparing Request...");
+                                    finalStep();
+                                }
                             }
                         },
                         "Alert",
@@ -486,10 +532,21 @@ angular.module('myApp.controllers', [])
     .controller('recordingController', ['$q', '$urlRouter', '$rootScope', '$state', 'Recording', '$scope', function($q, $urlRouter, $rootScope, $state, Recording, $scope){
         $scope.recording = Recording;
         
+        /*
+        if(!Recording.saved && !Recording.mediaRecInitialized) {
+        	// pre-initialize the startRecord cache so that it records immediately when button is clicked later
+        	Recording.mediaRecInitialized = true;
+            Recording.mediaRec.startRecord(); //
+            Recording.mediaRec.stopRecord();
+        }
+        */
         // when the user tries to navigate away from the page using the menu, catch this event.
         // if the Recording is in progress, and less than 3 seconds, alert the user and prevent the page from moving
         // if the Recording is in progress, and greater than 3 seconds, save and proceed as normal
         var cleanUpFunction = $rootScope.$on('$stateChangeStart', function(event, toState){
+        	if(Recording.playing) {
+            	Recording.stop();
+            }
             function alertOnChange() {
                 Recording.stopRecord(1);
                 Recording.reset();
@@ -514,6 +571,9 @@ angular.module('myApp.controllers', [])
         // if it is, and the recording is less than 3 seconds, prevent the back button and alert the user.
         // if it is, and the recording is greater than 3 seconds, stop the recording and save it, and then go back.
         var cleanUpFunctionTwo = $rootScope.$on('$locationChangeStart', function(event, toState){
+        	if(Recording.playing) {
+            	Recording.stop();
+            }
         	if(toState.indexOf("recording") == -1 && Recording.recording && Recording.length < 3){
             	Recording.stopRecord(1);
                 Recording.reset();
@@ -533,7 +593,10 @@ angular.module('myApp.controllers', [])
         // when the "Save" button is pressed, check if the recording is in progress.
         // if it is in progress, and less than three seconds, prevent the state change and stop the recording process.
         // if it is in progress, and greater than three seconds, stop the recording process and proceed as normal.
-        $scope.next = function(){
+        $scope.next = function() {
+        	if(Recording.playing) {
+            	Recording.stop();
+            }
             if(!Recording.recording) {
             	$state.go("step2");
             }

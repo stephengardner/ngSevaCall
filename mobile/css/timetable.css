@@ -1,5 +1,31 @@
 .timetable {
-    font-size:.8em;
+    font-size:1em;
+    width:100%;
+    text-align:center;
+}
+
+/*
+.timetable .sep {
+	margin-top:1.5em!important;
+}
+
+.timetable .sep-buttons {
+	margin-top:1.6em!important;
+}
+*/
+.timetable .aside {
+    font-size:.8em!important;
+    text-align: center;
+    padding: .1em .3em .1em 0em;
+    white-space: nowrap;
+}
+
+.timetable .head {
+	font-size:.8em;
+}
+
+.timetable .head {
+    width:33%;
 }
 
 .timetable .blank {

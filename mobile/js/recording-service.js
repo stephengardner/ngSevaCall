@@ -20,7 +20,7 @@ myApp.factory('Uploader', function($q) {
                 Uploader.uploadPromise.resolve(r);
             },
             fail : function(error) {
-                alert("An error has occurred when sending your recording: Code = " + error.code);
+                new xAlert("An error has occurred when sending your recording: Code = " + error.code);
                 console.log("upload error source " + error.source);
                 console.log("upload error target " + error.target);
                 Uploader.uploadPromise.reject(error);
@@ -170,7 +170,6 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
 
         togglePlay : function() {
             var self = this;
-            self.stopRecord();
             if(self.playing){
                 self.pause();
             }
@@ -220,6 +219,9 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
 
         stop : function() {
             var self = this;
+            if(self.playing) {
+            	self.mediaRec.pause();
+            }
             self.mediaRec.stop(); //
             self.playing = 0;
             self.paused = 0;
