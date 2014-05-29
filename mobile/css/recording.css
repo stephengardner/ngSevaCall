@@ -187,7 +187,7 @@
     border-radius:4px;
     position:relative;
     cursor:pointer;
-    padding: 52px;
+    padding: 49px;
     float: left;
 }
 #description-button:before{
@@ -243,5 +243,5 @@
     width: 15px;
 }
 .description-wrapper.active {
-    padding-left: 120px;
+    padding-left: 107px;
 }

@@ -82,19 +82,6 @@ input, select, textarea {
     border:1px solid #ddd;
 }
 
-.timetable {
-    width:100%;
-    text-align:center;
-}
-.timetable .aside {
-    text-align: center;
-    padding: .3em .3em .3em 0em;
-    white-space: nowrap;
-}
-
-.timetable .head {
-    width:33%;
-}
 textarea {
     font-size:1.2em;
     padding:3px 5px;
@@ -170,7 +157,6 @@ input {
     width:100%;
 }
 
-
 .sep {
     margin-top:25px;
 }
@@ -211,7 +197,7 @@ input {
 }
 
 #step2 textarea {
-    height:108px;
+    height:100px;
     width:100%;
     -webkit-appearance: none;
     resize:none;
@@ -237,6 +223,10 @@ input {
 h1{
     font-family:League_Gothic;
     color:#003366;
+}
+
+#step1 h1 {
+	font-size:3.2em;
 }
 
 h3 {
@@ -304,6 +294,7 @@ header .icon {
 
 #logo img {
     height:30px;
+    margin-top:2px;
 }
 
 header {

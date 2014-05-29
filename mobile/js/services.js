@@ -3,11 +3,12 @@
 // Register the services:
 angular.module('myApp.services', []);
 
-myApp.factory('Test', function($q, Times, User, Request, SCAPI) {
+myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording) {
 	var Test = function() { };
     Test.prototype = {
     	test1 : function() {
-            Request.setDescription("test 1 2 3 4 5 6 7");
+            //Request.setDescription("test 1 2 3 4 5 6 7");
+            Recording.saved = true;
             User.setZipcode("20861");
             Request.setCategory("Test Spin");
             Times.timesActive = ["4-1", "2-3"];
@@ -543,12 +544,12 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
             $interval.cancel(this.verifiedTimeout);
         },
 
-        pingStatusesStart : function(){
+        pingStatusesStart : function() {
             var self = this;
             Request.processing = true;
             self.verifiedTimeoutStart();
-            self.interval = $interval(function(){
-                SCAPI.getRequestStatus().then(function(d){
+            self.interval = $interval(function() {
+                SCAPI.getRequestStatus().then(function(d) {
                     self.setStatusThrottle(d);
                     if(self.statusThrottle.length > 0 && !$.isEmptyObject(self.companies)) {
                         self.verifiedTimeoutStop();
@@ -777,9 +778,9 @@ myApp.factory('Overlay', function(){
         body : $("body"),
         isActive : false,
         isActiveWithSpinner : false,
-        overlaySpinner : $("<div class='overlay-spinner'><img src='" + root + "img/ajax_loader.gif'/></div>"),
+        overlaySpinner : $("<div class='overlay-spinner'><img src='" + root + "img/ajax_loader.gif'/><div class='overlayText'></div></div>"),
         overlayBackground : $("<div class='overlay'></div>"),
-        add : function(opt_spinner) {
+        add : function(opt_spinner, opt_message) {
             if(opt_spinner && !this.isActiveWithSpinner) {
                 this.isActiveWithSpinner = true;
                 this.isActive = true;
@@ -793,11 +794,21 @@ myApp.factory('Overlay', function(){
                 this.isActiveWithSpinner = false;
                 this.overlaySpinner.remove();
             }
+        	if(opt_message) {
+            	this.message(opt_message);
+            }
+            return this;
         },
         remove : function() {
+        	$(".overlayText").html("");
             this.isActive = this.isActiveWithSpinner = false;
             this.overlayBackground.remove();
             this.overlaySpinner.remove();
+            return this;
+        },
+        message : function(text) {
+        	$(".overlayText").html(text);
+            return this;
         }
     };
     return Overlay;
