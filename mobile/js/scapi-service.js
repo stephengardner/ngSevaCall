@@ -120,9 +120,13 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
         },
 
         postifyUser : function(){
-            var firstThree = User.phone.substring(0, 3);
-            var secondThree = User.phone.substring(3, 6);
-            var lastFour = User.phone.substring(6, 10);
+            // un mask the phone in a copied variable so as not to change how the phone number looks if it's bound to
+            // the step2a page while processing
+            var phone = angular.copy(User.phone);
+                phone = String(parseInt(phone.replace(/[)( -]/g, "")));
+            var firstThree = phone.substring(0, 3);
+            var secondThree = phone.substring(3, 6);
+            var lastFour = phone.substring(6, 10);
             var dataToPostify = {
                 name : User.name,
                 email : User.email,
@@ -144,12 +148,6 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
         
         searchAction3 : function(){
             var self = this;
-
-            var unMaskPhone = function() {
-                if(User.phone != "")
-                    User.phone = String(parseInt(User.phone.replace(/[)( -]/g, "")));
-            };
-            unMaskPhone();
             self.data.requestID = self.Request.id;
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
             var url = self.generateURL("searchAction3");//self.postifyUrl(self.urls.seachAction3) + "&" + self.postifyUser() + Times.postify();

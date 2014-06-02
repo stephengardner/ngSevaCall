@@ -158,15 +158,15 @@ input {
 }
 
 .sep {
-    margin-top:25px;
+    margin-top:2em;
 }
 
 .sep-sm {
-    margin-top:12px;
+    margin-top:1em;
 }
 
 .sep-buttons {
-    margin-top:30px;
+    margin-top:2.2em;
 }
 
 .time {
@@ -322,7 +322,7 @@ header {
     font-weight: bold;
     font-family: arial;
     font-size: 1.5em;
-    padding: 15px;
+    padding: .8em;
     -webkit-appearance: none;
     border: 1px solid rgb(0, 30, 107);
     box-shadow: inset 0px 1px 1px 0px rgb(147, 186, 255);

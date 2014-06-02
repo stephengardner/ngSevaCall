@@ -1,8 +1,11 @@
 'use strict';
-var isPhoneGap = true;
+var isPhoneGap = false;
 var testing = false;
+var testRequestID = 112669;
+var testPhoneNumber = "(301) 704-7437"; // Augie's number!
+var skipAPICalls = true;
 var testingType = "";
-var environment = "production", root, api_root;
+var environment = "local", root, api_root;
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"

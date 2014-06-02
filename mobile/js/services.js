@@ -94,12 +94,22 @@ myApp.factory('Nav', function(){
     return Nav;
 });
 
-myApp.factory('Menu', function(){
+myApp.factory('Menu', function($timeout){
     var Menu = {
         active : false,
+        busy : false,
         toggle : function(){
+            var self = this;
+            // A busy check is necessary, because if the menu is toggled twice rapidly, future animations would fail.
+            // Must be a problem with Angular's animation checking but I could not pinpoint it.
+            if(self.busy)
+                return;
+            $timeout(function(){
+                self.busy = false;
+            }, 500);
+            self.busy = true;
             //$("#sc-menu").css("height", $("body").height());
-            this.active = !this.active;
+            self.active = !this.active;
         },
         close : function(){
             this.active = 0;
@@ -807,6 +817,10 @@ myApp.factory('Overlay', function(){
             return this;
         },
         message : function(text) {
+            // for the message function, always add the overlay with spinner
+            if(!this.isActiveWithSpinner){
+                this.add(1);
+            }
         	$(".overlayText").html(text);
             return this;
         }
