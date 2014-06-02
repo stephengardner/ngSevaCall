@@ -5,7 +5,7 @@ angular.module('myApp.controllers', [])
 
     .controller('test2', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         Request.reset();
-        Request.setID(112669);
+        Request.setID(testRequestID);
         SCAPI.getCompaniesList().then(function(){
             $state.go("step2").then(function(){
                 $state.go("step3");
@@ -22,7 +22,7 @@ angular.module('myApp.controllers', [])
     .controller('test', ['$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         $scope.companies = Request.companies;
         $scope.request = Request;
-        Request.setID(112669);
+        Request.setID(testRequestID);
         $scope.numCompaniesAccepted = Request.numCompaniesAccepted;
         console.log("Request is: ", Request);
         SCAPI.getCompaniesList().then(function(){
@@ -39,16 +39,6 @@ angular.module('myApp.controllers', [])
        	
     }])
     .controller('wrapperController', ['Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function(Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout){
-    recordPermission({
-        success: function(answer){
-        	alert("wat");
-            console.log('permission = '+answer);
-        },
-        error: function(error){
-        	alert("watnot");
-            console.log('error = '+JSON.stringify(error));
-        }
-    });
         $scope.isPhoneGap = isPhoneGap;
 		var iphone4 = (window.screen.height == (960 / 2));
 		var iphone5 = (window.screen.height == (1136 / 2));
@@ -198,6 +188,11 @@ angular.module('myApp.controllers', [])
         };
 
         $scope.next = function(){
+            if(skipAPICalls) {
+                Request.setID(testRequestID);
+                $state.go("step2");
+                return;
+            }
             var deferred = $q.defer();
             Overlay.add(1);
             console.log("SCAPI: ", SCAPI);
@@ -246,7 +241,12 @@ angular.module('myApp.controllers', [])
             });
         }
         $scope.next = function(){
-            console.log("ALL TIMES:", Times);
+            if(skipAPICalls) {
+                Request.setDescription("This is a test description set by the skip API Calls variable");
+                Times.buttons = { now : true };
+                $state.go("step2a");
+                return;
+            }
             if(!Recording.saved && !Request.isDescriptionValid()){
                 new xAlert("Description must be 7 words");
                 return false;
@@ -332,12 +332,20 @@ angular.module('myApp.controllers', [])
         maskPhone();
         
 		function finalStep() {
+            Overlay.message("Preparing Request...");
             Request.submit().then(function(){
                 Overlay.remove();
                 $state.go("step3");
             });
         }
         $scope.next = function(){
+            if(skipAPICalls) {
+                User.setName("This is a test name");
+                User.setEmail("test@test.test");
+                User.setPhone(testPhoneNumber);
+                finalStep();
+                return;
+            }
             if(!User.isNameValid()) {
                 new xAlert("Invalid name");
             }
@@ -375,7 +383,6 @@ angular.module('myApp.controllers', [])
                                     });
                                 }
                                 else {
-                                    Overlay.message("Preparing Request...");
                                     finalStep();
                                 }
                             }
