@@ -64,6 +64,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         lengthToString : "",
         positionToString : "",
         playing : 0,
+        permissionsStatus : 0, // O: Uknown (on start), 1: Good to record, 2: DENIED
         paused : 0,
         mimeType : "audio/wav",
         audioType : "aiff",
@@ -91,8 +92,28 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         	self.mediaRec = new Media(fileEntry.fullPath,
                 function(){
                 }, function(err){
-                    console.log(err.message);
-                }, function(){
+                	console.log("MediaError callback code: " + err.code);
+                    console.log("MediaError callback message: " + err.message);
+                    if(err.code == 1) {
+                    	// permissions aborted / denied
+                    	new xAlert(
+                        	"To record audio, please enable audio permissions for this application from your devices settings page.", function(){}, "Recording Permissions Declined"
+                        );
+                        self.permissionsStatus = 2;
+                    }
+                }, function(statusChanged){
+                	console.log("--------------- RECORDING STATUS HAS CHANGED TO: " + statusChanged + "-----------------");
+                    
+                    //for reference:
+                    //Media.MEDIA_NONE = 0;
+                    //Media.MEDIA_STARTING = 1;
+                    //Media.MEDIA_RUNNING = 2;
+                    //Media.MEDIA_PAUSED = 3;
+                    //Media.MEDIA_STOPPED = 4;
+                    if(statusChanged == 2) {
+                    	self.permissionsStatus = 1;
+                    }
+                    
            		}
             );
             Recording.initialPromise.resolve(true);
@@ -121,11 +142,16 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             }
             else {
             	self.mediaRec.startRecord(); //
-                self.recording = true;
                 self.interval = $interval(function(){
-                    self.length += .1;
-                    self.lengthToString = self.length.toString().toHHMMSS();
-                    console.log(self.length);
+                	if(self.permissionsStatus == 1) {
+                		self.recording = true;
+                        self.length += .1;
+                        self.lengthToString = self.length.toString().toHHMMSS();
+                        console.log(self.length);
+                    }
+                	//console.log("duration:" + self.mediaRec.duration);
+                    //console.log("getDuration: " + self.mediaRec.getDuration());
+                    //console.log("getCurrentPosition: " + self.mediaRec.getCurrentPosition());//(se)
                 }, 100);
                 deferred.resolve(self);
             }
