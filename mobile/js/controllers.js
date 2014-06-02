@@ -39,6 +39,16 @@ angular.module('myApp.controllers', [])
        	
     }])
     .controller('wrapperController', ['Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout',  function(Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout){
+    recordPermission({
+        success: function(answer){
+        	alert("wat");
+            console.log('permission = '+answer);
+        },
+        error: function(error){
+        	alert("watnot");
+            console.log('error = '+JSON.stringify(error));
+        }
+    });
         $scope.isPhoneGap = isPhoneGap;
 		var iphone4 = (window.screen.height == (960 / 2));
 		var iphone5 = (window.screen.height == (1136 / 2));
@@ -46,14 +56,14 @@ angular.module('myApp.controllers', [])
         	$scope.iphone4 = true;
         else if(iphone5)
         	$scope.iphone5 = true;
-            
+        /*
         if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
         	$scope.ios7 = true;
         }
         else {
         	$scope.ios7 = false;
         }
-        
+        */
         function locate() {
         	if(!User.zipcode) {
                 $(document).ready(function(){
