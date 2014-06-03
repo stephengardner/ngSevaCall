@@ -1,11 +1,13 @@
 'use strict';
-var isPhoneGap = false;
-var testing = false;
+var isPhoneGap = true;
+var testing = true;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
-var skipAPICalls = true;
+var skipAPICalls = false;
 var testingType = "";
-var environment = "local", root, api_root;
+var environment = "development", root, api_root;
+var mapsLoaded = false; // requires internet to grab google map
+
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"
@@ -71,7 +73,7 @@ var myApp = angular.module('myApp', [
                 // do something on success
                 return response;
             }, function (response) {
-                console.log("Http wrapper error response: ", response);
+                console.log("-*-Http wrapper error response: ", response);
                 if(response.status == 500) {
                     // put a more significant error in here
                 }
@@ -182,10 +184,9 @@ var myApp = angular.module('myApp', [
                     Overlay.add(1);
                     SCAPI.step1().then(function(d){
                         if(d == "Invalid Location"){
-                            console.log("Invalid step 2");
+                            console.log("-*-Invalid step 2");
                             $location.path("/");
                         }
-                        console.log("aPI returned: ", d);
                         Overlay.remove();
                         deferred.resolve(d);
                     });
@@ -269,28 +270,26 @@ var myApp = angular.module('myApp', [
         $rootScope.$on('$stateChangeSuccess',
             function(event, toState, toParams, fromState, fromParams){
                 Menu.active = false;
-                console.log("State Change: State change success!");
+                console.log("-State Change: State change success!");
             });
         $rootScope.$on('$stateChangeStart', function(event, toState){
             Menu.active = false;
-            console.log("Going to state: " + toState.name);
+            console.log("-Going to state: " + toState.name);
             //alert(toState.name);
             if((toState.name == "step2" || toState.name == "step3") && !Request.id) {
                 $location.path("/step1");
             }
             // MENU BUTTON PRESSED ONLY
             function alertOnChange() {
-                console.log(" -------------------- preventing default change on state change -------------------------");
+                console.log("*-*Preventing default change on state change Menu Button");
                 event.preventDefault();
                 new xAlert(alerts.abandon.body,
                     function(button){
                         if(button == 1){
-                            console.log(" -------------------- resetting request and changing path -------------------------");
                             Request.reset();
                             $state.go(toState.name);
                             $urlRouter.sync(); // not sure what this does at the moment
                         }
-                        console.log(button);
                     },
                     alerts.abandon.title,
                     "Yes, Cancel"
@@ -308,17 +307,15 @@ var myApp = angular.module('myApp', [
 
                 // BACK BUTTON TO PAGE 1 ONLY
                 function alertOnChange() {
-                    console.log(" -------------------- preventing default change on location change -------------------------");
+                	console.log("*-*Preventing default change on location change Back Button");
                     event.preventDefault();
                     new xAlert(alerts.abandon.body,
                         function(button){
                             if(button == 1){
-                                console.log(" -------------------- resetting request and changing path -------------------------");
                                 Request.reset();
                                 $state.go("step1");
                                 $urlRouter.sync(); // not sure what this does at the moment
                             }
-                            console.log(button);
                         },
                         alerts.abandon.title,
                         "Yes, Cancel"

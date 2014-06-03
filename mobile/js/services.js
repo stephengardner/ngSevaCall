@@ -3,6 +3,49 @@
 // Register the services:
 angular.module('myApp.services', []);
 
+myApp.factory('MapLoader', function($window, $q){
+	var MapLoader = {
+    	busy : false,
+        loaded : false,
+        loadMaps : function(){
+        	var self = this;
+        	self.deferred = $q.defer();
+            if(self.busy) {
+            	self.deferred.reject();
+            }
+            else if(self.loaded) {
+                self.deferred.resolve();
+            }
+            else {
+                $window.loadMapsPlugins = function(){
+                    $.getScript("js/infobox.js").done(function(){
+                        $.getScript("js/xMarker.js").done(function(){
+                        self.loaded = true;
+                            self.deferred.resolve(true);
+                            //Location.geoLocate();
+                        }).fail(function(){
+                            self.deferred.reject(false);
+                            //Location.geoLocate();
+                        });
+                    }).fail(function(){
+                        self.deferred.reject(false);
+                        //Location.geoLocate();
+                    });
+
+                };
+                $.getScript("http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins").done(function(){
+                    console.log("*Done getting google maps");
+                }).fail(function(){
+                    self.deferred.reject(false);
+                });
+
+            }
+            return this.deferred.promise;
+        },
+        
+    };
+    return MapLoader;
+});
 myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording) {
 	var Test = function() { };
     Test.prototype = {
@@ -14,7 +57,7 @@ myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording) {
             Times.timesActive = ["4-1", "2-3"];
             Times.buttons = { now : true };
             var url = SCAPI.generateURL("searchAction3");
-            console.log("SearchAction3 Test URL: " + url);
+            console.log("*SearchAction3 Test URL: " + url);
         },
         test2 : function(){
         	
@@ -204,7 +247,6 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             var nameOrStatus = companyObj.name;
             var shortAddrOrLongAddr = companyObj.city + ", " + companyObj.state;
             var secondRow;
-            console.log("--OPENING InfoBox ( set with status: " + companyObj.status + " ) ");
 
             if (companyObj.status == "none") {
                 secondRow = "";
@@ -220,7 +262,6 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             else {
                 nameOrStatus = companyObj.name;
             }
-            console.log("companyObj is: ", companyObj);
             var infoBoxContent = '\
 									<table class="SCMapInfoBox clearfix">\
 										<tbody>\
@@ -303,7 +344,7 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             });
             self.infoBox = new InfoBox();
             for (var p in Request.companies) {
-                console.log("     setting marker for company: " + Request.companies[p].name + " at " + Request.companies[p].lat + ", " + Request.companies[p].lon);
+                console.log("*Setting marker for company: " + Request.companies[p].name + " at (" + Request.companies[p].lat + ", " + Request.companies[p].lon + ")");
 
                 Request.companies[p].marker = new xMarker(new google.maps.LatLng(Request.companies[p].lat, Request.companies[p].lon), self.map, Request.companies[p], Request.companies[p].markerNumber);
                 google.maps.event.addListener(Request.companies[p].marker, "click", function () {
@@ -358,22 +399,16 @@ myApp.factory('Times', function(){
         },
 
         isEmpty : function() {
-            console.log(this.timesActive);
-            console.log(this.buttons);
-            console.log($.isEmptyObject(this.buttons));
             var self = this;
             function emptyButtons() {
                 for(var i in self.buttons){
                     if(self.buttons[i] != false) {
-                        console.log("Times is not empty because " + i + " = " + self.buttons[i]);
                         return false;
                     }
                 }
                 console.log("true");
                 return true;
             }
-            console.log("Times.isEmpty() this.timesActive = ", this.timesActive);
-            console.log("Times.isEmpty() emptyButtons true or false? = " + (1 && emptyButtons()));
             return (this.timesActive.length == 0 && emptyButtons());
         },
 
@@ -450,7 +485,7 @@ myApp.factory('Times', function(){
             if(this.findInactive(row,col)) {
                 return false;
             }
-            console.log("toggling time:" + row + "-" + col);
+            console.log("*Toggling time:" + row + "-" + col);
             var index = this.timesActive.indexOf(row + "-" + col);
             if(index == -1 && !this.isFull()) {
                 this.timesActive.push(row + "-" + col);
@@ -469,7 +504,6 @@ myApp.factory('Times', function(){
         }
     };
     Times.init();
-    console.log(Times.dates);
     return Times;
 });
 
@@ -565,8 +599,6 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
                         self.verifiedTimeoutStop();
                         var status = self.statusThrottle[0];
                         if(status.companyID != 0) {
-                            console.log(Request.companies);
-                            console.log("trying: ", status);
                             status.companyName = Request.companies[status.companyID].name;
                             status.location = Request.companies[status.companyID].city + ", " + Request.companies[status.companyID].state;
                             status.rel = Request.companies[status.companyID].markerNumber;
@@ -582,17 +614,15 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
                             }
                             if(status.requestStatusShort == "Accepted") {
                                 SCAPI.getRatings(Request.companies[status.companyID]).then(function(d){
-                                    console.log("finished getting all ratings for company");
+                                    console.log("*All ratings for company have been retrieved");
                                 });
                                 Request.companies[status.companyID].accepted = 1;
 
                                 Request.companies[status.companyID].acceptedOrder = self.numCompaniesAccepted;
                                 self.numCompaniesAccepted++;
-                                console.log("Request.numCompaniesAccepted is: " + self.numCompaniesAccepted);
                             }
                             console.log(status.requestStatusShort);
                             self.statusThrottle.shift();
-                            console.log("THE MAP IS: ", self.map);
                             
                             try {
                             	self.GoogleMap.setInfoBox(Request.companies[status.companyID]);
@@ -607,7 +637,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
                             self.pingStatusesStop();
                         }
                     }
-                    console.log(self.statusThrottle);
+                    console.log("*The current throttle is: ", self.statusThrottle);
                 });
             }, 1000);
         },
@@ -631,7 +661,6 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
               
             SCAPI.searchAction3().then(function(d){
                 Request.pingStatusesStart();
-                console.log(d);
                 deferred.resolve(d);
             });
             return deferred.promise;
@@ -690,7 +719,6 @@ myApp.factory('Storage', function(User, Request, $localStorage){
         },
 
         import : function() {
-            console.log($localStorage);
             User.name = $localStorage.sc_user_name;
             User.email = $localStorage.sc_user_email;
             User.phone = $localStorage.sc_user_phone;
@@ -828,7 +856,7 @@ myApp.factory('Overlay', function(){
     return Overlay;
 });
 
-myApp.factory('Location', function(User, $q, $http, Overlay) {
+myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, MapLoader) {
     var Location = {
         busy : false,
         complete : function() {
@@ -840,20 +868,12 @@ myApp.factory('Location', function(User, $q, $http, Overlay) {
         },
         geoLocate : function(opt_overlay) {
             var self = this;
-            this.deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
-        	console.log("-------1-------");
-            /*if (self.busy) {
-        		console.log("-------busy-------");
-                this.deferred.resolve(false);
-                return;
-            } // return if the http status is busy
-            self.busy = true; // set the http status to busy
-            */
+            if(!this.deferred)
+            	this.deferred = $q.defer();
             navigator.geolocation.getCurrentPosition(
                 function (position) {
                     try {
                         if (typeof google === 'object' && typeof google.maps === 'object') {
-                            //TRACK("LOCATION_PERMISSION_GRANTED");
                             var lat = position.coords.latitude;
                             var lng = position.coords.longitude;
                             var geocoder = new google.maps.Geocoder();
@@ -867,26 +887,50 @@ myApp.factory('Location', function(User, $q, $http, Overlay) {
                                     //
                                     var matches = newzip.match(/\b\d{5}\b/g);
                                     if (!(matches && matches.length >= 1)) {
-                                        //TRACK("REVERSE_GEOCODING_DELEGATE_FAILED", "Notification");
+                                        Overlay.remove();
+                                        new xAlert("Unable to obtain location");
                                     }
                                     else {
-                                        console.log("Geolocated to zipcode: " + newzip);
+                                   		Overlay.remove();
+                                        console.log("*Geolocated to zipcode: " + newzip);
                                         self.complete();
                                         self.deferred.resolve(newzip);
                                     }
                                 }
                                 else {
-                                    //TRACK("REVERSE_GEOCODING_DELEGATE_FAILED", "Notification");
-                                    //self.deactivateSpinner();
                                     Overlay.remove();
                                     new xAlert("Unable to obtain location");
-                                    //self.error();
                                     console.log(results);
                                 }
                             });
                         }
                         else {
-                            //new xAlert("internet fail");
+                            Overlay.remove();
+                            new xAlert(
+                            	"Please verify you are connected to the internet and retry",
+                                function(button){
+                                    if(button == 1) {
+                                    	Overlay.add(1);
+                                        console.log("about to maploader");
+                                        MapLoader.loadMaps().then(
+                                        	function() {
+                                            	console.log("*Successfully connected to the internet");
+                                                Location.geoLocate()
+                                        	},
+                                            function() {
+                                            	console.log("*No internet");
+                                        		Location.geoLocate()
+                                        	}
+                                        );
+                                    }
+                                    else {
+                                    	console.log("*Dismissing the location alert");
+                                        self.deferred.resolve(false);
+                                    }
+                                },
+                                "Location Services",
+                                "Retry,cancel"
+                            );
                         }
                     }
                     catch (err) {
@@ -898,7 +942,9 @@ myApp.factory('Location', function(User, $q, $http, Overlay) {
                 function(){
                     Overlay.remove();
                     new xAlert("Unable to obtain location");
-                });
+                },
+                {timeout : 5000}
+                );
             return this.deferred.promise;
         }
     };

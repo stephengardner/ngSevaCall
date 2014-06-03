@@ -18,7 +18,6 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
         data : { key : "tmp", boxType : "get", demoNumber : "3018764913" },
         step1 : function(){
             var self = this;
-            console.log("step1");
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
             /*
              if (self.busy) {
@@ -60,9 +59,8 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
                 method : "GET",
                 headers : {'Content-Type': 'application/json'}
             }).success(function(d) {
-                console.log("success:", d);
                 var companyNodes = d.split("|");
-                console.log("Retrieved " + ((companyNodes.length) - 1) + " companies in the CompanyList:");
+                console.log("*Retrieved " + ((companyNodes.length) - 1) + " companies in the CompanyList:");
                 for (var i = 0; i < companyNodes.length - 1; i++) {
                     var companyAttrs = companyNodes[i].split("^~^");
                     self.Request.companies[companyAttrs[0]] = new Object({
@@ -97,10 +95,10 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
                         acceptedOrder : 0
                     });
                 }
-                console.log("Companies are:",self.Request.companies);
+                console.log("*Companies for this request are:", self.Request.companies);
                 deferred.resolve(d); // resolve the $q promise
             }).error(function(d) {
-                console.log("error:", d);
+                console.log("*GetCompaniesList error:", d);
                 deferred.resolve(d); // resolve the $q promise
             });
             return deferred.promise; // once the http callback has been fulfilled, this function returns the satisfied promise
@@ -149,9 +147,8 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
         searchAction3 : function(){
             var self = this;
             self.data.requestID = self.Request.id;
-            var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
-            var url = self.generateURL("searchAction3");//self.postifyUrl(self.urls.seachAction3) + "&" + self.postifyUser() + Times.postify();
-            console.log("SeachAction3 URL : " + url);
+            var deferred = $q.defer();
+            var url = self.generateURL("searchAction3");
             if(testing) {
                 $timeout(function(){
                     deferred.resolve(true);
@@ -181,11 +178,9 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
                 method : "GET",
                 headers : {'Content-Type': 'application/json'}
             }).success(function(d) {
-                console.log("success:", d);
-                //self.setRequestStatus(d.data);
                 deferred.resolve(d.data); // resolve the $q promise
             }).error(function(d) {
-                console.log("error:", d);
+                console.log("*TimeSaved error:", d);
                 deferred.resolve(d); // resolve the $q promise
             });
             return deferred.promise; // once the http callback has been fulfilled, this function returns the satisfied promise
@@ -197,19 +192,16 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
         getRequestStatus : function(){
             var self = this;
             self.data.requestID = self.Request.id;
-            //var url =  self.urls.getCompaniesList + "?" + $.param(self.data); // create the url to ping
             var url = self.postifyUrl(self.urls.getRequestStatus);
-            var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
+            var deferred = $q.defer();
             $http({
                 url : url,
                 method : "GET",
                 headers : {'Content-Type': 'application/json'}
             }).success(function(d) {
-                console.log("success:", d);
-                //self.setRequestStatus(d.data);
                 deferred.resolve(d.data); // resolve the $q promise
             }).error(function(d) {
-                console.log("error:", d);
+                console.log("*GetRequestStatus error:", d);
                 deferred.resolve(d); // resolve the $q promise
             });
             return deferred.promise; // once the http callback has been fulfilled, this function returns the satisfied promise
@@ -225,13 +217,11 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
                     companyZipcode : company.zip,
                     companyPhone : company.phone
                 };
-                console.log("returning", $.param(params));
                 return $.param(params);
             }
             function getRating(source){
                 var deferred = $q.defer();
                 var url = self.urls.getRating + "?source=" + source + "&" +  parseCompany();
-                console.log("url is: " + url);
                 $http({
                     url : url,
                     method : "GET",
@@ -241,9 +231,8 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
                     var ratingSplit = d.split("|");
                     var rating = ratingSplit[0];
                     var numRatings = ratingSplit[1];
-                    console.log("success getting " + source + "ratings: " + d);
                 }).error(function(d){
-                    console.log("error: " + d);
+                    console.log("*GetRating error: " + d);
                 });
                 return deferred.promise;
             }

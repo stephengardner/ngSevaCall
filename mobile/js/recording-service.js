@@ -102,7 +102,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                         self.permissionsStatus = 2;
                     }
                 }, function(statusChanged){
-                	console.log("--------------- RECORDING STATUS HAS CHANGED TO: " + statusChanged + "-----------------");
+                	console.log("*Recording status has changed to: " + statusChanged);
                     
                     //for reference:
                     //Media.MEDIA_NONE = 0;
@@ -147,11 +147,8 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                 		self.recording = true;
                         self.length += .1;
                         self.lengthToString = self.length.toString().toHHMMSS();
-                        console.log(self.length);
+                        console.log("*Recording Length: " + self.length);
                     }
-                	//console.log("duration:" + self.mediaRec.duration);
-                    //console.log("getDuration: " + self.mediaRec.getDuration());
-                    //console.log("getCurrentPosition: " + self.mediaRec.getCurrentPosition());//(se)
                 }, 100);
                 deferred.resolve(self);
             }
