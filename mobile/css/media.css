@@ -15,6 +15,7 @@
     
 /* iPhone 5 */
 @media screen and (device-aspect-ratio: 40/71) {
+	/*
     .body {
         padding-bottom:25px!important;
     }
@@ -24,9 +25,6 @@
     }
     .mobileWeb #step2a h1 {
         font-size:2.2em!important;
-    }
-    .mobileWeb #step1 h1 {
-        font-size:44px;
     }
     .mobileWeb #step2a  .mobileWeb .sep {
         margin-top:22px!important;
@@ -40,20 +38,28 @@
     .mobileWeb .timetable {
         font-size: .74em!important;
     }
-
+	*/
     /* Phonegap */
     .phonegap h1 {
     	font-size:3.75em!important;
     }
     
     .phonegap .sep {
-    	margin-top:2.2em;
+    	margin-top:2.3em;
     }
-    
+
+
     .phonegap .sep-buttons {
-    	margin-top:2.8em;
+    	margin-top:3.4em;
     }
-    
+
+    .phonegap #step2 .sep {
+    	margin-top:3.3em;
+    }
+    .phonegap #step2 .sep-buttons {
+    	margin-top:3.9em;
+    }
+
     .indent .sep {
     	margin-top:.5em;
     }
@@ -73,7 +79,7 @@
         border-radius:4px;
     }
     .phonegap #step2a h1 {
-		font-size:3em!important;
+		font-size:3.2em!important;
     }
     .phonegap #step2a input[type="text"], .phonegap #phone {
     	padding: .5em .25em!important;
