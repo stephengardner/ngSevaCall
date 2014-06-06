@@ -40,7 +40,7 @@ myApp.factory('MapLoader', function($window, $q){
                 });
 
             }
-            return this.deferred.promise;
+            return self.deferred.promise;
         },
         
     };
