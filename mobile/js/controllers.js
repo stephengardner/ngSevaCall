@@ -100,7 +100,7 @@ angular.module('myApp.controllers', [])
                                         }).success(function(d){
                                             console.log("*Audio Encoding returned: " + d);
                                             $state.go("step3");
-                            				Request.submit();
+                            				//Request.submit();
                                         }).error(function(){
                                             new xAlert("Error Encoding Recording");
                                         });

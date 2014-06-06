@@ -34,12 +34,14 @@ myApp.factory('Uploader', function($q) {
                 var options = new FileUploadOptions();
                 options.fileKey="file";
                 options.fileName=fileURL.substr(fileURL.lastIndexOf('/')+1);
-				if(device.platform == "iPhone") {
+                console.log("*The Url we're pinging for UPLOAD is: " + url);
+				if(device.platform == "iOS") {
 					options.mimeType="audio/wav";
 				}
 				else if(device.platform == "Android") {
 					options.mimeType="audio/amr";
 				}
+                console.log("*Options mimetype: " + options.mimeType);
                 /*
                 options.headers = {
                     Connection: "close"
@@ -97,12 +99,15 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
 			var audioType = this.mimeType.split("/");
 			audioType = audioType[1];
 			this.audioType = audioType;
+            // for iPhones, we need an aiff audiotype.  override it here
+            if(this.audioType == "wav")
+            	this.audioType = "aiff";
 			console.log("Set recording's mimeType to: '" + this.mimeType + "' and audioType to: '" + this.audioType + "'");
 		},
 		
         gotFS : function(fileSystem) {
         	var self = this;
-        	fileSystem.root.getFile("sc_recording.amr", {create: true, exclusive: false}, function(fileEntry){
+        	fileSystem.root.getFile("sc_recording.wav", {create: true, exclusive: false}, function(fileEntry){
             	Recording.gotFileEntry(fileEntry)
                 }, function(){
                 	alert("fail");
@@ -113,7 +118,11 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
 		newMediaRec : function() {
 			var self = this;
 			console.log("Creating new media rec with src: " + self.toURL);
-			self.mediaRec = new Media(self.toURL,
+            if(device.platform == "Android") {
+            	mediaLocation = self.src;
+            }
+            var mediaLocation = self.src;
+			self.mediaRec = new Media(mediaLocation,
                 function(){
                 }, function(err){
                 	console.log("MediaError callback code: " + err.code);
