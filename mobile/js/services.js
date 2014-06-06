@@ -60,7 +60,38 @@ myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording) {
             console.log("*SearchAction3 Test URL: " + url);
         },
         test2 : function(){
-        	
+			alert("TEST2");
+			var gotFS = function(fileSystem){
+				//alert("fileSystem root path: " + fileSystem.root.toURL());
+				fileSystem.root.getFile("sc_recording3.wav", {create: true, exclusive: false}, function(fileEntry){
+						//alert("fileEntry path: " + fileEntry.toURL());
+						console.log("*****SOURCE: " + fileEntry.fullPath);
+						Recording.src = fileEntry.toURL();
+						Recording.mediaRec = new Media(Recording.src, function(){ alert("OK"); }, function(err){ 
+						console.log("MediaError callback code: " + err.code);
+						console.log("MediaError callback message: " + err.message);alert("NOT OK"); }, function(){ /*alert("CHANGED");*/ });
+						
+						Recording.mediaRec.startRecord();
+							alert("RECORDING");
+						//mediaRec.stopRecord();
+						
+						window.setTimeout(function(){
+							Recording.mediaRec.stopRecord();
+						}, 1000);
+						window.setTimeout(function(){
+							alert("PLAYING");
+							Recording.mediaRec.release();
+							var mediaRec = new Media(Recording.src);
+							mediaRec.play();
+						}, 1500);
+						
+					}, function(){
+						alert("fail");
+					}
+				);
+			};
+            window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, gotFS, function fail(){});
+			
         }
     };
     return new Test();
@@ -96,30 +127,37 @@ myApp.factory('Splash', function($q) {
             var splash, blipImages;
             var index = 0;
             var self = this;
-            if(screen.height <= 480) { // iphone 4 == 480
-                splash = document.getElementById("splashImg-iPhone4");
-                blipImages = this.images.iphone4;
-            }
-            else {
-                splash = document.getElementById("splashImg-iPhone5");
-                blipImages = this.images.iphone5;
-            }
-            splash.style.left = 0;
-            this.blipInterval = setInterval(function() {
-                if( index == 0 ) {
-                    splash.src=blipImages[0];
-                    if(navigator.splashscreen)
-                    	navigator.splashscreen.hide();
-                }
-                else if( index == blipImages.length ) {
-                    self.remove();
-                    deferred.resolve(true);
-                }
-                else {
-                    splash.src=blipImages[index];
-                }
-                index++;
-            }, self.intervalLength);
+			if(device && device.platform == "iPhone") {
+				if(screen.height <= 480) { // iphone 4 == 480
+					splash = document.getElementById("splashImg-iPhone4");
+					blipImages = this.images.iphone4;
+				}
+				else {
+					splash = document.getElementById("splashImg-iPhone5");
+					blipImages = this.images.iphone5;
+				}
+				splash.style.left = 0;
+				this.blipInterval = setInterval(function() {
+					if( index == 0 ) {
+						splash.src=blipImages[0];
+						if(navigator.splashscreen)
+							navigator.splashscreen.hide();
+					}
+					else if( index == blipImages.length ) {
+						self.remove();
+						deferred.resolve(true);
+					}
+					else {
+						splash.src=blipImages[index];
+					}
+					index++;
+				}, self.intervalLength);
+			}
+			else {
+				navigator.splashscreen.hide();
+				self.remove();
+				deferred.resolve(true);
+			}
             return deferred.promise;
         }
     };

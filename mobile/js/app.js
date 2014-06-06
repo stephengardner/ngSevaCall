@@ -1,5 +1,9 @@
 'use strict';
-var isPhoneGap = false;
+//var isPhoneGap = true;
+var checkPhoneGap = function() {
+	return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
+}
+var isPhoneGap = checkPhoneGap();
 var testing = false;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
@@ -160,6 +164,14 @@ var myApp = angular.module('myApp', [
                 name : 'step1',
                 url : '/step1',
                 controller : 'testRecording',
+                templateUrl: root + 'partials/home.html'
+            };
+        }
+        else if(testingType == "recordingAndroid") {
+            var step1 = {
+                name : 'step1',
+                url : '/step1',
+                controller : 'test3',
                 templateUrl: root + 'partials/home.html'
             };
         }
