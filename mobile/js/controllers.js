@@ -15,9 +15,8 @@ angular.module('myApp.controllers', [])
         });
     }])
     .controller('test3', ['Splash', 'Test', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function(Splash, Test, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
-
         Splash.remove();
-    	Test.test1();
+    	Test.test2();
     }])
     .controller('test', ['$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         $scope.companies = Request.companies;
@@ -66,7 +65,7 @@ angular.module('myApp.controllers', [])
         
         // Phonegap specific actions
         if(testingType=="recording") {
-            Splash.blip.then(function(){
+            Splash.blip().then(function(){
                 Request.setID(112669);
                 User.setName("Augie Testing");
                 User.setPhone("3017047437");
@@ -95,7 +94,7 @@ angular.module('myApp.controllers', [])
                                     Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(){
                                     	console.log("*Audio Encoding Successful");
                                         $http({
-                                            url : api_root + "api/mobile/v2/encodeAudio.php?audioType=aiff&requestID=" + Request.id,
+                                            url : api_root + "api/mobile/v2/encodeAudio.php?audioType=" + Recording.audioType + "&requestID=" + Request.id,
                                             method : "GET",
                                             headers : {'Content-Type': 'application/json'}
                                         }).success(function(d){
@@ -113,6 +112,9 @@ angular.module('myApp.controllers', [])
                 });
             });
         }
+		else if (testingType=="recordingAndroid") {
+			alert("TEST");
+		}
         else if(isPhoneGap) {
     		Splash.blip().then(function(){
                 Recording.init().then(function(){
@@ -242,7 +244,7 @@ angular.module('myApp.controllers', [])
                                     console.log("*Audio Uploaded");
                                     Overlay.message("Encoding Recording...");
                                     $http({
-                                        url : api_root + "api/mobile/v2/encodeAudio.php?audioType=aiff&requestID=" + Request.id,
+                                        url : api_root + "api/mobile/v2/encodeAudio.php?audioType=" + Recording.audioType + "&requestID=" + Request.id,
                                         method : "GET",
                                         headers : {'Content-Type': 'application/json'}
                                     }).success(function(d){
@@ -550,7 +552,7 @@ angular.module('myApp.controllers', [])
                 alertOnChange();
             }
             else if(Recording.recording && Recording.length >= 3) {
-            	Recording.stopRecord;
+            	Recording.stopRecord();
             }
         });
         

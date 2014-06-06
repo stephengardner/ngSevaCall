@@ -34,7 +34,12 @@ myApp.factory('Uploader', function($q) {
                 var options = new FileUploadOptions();
                 options.fileKey="file";
                 options.fileName=fileURL.substr(fileURL.lastIndexOf('/')+1);
-                options.mimeType="audio/wav";
+				if(device.platform == "iPhone") {
+					options.mimeType="audio/wav";
+				}
+				else if(device.platform == "Android") {
+					options.mimeType="audio/amr";
+				}
                 /*
                 options.headers = {
                     Connection: "close"
@@ -66,30 +71,49 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         playing : 0,
         permissionsStatus : 0, // O: Uknown (on start), 1: Good to record, 2: DENIED
         paused : 0,
-        mimeType : "audio/wav",
-        audioType : "aiff",
+        // set using "setAudio()" : mimeType : "audio/wav",
+        // set using "setAudiio()" : audioType : "aiff",
+		
         init : function(){
             // check for if file exists (it likely wont), so, create it.
             var self = this;
+			self.setAudio();
             self.initialPromise = $q.defer();
             window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, self.gotFS, function fail(){});
             return self.initialPromise.promise;
         },
+		
+		setAudio : function(opt_mimeType) {
+			if(opt_mimeType) {
+				this.mimeType = opt_mimeType;
+			}
+			else if(device.platform == "Android") {
+				this.mimeType = "audio/amr";
+			}
+			else {
+				this.mimeType = "audio/wav";
+			}
+			
+			var audioType = this.mimeType.split("/");
+			audioType = audioType[1];
+			this.audioType = audioType;
+			console.log("Set recording's mimeType to: '" + this.mimeType + "' and audioType to: '" + this.audioType + "'");
+		},
+		
         gotFS : function(fileSystem) {
         	var self = this;
-        	fileSystem.root.getFile("test2.wav", {create: true, exclusive: false}, function(fileEntry){
+        	fileSystem.root.getFile("sc_recording.amr", {create: true, exclusive: false}, function(fileEntry){
             	Recording.gotFileEntry(fileEntry)
                 }, function(){
                 	alert("fail");
                 }
             );
         },
-        gotFileEntry : function(fileEntry) {
-        	var self = this;
-            self.toURL = fileEntry.toURL();
-            self.src = fileEntry.fullPath;
-            
-        	self.mediaRec = new Media(fileEntry.fullPath,
+		
+		newMediaRec : function() {
+			var self = this;
+			console.log("Creating new media rec with src: " + self.toURL);
+			self.mediaRec = new Media(self.toURL,
                 function(){
                 }, function(err){
                 	console.log("MediaError callback code: " + err.code);
@@ -103,7 +127,6 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                     }
                 }, function(statusChanged){
                 	console.log("*Recording status has changed to: " + statusChanged);
-                    
                     //for reference:
                     //Media.MEDIA_NONE = 0;
                     //Media.MEDIA_STARTING = 1;
@@ -116,8 +139,17 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                     
            		}
             );
+		},
+		
+        gotFileEntry : function(fileEntry) {
+        	var self = this;
+            self.toURL = fileEntry.toURL();
+            self.src = fileEntry.fullPath;
+            console.log("***Creating a media file at: " + fileEntry.fullPath);
+        	self.newMediaRec();
             Recording.initialPromise.resolve(true);
         },
+		
         startRecord : function() {
             var self = this;
             var deferred = $q.defer();
@@ -128,6 +160,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                 new xAlert("Are you sure you want to delete the details recording?",
                 function(button){
                     if(button == 1) {
+						self.mediaRec.release();
                         self.recording = false;
                         self.reset();
                         $rootScope.$apply(); // necessary to call this on the asynchronous service xAlert. the promises are not taking care of this
@@ -154,6 +187,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             }
             return deferred.promise;
         },
+		
 		reset : function() {
         	this.length = 0;
             this.position = 0;
@@ -163,6 +197,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             this.paused = 0;
             this.saved = 0;
         },
+		
         stopRecord : function(opt_disableAlert) {
             var self = this;
             self.recording = false;
@@ -177,6 +212,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                 self.reset();
             }
             else {
+				self.newMediaRec();
                 self.saved = true;
             }
         },
