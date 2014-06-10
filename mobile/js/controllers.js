@@ -36,7 +36,20 @@ angular.module('myApp.controllers', [])
         };
        	
     }])
-    .controller('wrapperController', ['Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader',  function(Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader){
+    .controller('wrapperController', ['Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', function(Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav) {
+    	MapLoader.loadMaps();
+        // Initialize the analytics tracker and log app opening
+        Track.init();
+        Track.event({eventCategory : "page", eventAction :  "application_opened"});
+        
+        // Track each page opening as it occurs
+        $rootScope.$on('$locationChangeSuccess', function(){
+        	console.log("*/page/*" + $location.url());
+            Track.event({eventCategory : "page", eventAction :  $location.url().replace("/", "") + "_screen_opened"});
+            // only call if the event.preventDefault isn't active from the locationChangeStart
+            Nav.reset();
+        });
+        
         $scope.isPhoneGap = isPhoneGap;
 		var iphone4 = (window.screen.height == (960 / 2));
 		var iphone5 = (window.screen.height == (1136 / 2));
@@ -44,18 +57,11 @@ angular.module('myApp.controllers', [])
         	$scope.iphone4 = true;
         else if(iphone5)
         	$scope.iphone5 = true;
-        /*
-        deprecated ios7 lookup.  No longer worried about status bar since it is removed by default.
-        if(isPhoneGap && parseFloat(window.device.version) >= 7.0) {
-        	$scope.ios7 = true;
-        }
-        else {
-        	$scope.ios7 = false;
-        }
-        */
+            
         function locate() {
             MapLoader.loadMaps().then(function(){
                 if(!User.zipcode) {
+            	console.log("*Going to geoLocate from the start after blipping");
                     Location.geoLocate().then(function(d){
                         User.setZipcode(d);
                     });
@@ -113,7 +119,7 @@ angular.module('myApp.controllers', [])
             });
         }
 		else if (testingType=="recordingAndroid") {
-			alert("TEST");
+			alert("Test Recording Android");
 		}
         else if(isPhoneGap) {
     		Splash.blip().then(function(){
@@ -126,7 +132,6 @@ angular.module('myApp.controllers', [])
         else {
         	locate();
         }
-            
 	}])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
@@ -181,7 +186,7 @@ angular.module('myApp.controllers', [])
                 console.log("*Step 1 Returned: ", d);
                 var results = d.split("|");
                 // this API formats a response with a pipe ("|") if it is successful
-                if(d.indexOf("|") == -1) {
+                if(d.indexOf("requestID|") == -1) {
                     new xAlert(d);
                     return false;
                 }
@@ -198,6 +203,7 @@ angular.module('myApp.controllers', [])
         $scope.isPhoneGap = isPhoneGap;
         if($.isEmptyObject(Request.companies))
             SCAPI.getCompaniesList();
+            
         $scope.Times = Times;
         $scope.Request = Request;
         $scope.timetable = function(){

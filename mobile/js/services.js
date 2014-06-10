@@ -2,7 +2,57 @@
 /* Services */
 // Register the services:
 angular.module('myApp.services', []);
-
+myApp.factory('Track', function() {
+	var GA_IDs = {
+        'Seva Call Mobile App' : 'UA-51774414-1'
+    };
+    var Track = {
+    	init : function() {
+        	if(window.localStorage) {
+                var clientId = device && device.uuid ? device.uuid : 1; // 1 = web, fix this for storage?
+                ga(
+                    'create',
+                    GA_IDs['Seva Call Mobile App'],
+                    {
+                        'storage' : 'none',
+                        'clientId' : window.localStorage.getItem('clientId')
+                    }
+                );
+                ga(function(tracker) {
+                    window.localStorage.setItem('ga_clientId', tracker.get('clientId'));
+                });
+            }
+            else {
+                ga('create',  GA_IDs['Seva Call Mobile App'], 'www.sevacall.com');
+            }
+            ga('send', 'pageview', {'page' : 'step1'});
+        },
+        defaults : {
+        	event : {
+            	hitType : 'event',
+            	eventCategory : 'sc-action',
+                eventAction : 'none'
+            }
+        },
+        page : function(p) {
+        	ga('send', {
+            	'hitType' : 'pageview',
+                page : p
+            });
+        },
+        merge : function(params) {
+        
+        },
+        event : function(options) {
+        	var defaults = this.defaults.event;
+            var options = options || {};
+            var actual = $.extend({}, defaults, options);
+            actual.eventAction = actual.eventAction.toUpperCase();
+        	ga('send', actual);
+        }
+    };
+    return Track;
+});
 myApp.factory('MapLoader', function($window, $q){
 	var MapLoader = {
     	busy : false,
@@ -11,9 +61,11 @@ myApp.factory('MapLoader', function($window, $q){
         	var self = this;
         	self.deferred = $q.defer();
             if(self.busy) {
+            	console.log("*loadMaps was busy, rejecting");
             	self.deferred.reject();
             }
             else if(self.loaded) {
+            	console.log("*loadMaps was loaded, resolving");
                 self.deferred.resolve();
             }
             else {
@@ -24,17 +76,24 @@ myApp.factory('MapLoader', function($window, $q){
                             self.deferred.resolve(true);
                             //Location.geoLocate();
                         }).fail(function(){
+                        	console.log("*getScript xMarker failed");
                             self.deferred.reject(false);
                             //Location.geoLocate();
                         });
                     }).fail(function(){
+                        console.log("*getScript infoBox failed");
                         self.deferred.reject(false);
                         //Location.geoLocate();
                     });
 
                 };
-                $.getScript("http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins").done(function(){
-                    console.log("*Done getting google maps");
+                $.getScript("http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins").done(function(script, textStatus){
+                	console.log("*Get google maps textStatus is: " + textStatus);
+                    if (typeof google !== 'object' && typeof google.maps !== 'object') {
+                    	self.deferred.reject(false);
+                    }
+                    //console.log("*Done getting google maps, resolving loadMaps");
+                    //self.deferred.resolve(true);
                 }).fail(function(){
                     self.deferred.reject(false);
                 });
@@ -127,7 +186,7 @@ myApp.factory('Splash', function($q) {
             var splash, blipImages;
             var index = 0;
             var self = this;
-			if(device && device.platform == "iPhone") {
+			if(device && device.platform == "iOS") {
 				if(screen.height <= 480) { // iphone 4 == 480
 					splash = document.getElementById("splashImg-iPhone4");
 					blipImages = this.images.iphone4;
@@ -912,12 +971,16 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                 function (position) {
                     try {
                         if (typeof google === 'object' && typeof google.maps === 'object') {
+                        	console.log("*google was an object and so was google.maps");
                             var lat = position.coords.latitude;
                             var lng = position.coords.longitude;
+							console.log("*0");
                             var geocoder = new google.maps.Geocoder();
+							console.log("*00");
                             var latlng = new google.maps.LatLng(lat, lng);
-
+							console.log("*1");
                             geocoder.geocode({'latLng': latlng}, function (results, status) {
+								console.log("*2");
                                 if (status == google.maps.GeocoderStatus.OK) {
                                     var address = results[0].address_components;
                                     var newzip = address[address.length - 1].long_name;
@@ -953,11 +1016,11 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                                         MapLoader.loadMaps().then(
                                         	function() {
                                             	console.log("*Successfully connected to the internet");
-                                                Location.geoLocate()
+                                                Location.geoLocate();
                                         	},
                                             function() {
                                             	console.log("*No internet");
-                                        		Location.geoLocate()
+                                        		Location.geoLocate();
                                         	}
                                         );
                                     }
@@ -972,12 +1035,14 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                         }
                     }
                     catch (err) {
+                		console.log("*geoLocate threw an error");
                         console.log(err);
                         Overlay.remove();
                         new xAlert("Unable to obtain location");
                     }
                 },
                 function(){
+                	console.log("getCurrentPosition called back with an error");
                     Overlay.remove();
                     new xAlert("Unable to obtain location");
                 },

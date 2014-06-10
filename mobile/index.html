@@ -100,9 +100,11 @@
         <script src="js/filters.js"></script>
         <script src="js/directives.js"></script>
         <script src="js/xAlert.js"></script>
-
+		<script src="js/ga.js"></script>
+        
         <script type="text/javascript">
             app.initialize();
+            
             if(isPhoneGap) {
                 document.addEventListener('deviceready',function(){
                     angular.bootstrap(document, ["myApp"]);

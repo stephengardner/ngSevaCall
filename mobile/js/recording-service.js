@@ -118,10 +118,13 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
 		newMediaRec : function() {
 			var self = this;
 			console.log("Creating new media rec with src: " + self.toURL);
-            if(device.platform == "Android") {
-            	mediaLocation = self.src;
+            if(device.platform == "Android"
+            ) {
+            	var mediaLocation = self.toURL;
             }
-            var mediaLocation = self.src;
+            else {
+            	var mediaLocation = self.src;
+            }
 			self.mediaRec = new Media(mediaLocation,
                 function(){
                 }, function(err){
