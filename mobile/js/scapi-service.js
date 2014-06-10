@@ -106,6 +106,9 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
 
         postifyUrl : function(url){
             var self = this;
+            if(window.device && window.device.platform) {
+            	self.data.medium = window.device.platform;
+            }
             if(Recording.saved){
             	self.data.description = "Describe what you need help with in as much detail as possible...";
             }

@@ -8,7 +8,7 @@ var testing = false;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
 var skipAPICalls = false;
-var testingType = "recording";
+var testingType = "";
 var environment = "development", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
@@ -96,7 +96,7 @@ var myApp = angular.module('myApp', [
                             }
                         },
                         "Connection Error",
-                        "Yes, Cancel"
+                        "Retry, Cancel"
                     );
                     return deferred.promise;
                 }
@@ -283,7 +283,8 @@ var myApp = angular.module('myApp', [
             function(event, toState, toParams, fromState, fromParams){
                 Menu.active = false;
                 console.log("-State Change: State change success!");
-            });
+        	}
+        );
         $rootScope.$on('$stateChangeStart', function(event, toState){
             Menu.active = false;
             console.log("-Going to state: " + toState.name);
@@ -344,12 +345,6 @@ var myApp = angular.module('myApp', [
                 }
             }
         );
-
-        $rootScope.$on('$locationChangeSuccess', function(){
-            // only call if the event.preventDefault isn't active from the locationChangeStart
-            Nav.reset();
-        });
-
     }).filter('orderObjectBy', function() {
         return function(items, field, reverse) {
             var filtered = [];
