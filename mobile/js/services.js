@@ -2,6 +2,11 @@
 /* Services */
 // Register the services:
 angular.module('myApp.services', []);
+
+// a service that takes request dependencies and will submit the request or alert...
+myApp.factory("RequestSubmittor", function(Overlay, Request, $state, Times, User, Recording, $timeout, $scope, Uploader, $http, SCAPI){
+	
+});
 myApp.factory('Track', function() {
 	var GA_IDs = {
         'Seva Call Mobile App' : 'UA-51774414-1'
@@ -61,18 +66,21 @@ myApp.factory('MapLoader', function($window, $q){
         	var self = this;
         	self.deferred = $q.defer();
             if(self.busy) {
-            	console.log("*loadMaps was busy, rejecting");
-            	self.deferred.reject();
+            	console.log("*loadMaps was busy, waiting...");
+            	//self.deferred.reject();
             }
             else if(self.loaded) {
             	console.log("*loadMaps was loaded, resolving");
                 self.deferred.resolve();
             }
             else {
+				self.busy = true;
                 $window.loadMapsPlugins = function(){
                     $.getScript("js/infobox.js").done(function(){
                         $.getScript("js/xMarker.js").done(function(){
-                        self.loaded = true;
+							alert("done loading maps");
+							self.loaded = true;
+							self.busy = false;
                             self.deferred.resolve(true);
                             //Location.geoLocate();
                         }).fail(function(){
@@ -105,7 +113,7 @@ myApp.factory('MapLoader', function($window, $q){
     };
     return MapLoader;
 });
-myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording) {
+myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording, $state, $timeout) {
 	var Test = function() { };
     Test.prototype = {
     	test1 : function() {
@@ -119,7 +127,6 @@ myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording) {
             console.log("*SearchAction3 Test URL: " + url);
         },
         test2 : function(){
-			alert("TEST2");
 			var gotFS = function(fileSystem){
 				//alert("fileSystem root path: " + fileSystem.root.toURL());
 				fileSystem.root.getFile("sc_recording3.wav", {create: true, exclusive: false}, function(fileEntry){
@@ -151,7 +158,32 @@ myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording) {
 			};
             window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, gotFS, function fail(){});
 			
-        }
+        },
+		
+		setParams : function() {
+			User.setZipcode("20010");
+			Request.setCategory("Test Spin");
+			Times.timesActive = ["4-1", "2-3"];
+			Times.buttons = { now : true };
+			User.setName("Augie Testing Via Test Service");
+			User.setEmail("Augie@a.co");
+			User.setPhone("3017047437");
+		},
+		
+		test3 : function() {
+			this.setParams();
+			Request.setID(testRequestID);
+			$timeout(function(){
+				$state.go("step2");
+			}, 1000);
+			
+			SCAPI.getCompaniesList().then(function(){
+				alert("got companies list");
+				Request.submit().then(function(){
+					$state.go("step3");
+				});
+			});
+		}
     };
     return new Test();
 });
@@ -604,7 +636,7 @@ myApp.factory('Times', function(){
     return Times;
 });
 
-myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User, $http, $q, Times){
+myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User, $http, $q, Times, Uploader){
     var Request = {
         initialized : false,
         companies : {},
@@ -627,11 +659,12 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
         },
 
         reset : function() {
+            Times.empty();
+            Recording.reset();
+			Uploader.reset();
             this.pingStatusesStop();
             this.verifiedTimeoutStop();
             this.description = "";
-            Times.empty();
-            Recording.reset();
             this.id = false;
             this.statuses = [];
             this.statusThrottle = [];

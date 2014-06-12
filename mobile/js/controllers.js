@@ -16,13 +16,13 @@ angular.module('myApp.controllers', [])
     }])
     .controller('test3', ['Splash', 'Test', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function(Splash, Test, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         Splash.remove();
-    	Test.test2();
+    	Test.test3();
     }])
     .controller('test', ['$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         $scope.companies = Request.companies;
         $scope.request = Request;
-        Request.setID(testRequestID);
         $scope.numCompaniesAccepted = Request.numCompaniesAccepted;
+        Request.setID(testRequestID);
         SCAPI.getCompaniesList().then(function(){
             Request.pingStatusesStart();
             GoogleMap.init();
@@ -78,7 +78,7 @@ angular.module('myApp.controllers', [])
                 User.setEmail("augie@augie.augie");
                 Request.setCategory("Test Spin");
                 User.setZipcode("20854");
-                SCAPI.step1().then(function(d){
+                SCAPI.step1().then(function(d) {
                 	Overlay.remove();
                     console.log("*Step1 Returned: ", d);
                     var results = d.split("|");

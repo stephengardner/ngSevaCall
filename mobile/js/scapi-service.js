@@ -40,6 +40,7 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
                     // transform the step1 result
                     var results = d.split("|");
                     self.Request.setID(results[1]);
+					console.log("*-*Set Request ID For SCAPI to: " + self.Request.id + "*-*");
                     deferred.resolve(d); // resolve the $q promise
                 }).
                 error(function(d){
@@ -50,7 +51,7 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
         },
         getCompaniesList : function() {
             var self = this;
-            self.data.requestID = self.Request.id;
+            //self.data.requestID = self.Request.id; happening in postifyUrl
             //var url =  self.urls.getCompaniesList + "?" + $.param(self.data); // create the url to ping
             var url = self.postifyUrl(self.urls.getCompaniesList);
             var deferred = $q.defer(); // use Angular's $q API to set this function to return a promise, which will be fulfilled when $q is "reolve()d"
@@ -194,7 +195,7 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
 
         getRequestStatus : function(){
             var self = this;
-            self.data.requestID = self.Request.id;
+            //self.data.requestID = self.Request.id; happening in postifyUrl
             var url = self.postifyUrl(self.urls.getRequestStatus);
             var deferred = $q.defer();
             $http({
