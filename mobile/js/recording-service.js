@@ -19,6 +19,9 @@ myApp.factory('Uploader', function($q) {
                 console.log("Sent = " + r.bytesSent);
                 Uploader.uploadPromise.resolve(r);
             },
+			reset : function() {
+				this.busy = false;
+			},
             fail : function(error) {
                 new xAlert("An error has occurred when sending your recording: Code = " + error.code);
                 console.log("upload error source " + error.source);
@@ -50,6 +53,7 @@ myApp.factory('Uploader', function($q) {
                 options.chunkedMode = false;
 
                 var ft = new FileTransfer();
+				/*
                 ft.onprogress = function(progressEvent) {
                     if (progressEvent.lengthComputable) {
                       loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
@@ -57,6 +61,7 @@ myApp.factory('Uploader', function($q) {
                       loadingStatus.increment();
                     }
                 };
+				*/
                 ft.upload(fileURL, url, self.success, self.fail, options);
                 return self.uploadPromise.promise;
             }
@@ -187,7 +192,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             }
             else {
             	self.mediaRec.startRecord(); //
-                self.interval = $interval(function(){
+                self.interval = $interval(function() {
                 	if(self.permissionsStatus == 1) {
                 		self.recording = true;
                         self.length += .1;
@@ -208,6 +213,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             this.playing = 0;
             this.paused = 0;
             this.saved = 0;
+			this.mediaRec.release();
         },
 		
         stopRecord : function(opt_disableAlert) {

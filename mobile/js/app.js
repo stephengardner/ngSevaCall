@@ -8,7 +8,7 @@ var testing = false;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
 var skipAPICalls = false;
-var testingType = "";
+var testingType = "statusBug";
 var environment = "development", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
@@ -176,6 +176,14 @@ var myApp = angular.module('myApp', [
             };
         }
         else if(testingType == "times") {
+            var step1 = {
+                name : 'step1',
+                url : '/step1',
+                controller : 'test3',
+                templateUrl: root + 'partials/home.html'
+            };
+        }
+        else if(testingType == "statusBug") {
             var step1 = {
                 name : 'step1',
                 url : '/step1',
