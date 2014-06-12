@@ -8,7 +8,7 @@ var testing = false;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
 var skipAPICalls = false;
-var testingType = "statusBug";
+var testingType = ""; //statusBug
 var environment = "development", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
@@ -75,6 +75,7 @@ var myApp = angular.module('myApp', [
             var self = this;
             return promise.then(function (response) {
                 // do something on success
+                console.log("*-*Http Wrapper Success Response: " + response);
                 return response;
             }, function (response) {
                 console.log("-*-Http wrapper error response: ", response);
@@ -183,14 +184,12 @@ var myApp = angular.module('myApp', [
                 templateUrl: root + 'partials/home.html'
             };
         }
-        else if(testingType == "statusBug") {
-            var step1 = {
-                name : 'step1',
-                url : '/step1',
-                controller : 'test3',
-                templateUrl: root + 'partials/home.html'
-            };
-        }
+        var statusBug = {
+            name : 'statusBug',
+            url : '/statusBug',
+            controller : 'test3',
+            templateUrl: root + 'partials/home.html'
+        };
         var step2 = {
             name : 'step2',
             url : '/step2',
@@ -273,6 +272,7 @@ var myApp = angular.module('myApp', [
             templateUrl: root + 'partials/summary.html'
         };
         $stateProvider.state(step1);
+        $stateProvider.state(statusBug);
         $stateProvider.state(step2);
         $stateProvider.state(step3);
         $stateProvider.state(recording);
@@ -281,9 +281,7 @@ var myApp = angular.module('myApp', [
         $stateProvider.state(step2a);
         $stateProvider.state(settings);
         $stateProvider.state(information);
-    }).run(function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav){
-        Storage.import(); // loads the local storage into the user name, email, phone and zip
-        SCAPI.init(Request);
+    }).run(function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
         $rootScope.$on('requestCompleted', function(){
             $state.go("summary");
         });
@@ -304,18 +302,27 @@ var myApp = angular.module('myApp', [
             function alertOnChange() {
                 console.log("*-*Preventing default change on state change Menu Button");
                 event.preventDefault();
-                new xAlert(alerts.abandon.body,
-                    function(button){
-                        if(button == 1){
-                            Request.reset();
-                            $state.go(toState.name);
-                            $urlRouter.sync(); // not sure what this does at the moment
-                        }
-                    },
-                    alerts.abandon.title,
-                    "Yes, Cancel"
-                );
-                return false;
+                
+                var reset = function() {
+                	Request.reset();
+                    $state.go(toState.name);
+                    $urlRouter.sync(); // not sure what this does at the moment
+                }
+                if(AlertSwitch.on) {
+                	new xAlert(alerts.abandon.body,
+                        function(button){
+                            if(button == 1){
+                               reset();
+                            }
+                        },
+                        alerts.abandon.title,
+                        "Yes, Cancel"
+                	);
+                	return false;
+                }
+                else {
+                	reset();
+                }
             }
             if(Request.id && !Request.complete && toState.name == "step1") {
                 return alertOnChange();
@@ -325,23 +332,31 @@ var myApp = angular.module('myApp', [
         // Do not allow step2 or step3 access without first obtaining a request id from step 1.  Resetting the request will remove the request id
         $rootScope.$on('$locationChangeStart',
             function(event, toState) {
-
+				var reset = function() {
+                    Request.reset();
+                    $state.go("step1");
+                    $urlRouter.sync(); // not sure what this does at the moment
+                };
                 // BACK BUTTON TO PAGE 1 ONLY
                 function alertOnChange() {
                 	console.log("*-*Preventing default change on location change Back Button");
                     event.preventDefault();
-                    new xAlert(alerts.abandon.body,
+                    if(AlertSwitch.on) {
+                        new xAlert(alerts.abandon.body,
                         function(button){
                             if(button == 1){
-                                Request.reset();
-                                $state.go("step1");
-                                $urlRouter.sync(); // not sure what this does at the moment
+                            	reset();
                             }
                         },
                         alerts.abandon.title,
                         "Yes, Cancel"
-                    );
-                    return false;
+                    	);
+                    	return false;
+                    }
+                    else {
+                    	reset();
+                    }
+
                 }
                 if(Request.id && !Request.complete && toState.indexOf("step1") != -1) {
                     return alertOnChange();
