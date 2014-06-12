@@ -60,10 +60,13 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
                 method : "GET",
                 headers : {'Content-Type': 'application/json'}
             }).success(function(d) {
+            	
                 var companyNodes = d.split("|");
                 console.log("*Retrieved " + ((companyNodes.length) - 1) + " companies in the CompanyList:");
                 for (var i = 0; i < companyNodes.length - 1; i++) {
+                    console.log("*CompanyNodes: " + companyNodes);
                     var companyAttrs = companyNodes[i].split("^~^");
+                    
                     self.Request.companies[companyAttrs[0]] = new Object({
                         name: companyAttrs[1],
                         id: companyAttrs[0],
@@ -198,16 +201,21 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
             //self.data.requestID = self.Request.id; happening in postifyUrl
             var url = self.postifyUrl(self.urls.getRequestStatus);
             var deferred = $q.defer();
-            $http({
-                url : url,
-                method : "GET",
-                headers : {'Content-Type': 'application/json'}
-            }).success(function(d) {
-                deferred.resolve(d.data); // resolve the $q promise
-            }).error(function(d) {
-                console.log("*GetRequestStatus error:", d);
-                deferred.resolve(d); // resolve the $q promise
-            });
+            if(self.Request.requestStatusOverride) {
+            	deferred.resolve(self.Request.requestStatusOverride.data);
+            }
+            else {
+                $http({
+                    url : url,
+                    method : "GET",
+                    headers : {'Content-Type': 'application/json'}
+                }).success(function(d) {
+                    deferred.resolve(d.data); // resolve the $q promise
+                }).error(function(d) {
+                    console.log("*GetRequestStatus error:", d);
+                    deferred.resolve(d); // resolve the $q promise
+                });
+            }
             return deferred.promise; // once the http callback has been fulfilled, this function returns the satisfied promise
         },
 

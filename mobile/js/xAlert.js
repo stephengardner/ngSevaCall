@@ -4,6 +4,7 @@
  * @arguments: (str) message, (func) callback, (str) opt_title, (str) opt_buttons
  * @description: Helper JS Class to display a custom alert popup box for either a web-based or phonegap-based application
  **/
+ window.myXAlert = false;
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
 }
@@ -16,6 +17,7 @@ NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
 }
 function xAlert(options) {
     var self = this;
+    window.myXAlert = this;
     self.defaults = {
         title	: "Error Alert",
         content : "",
@@ -59,7 +61,6 @@ xAlert.prototype = {
 
     init : function(){
         var self = this;
-
         self.setOverlay();
         self.setPopup();
         self.setButtons();
@@ -160,7 +161,9 @@ xAlert.prototype = {
 
         self.popup.innerHTML = innerHTML;
     },
-
+	clickButton : function(index) {
+    	this.buttonsArray[index].click();
+    },
     setButtons : function() {
         var self = this;
         self.buttonsArray = [];

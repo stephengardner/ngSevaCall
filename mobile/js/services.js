@@ -2,10 +2,17 @@
 /* Services */
 // Register the services:
 angular.module('myApp.services', []);
-
-// a service that takes request dependencies and will submit the request or alert...
-myApp.factory("RequestSubmittor", function(Overlay, Request, $state, Times, User, Recording, $timeout, $scope, Uploader, $http, SCAPI){
-	
+myApp.factory('AlertSwitch', function(){
+	var AlertSwitch = {
+    	on : true,
+        turnOff : function() {
+        	this.on = false;
+        },
+        turnOn : function() {
+        	this.on = true;
+        }
+    };
+    return AlertSwitch;
 });
 myApp.factory('Track', function() {
 	var GA_IDs = {
@@ -78,7 +85,6 @@ myApp.factory('MapLoader', function($window, $q){
                 $window.loadMapsPlugins = function(){
                     $.getScript("js/infobox.js").done(function(){
                         $.getScript("js/xMarker.js").done(function(){
-							alert("done loading maps");
 							self.loaded = true;
 							self.busy = false;
                             self.deferred.resolve(true);
@@ -113,80 +119,7 @@ myApp.factory('MapLoader', function($window, $q){
     };
     return MapLoader;
 });
-myApp.factory('Test', function($q, Times, User, Request, SCAPI, Recording, $state, $timeout) {
-	var Test = function() { };
-    Test.prototype = {
-    	test1 : function() {
-            //Request.setDescription("test 1 2 3 4 5 6 7");
-            Recording.saved = true;
-            User.setZipcode("20861");
-            Request.setCategory("Test Spin");
-            Times.timesActive = ["4-1", "2-3"];
-            Times.buttons = { now : true };
-            var url = SCAPI.generateURL("searchAction3");
-            console.log("*SearchAction3 Test URL: " + url);
-        },
-        test2 : function(){
-			var gotFS = function(fileSystem){
-				//alert("fileSystem root path: " + fileSystem.root.toURL());
-				fileSystem.root.getFile("sc_recording3.wav", {create: true, exclusive: false}, function(fileEntry){
-						//alert("fileEntry path: " + fileEntry.toURL());
-						console.log("*****SOURCE: " + fileEntry.fullPath);
-						Recording.src = fileEntry.toURL();
-						Recording.mediaRec = new Media(Recording.src, function(){ alert("OK"); }, function(err){ 
-						console.log("MediaError callback code: " + err.code);
-						console.log("MediaError callback message: " + err.message);alert("NOT OK"); }, function(){ /*alert("CHANGED");*/ });
-						
-						Recording.mediaRec.startRecord();
-							alert("RECORDING");
-						//mediaRec.stopRecord();
-						
-						window.setTimeout(function(){
-							Recording.mediaRec.stopRecord();
-						}, 1000);
-						window.setTimeout(function(){
-							alert("PLAYING");
-							Recording.mediaRec.release();
-							var mediaRec = new Media(Recording.src);
-							mediaRec.play();
-						}, 1500);
-						
-					}, function(){
-						alert("fail");
-					}
-				);
-			};
-            window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, gotFS, function fail(){});
-			
-        },
-		
-		setParams : function() {
-			User.setZipcode("20010");
-			Request.setCategory("Test Spin");
-			Times.timesActive = ["4-1", "2-3"];
-			Times.buttons = { now : true };
-			User.setName("Augie Testing Via Test Service");
-			User.setEmail("Augie@a.co");
-			User.setPhone("3017047437");
-		},
-		
-		test3 : function() {
-			this.setParams();
-			Request.setID(testRequestID);
-			$timeout(function(){
-				$state.go("step2");
-			}, 1000);
-			
-			SCAPI.getCompaniesList().then(function(){
-				alert("got companies list");
-				Request.submit().then(function(){
-					$state.go("step3");
-				});
-			});
-		}
-    };
-    return new Test();
-});
+
 myApp.factory('Splash', function($q) {
 	var Splash = {
     	intervalLength : 400,
@@ -674,6 +607,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
             this.companies = {};
             this.processing = false;
             this.complete = false;
+        	SCAPI.init(Request);
         },
 
         addCompany : function(){
@@ -717,7 +651,18 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
             this.timeSpentWaiting = 0;
             $interval.cancel(this.verifiedTimeout);
         },
-
+		
+        setRequestStatusOverride : function(statusList) {
+        	var self = this;
+            
+            if(statusList == -1) {
+            	self.requestStatusOverride = 0;
+            }
+            else {
+            	self.requestStatusOverride = $.parseJSON(statusList);
+            }
+        },
+        
         pingStatusesStart : function() {
             var self = this;
             Request.processing = true;

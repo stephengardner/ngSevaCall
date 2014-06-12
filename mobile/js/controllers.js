@@ -29,15 +29,25 @@ angular.module('myApp.controllers', [])
         });
     }])
     .controller('bodyController', ['$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location', function($rootScope, Request, Menu, $attrs, $scope, $location){
-        $location.path("/step1");
+    	
+        if(testingType == "statusBug") {
+        	$location.path("/statusBug");
+        }
+        else {
+        	$location.path("/step1");
+        }
         $scope.menu = Menu;
         $scope.click = function($event) {
             Menu.active = false;
         };
        	
     }])
-    .controller('wrapperController', ['Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', function(Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav) {
+    .controller('wrapperController', ['Categories', 'Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', 'Storage', function(Categories, Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav, Storage) {
+        Storage.import(); // loads the local storage into the user name, email, phone and zip
+        SCAPI.init(Request);
     	MapLoader.loadMaps();
+        
+        $scope.categories = Categories;
         // Initialize the analytics tracker and log app opening
         Track.init();
         Track.event({eventCategory : "page", eventAction :  "application_opened"});
@@ -197,7 +207,6 @@ angular.module('myApp.controllers', [])
             });
             return deferred.promise;
         };
-        $scope.categories = Categories;
     }])
     .controller('step2Controller', ['Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function(Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
         $scope.isPhoneGap = isPhoneGap;
@@ -384,7 +393,7 @@ angular.module('myApp.controllers', [])
         var cleanUpFunction = $rootScope.$on('$stateChangeStart', function(event, toState){
             function alertOnChange() {
                 event.preventDefault();
-                new xAlert(alerts.abandon.body,
+                Request.alert = new xAlert(alerts.abandon.body,
                     function(button){
                         if(button == 1){
                             Request.reset();
@@ -405,7 +414,7 @@ angular.module('myApp.controllers', [])
         var cleanUpFunctionTwo = $rootScope.$on('$locationChangeStart', function(event, toState){
             if(toState.indexOf("step3") == -1 && toState.indexOf("step1") == -1 && toState.indexOf("summary") == -1) {
                 event.preventDefault();
-                new xAlert(alerts.abandon.body,
+                Request.alert = new xAlert(alerts.abandon.body,
                     function(button) {
                         if(button == 1) {
                             Request.reset();
