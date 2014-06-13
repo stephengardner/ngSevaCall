@@ -16,7 +16,7 @@ body, .ui-view-container {
     bottom:0;
     left:0;
     right:0;
-    z-index:9001;
+    z-index:9003;
 }
 
 textarea.disabled {
@@ -82,13 +82,18 @@ ng\:form {
 .ui-view-container{
     z-index:2!important;
 }
+
 .time-button.active {
     background:#003366;
     color:white;
 }
+
 input, select, textarea {
     border-radius:4px;
+    /*
     border:1px solid #ddd;
+    */
+    border:none;
 }
 
 textarea {
