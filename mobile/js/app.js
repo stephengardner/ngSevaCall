@@ -292,7 +292,6 @@ var myApp = angular.module('myApp', [
         	}
         );
         $rootScope.$on('$stateChangeStart', function(event, toState){
-            Menu.active = false;
             console.log("-Going to state: " + toState.name);
             //alert(toState.name);
             if((toState.name == "step2" || toState.name == "step3") && !Request.id) {
@@ -327,6 +326,8 @@ var myApp = angular.module('myApp', [
             if(Request.id && !Request.complete && toState.name == "step1") {
                 return alertOnChange();
             }
+			Menu.close();
+			console.log("*Menu closed");
         });
 
         // Do not allow step2 or step3 access without first obtaining a request id from step 1.  Resetting the request will remove the request id

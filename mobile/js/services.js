@@ -214,9 +214,22 @@ myApp.factory('Menu', function($timeout){
             }, 500);
             self.busy = true;
             //$("#sc-menu").css("height", $("body").height());
-            self.active = !this.active;
+			var forceCSSRepaint = $("#menu")[0].offsetHeight;
+			if(self.active)
+				self.close();
+			else 
+				self.active = true;
         },
         close : function(){
+            var self = this;
+			if(!self.active) {
+				return;
+			}
+			console.log("**************CLOSING MENU*******************");
+            self.busy = true;
+            $timeout(function(){
+                self.busy = false;
+            }, 500);
             this.active = 0;
         }
     };
