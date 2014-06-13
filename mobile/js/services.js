@@ -904,7 +904,7 @@ myApp.factory('Overlay', function(){
         body : $("body"),
         isActive : false,
         isActiveWithSpinner : false,
-        overlaySpinner : $("<div class='overlay-spinner'><img src='" + root + "img/ajax_loader.gif'/><div class='overlayText'></div></div>"),
+        overlaySpinner : $("<div class='overlay-spinner'><img src='" + root + "img/ajax_loader.gif'/><div class='overlay-text-wrapper'><div class='overlay-text hidden'></div></div></div>"),
         overlayBackground : $("<div class='overlay'></div>"),
         add : function(opt_spinner, opt_message) {
             if(opt_spinner && !this.isActiveWithSpinner) {
@@ -926,7 +926,7 @@ myApp.factory('Overlay', function(){
             return this;
         },
         remove : function() {
-        	$(".overlayText").html("");
+        	$(".overlay-text").html("");
             this.isActive = this.isActiveWithSpinner = false;
             this.overlayBackground.remove();
             this.overlaySpinner.remove();
@@ -937,7 +937,7 @@ myApp.factory('Overlay', function(){
             if(!this.isActiveWithSpinner){
                 this.add(1);
             }
-        	$(".overlayText").html(text);
+        	$(".overlay-text").html(text).show();
             return this;
         }
     };
