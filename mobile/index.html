@@ -22,7 +22,7 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="width=device-width,initial-scale=1">
         <!--
         <link rel="stylesheet" type="text/css" href="css/index.css" />
         -->
@@ -62,7 +62,7 @@
         </div>
         <!-- begin header -->
         <div id="header-wrapper" style="height:55px;" class="clearfix">
-            <div sc-header style="position:fixed; width:100%; z-index:2;" class="clearfix"></div>
+            <div sc-header class="clearfix"></div>
         </div>
         <!-- end header -->
 
@@ -72,7 +72,7 @@
             <div ng-click="click($event)" ng-controller="bodyController" ng-class="{menuActive : Menu.active}" class="GPUAccel body-animate clearfix">
                 <div class="body-margin">
                     <div class="span12 ui-view-container clearfix">
-                        <div ui-view class="slide" ng-class="{disabled : Menu.active}"></div>
+                        <div ui-view class="slide GPUAccel" ng-class="{disabled : Menu.active}"></div>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
         <!-- end main view -->
 
         <!-- begin menu -->
-        <div sc-menu class="row"></div>
+        <div sc-menu class="GPUAccel row"></div>
         <!-- end menu -->
     
         <script type="text/javascript" src="../../cordova.js"></script>

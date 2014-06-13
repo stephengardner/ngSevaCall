@@ -1,17 +1,19 @@
 <header class="row mobile clearfix">
-	<div class="ios7-bar"></div>
-    <div id="nav" class="icon" ng-class="{ forward : navigation.direction == 'forward' }" ng-click="nav()">
-        <img height="25px" width="35px" src="img/back.png"/>
-    </div>
-    <div id="loader" ng-show="request.processing == true" class="icon">
-        <div class="loaderButton">
-            <img height="28px" width="28px" src="img/ajax-loader2.gif"/>
-        </div>
-    </div>
-    <div id="menu" class="menu clearfix icon" ng-click="Menu.toggle()">
-        <i class="fa fa-bars"></i>
-    </div>
-    <div id="logo">
-        <img src="img/sevacall.png"/>
+	<div class="fixed-header">
+		<div class="ios7-bar"></div>
+	    <div id="nav" class="icon" ng-class="{ forward : navigation.direction == 'forward' }" ng-click="nav()">
+	        <img height="25px" width="35px" src="img/back.png"/>
+	    </div>
+	    <div id="loader" ng-show="request.processing == true" class="icon">
+	        <div class="loaderButton">
+	            <img height="28px" width="28px" src="img/ajax-loader2.gif"/>
+	        </div>
+	    </div>
+	    <div id="menu" class="menu clearfix icon" ng-click="Menu.toggle()">
+	        <i class="fa fa-bars"></i>
+	    </div>
+	    <div id="logo">
+	        <img src="img/sevacall.png"/>
+	    </div>
     </div>
 </header>

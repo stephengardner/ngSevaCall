@@ -509,10 +509,11 @@ angular.module('myApp.controllers', [])
             cleanUpFunction();
         });
     }])
-    .controller('informationController', ['resolveSize', '$scope', '$window', function(resolveSize, $scope, $window){
+    .controller('informationController', ['resolveSize', '$scope', '$window', 'Menu', function(resolveSize, $scope, $window, Menu){
     	// when the info page is generated or the window is resized, fit the video perfectly into the page with no added
         // black borders.  Meaning is needs a 16/9 aspect ratio.  Calculate the width of the window and adjust the height
         // accordingly.
+		$scope.menu = Menu;
         function resizeVideo() {
             var width = $(".ui-view-container").width();
             var height = parseInt(( width / 16 ) * 9) + 2;
