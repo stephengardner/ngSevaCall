@@ -1,20 +1,21 @@
-<div id="step1">
-    <form ng-submit="next()">
+<div id="step1" class="GPUAccel">
+    <form ng-submit="next()" class="GPUAccel">
         <div class="sep"></div>
         <h1>I NEED A</h1>
-        <div class="input-em">
+        <div class="input-em GPUAccel">
             <select ng-class="{disabled : menu.active}" ng-options="category.id as category.name for category in categories" ng-model="Request.categoryID" ng-change="change()">
                 <option id="disabled" ng-selected="" value="">Choose category</option>
             </select>
         </div>
         <div class="sep"></div>
         <h1>NEAR</h1>
-        <div class="input-em">
+        <div class="input-em GPUAccel">
             <div class="where-text-wrap">
                 <div class="where-text-innerwrap">
                     <div class="shadow">
                         <input ng-class="{disabled : menu.active}" ng-model="User.zipcode" class="where-text" type="phone" placeholder="Zipcode" style="width:100%;"/>
                     </div>
+                    <img id="where-loader" ng-show="Location.busy" src="img/ajax_loader.gif"/>
                 </div>
             </div>
             <div class="button" id="where-button" ng-click="getLocation()" ng-class="{disabled : menu.active}">

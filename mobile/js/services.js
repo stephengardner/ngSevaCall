@@ -74,7 +74,7 @@ myApp.factory('MapLoader', function($window, $q){
         	self.deferred = $q.defer();
             if(self.busy) {
             	console.log("*loadMaps was busy, waiting...");
-            	//self.deferred.reject();
+            	self.deferred.reject();
             }
             else if(self.loaded) {
             	console.log("*loadMaps was loaded, resolving");
@@ -90,18 +90,19 @@ myApp.factory('MapLoader', function($window, $q){
                             self.deferred.resolve(true);
                             //Location.geoLocate();
                         }).fail(function(){
+                        	self.busy = false;
                         	console.log("*getScript xMarker failed");
                             self.deferred.reject(false);
                             //Location.geoLocate();
                         });
                     }).fail(function(){
                         console.log("*getScript infoBox failed");
+                        self.busy = false;
                         self.deferred.reject(false);
                         //Location.geoLocate();
                     });
-
                 };
-                $.getScript("http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins").done(function(script, textStatus){
+                $.getScript("http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins").done(function(script, textStatus) {
                 	console.log("*Get google maps textStatus is: " + textStatus);
                     if (typeof google !== 'object' && typeof google.maps !== 'object') {
                     	self.deferred.reject(false);
@@ -109,12 +110,13 @@ myApp.factory('MapLoader', function($window, $q){
                     //console.log("*Done getting google maps, resolving loadMaps");
                     //self.deferred.resolve(true);
                 }).fail(function(){
+                	self.busy = false;
                     self.deferred.reject(false);
                 });
 
             }
             return self.deferred.promise;
-        },
+        }
         
     };
     return MapLoader;
@@ -214,9 +216,22 @@ myApp.factory('Menu', function($timeout){
             }, 500);
             self.busy = true;
             //$("#sc-menu").css("height", $("body").height());
-            self.active = !this.active;
+			var forceCSSRepaint = $("#menu")[0].offsetHeight;
+			if(self.active)
+				self.close();
+			else 
+				self.active = true;
         },
         close : function(){
+            var self = this;
+			if(!self.active) {
+				return;
+			}
+			console.log("**************CLOSING MENU*******************");
+            self.busy = true;
+            $timeout(function(){
+                self.busy = false;
+            }, 500);
             this.active = 0;
         }
     };
@@ -891,7 +906,7 @@ myApp.factory('Overlay', function(){
         body : $("body"),
         isActive : false,
         isActiveWithSpinner : false,
-        overlaySpinner : $("<div class='overlay-spinner'><img src='" + root + "img/ajax_loader.gif'/><div class='overlayText'></div></div>"),
+        overlaySpinner : $("<div class='overlay-spinner'><img src='" + root + "img/ajax_loader.gif'/><div class='overlay-text-wrapper'><div class='overlay-text hidden'></div></div></div>"),
         overlayBackground : $("<div class='overlay'></div>"),
         add : function(opt_spinner, opt_message) {
             if(opt_spinner && !this.isActiveWithSpinner) {
@@ -913,7 +928,7 @@ myApp.factory('Overlay', function(){
             return this;
         },
         remove : function() {
-        	$(".overlayText").html("");
+        	$(".overlay-text").html("");
             this.isActive = this.isActiveWithSpinner = false;
             this.overlayBackground.remove();
             this.overlaySpinner.remove();
@@ -924,7 +939,7 @@ myApp.factory('Overlay', function(){
             if(!this.isActiveWithSpinner){
                 this.add(1);
             }
-        	$(".overlayText").html(text);
+        	$(".overlay-text").html(text).show();
             return this;
         }
     };
@@ -935,18 +950,111 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
     var Location = {
         busy : false,
         complete : function() {
+        	Overlay.remove();
+        	console.log("removing busy status from complete");
             this.busy = false;
         },
-        error : function() {
+        error : function(err) {
+        	console.log("removing busy status from err");
             this.busy = false;
-            this.deferred.resolve(false);
+            Overlay.remove();
+            // on iPhone, the locationManager would call back even after the timeout was called and triggered this alert.  This would cause the alert to fire twice, so we're going to omit the error alert when the error code is 2.  This corresponds to an error message "The operation couldn't be completed"
+            if(err && err.code != 2)
+            	new xAlert("Unable to obtain location");
+            //this.deferred.resolve(false);
         },
         geoLocate : function(opt_overlay) {
             var self = this;
-            if(!this.deferred)
-            	this.deferred = $q.defer();
+            self.busy = true;
+        	var deferred = $q.defer();
+            var preloadDeferred = $q.defer();
+            function preload() {
+                MapLoader.loadMaps().then(function(){
+                    console.log("all loaded");
+                    preloadDeferred.resolve(true);
+                }, function(){
+                    console.log("not loaded");
+                    new xAlert(
+                    "Please verify you are connected to the internet and retry",
+                    function(button){
+                        if(button == 1) {
+                            preload();
+                        }
+                        else {
+                        	preloadDeferred.reject(false);
+                        }
+                    },
+                    "Location Services",
+                    "Retry,Cancel"
+                    );
+                });
+                return preloadDeferred.promise;
+            }
+            preload().then(function(){
+                navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    var geocoder = new google.maps.Geocoder();
+        
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    var latlng = new google.maps.LatLng(lat, lng);
+                    
+                    geocoder.geocode({'latLng': latlng}, function (results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            var address = results[0].address_components;
+                            var newzip = address[address.length - 1].long_name;
+                            // match five digits
+                            //
+                            var matches = newzip.match(/\b\d{5}\b/g);
+                            if (!(matches && matches.length >= 1)) {
+                            	self.error();
+                                deferred.resolve(false);
+                                /*
+                                Overlay.remove();
+                                new xAlert("Unable to obtain location");
+                                */
+                            }
+                            else {
+                                console.log("*Geolocated to zipcode: " + newzip);
+                                self.complete();
+                                deferred.resolve(newzip);
+                                //self.deferred.resolve(newzip);
+                            }
+                        }
+                        else {
+                        	self.error();
+                            deferred.resolve(false);
+                            /*
+                            Overlay.remove();
+                            new xAlert("Unable to obtain location");
+                            console.log(results);
+                            */
+                        }
+                    });
+                });
+                
+            }, function(err){
+            	self.busy = false;
+        		deferred.resolve(false);
+            	//alert("reject preload");
+            },
+            {timeout : 4000}
+            );
+            return deferred.promise;
+        /*
+            var self = this;
+            console.log("adding busy status from geoLocate");
+            if(this.busy) {
+            	this.error();
+                return self.deferred.promise;
+            }
+            this.deferred = $q.defer();
+            self.busy = true;
+            //Overlay.message("Locating...");
             navigator.geolocation.getCurrentPosition(
                 function (position) {
+                	console.log("retrieved a position:");
+                    console.log(position);
                     try {
                         if (typeof google === 'object' && typeof google.maps === 'object') {
                         	console.log("*google was an object and so was google.maps");
@@ -989,6 +1097,7 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                             	"Please verify you are connected to the internet and retry",
                                 function(button){
                                     if(button == 1) {
+                                    	//self.complete();
                                     	Overlay.add(1);
                                         console.log("about to maploader");
                                         MapLoader.loadMaps().then(
@@ -1003,6 +1112,7 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                                         );
                                     }
                                     else {
+                                    	//self.complete();
                                     	console.log("*Dismissing the location alert");
                                         self.deferred.resolve(false);
                                     }
@@ -1015,18 +1125,17 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                     catch (err) {
                 		console.log("*geoLocate threw an error");
                         console.log(err);
-                        Overlay.remove();
-                        new xAlert("Unable to obtain location");
+                        self.error(err);
                     }
                 },
-                function(){
-                	console.log("getCurrentPosition called back with an error");
-                    Overlay.remove();
-                    new xAlert("Unable to obtain location");
+                function(err){
+                	console.log("getCurrentPosition called back with an error, code: " + err.code + " and message: " + err.message);
+                    self.error(err);
                 },
-                {timeout : 5000}
+                {timeout : 4000}
                 );
             return this.deferred.promise;
+            */
         }
     };
     return Location;

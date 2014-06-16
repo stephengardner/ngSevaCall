@@ -146,6 +146,7 @@ angular.module('myApp.controllers', [])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
         $scope.isPhoneGap = isPhoneGap;
+        $scope.Location = Location;
         Request.reset();
         $scope.User = User;
         $scope.Request = Request;
@@ -173,8 +174,11 @@ angular.module('myApp.controllers', [])
         }, 1);
 
         $scope.getLocation = function(){
+        	console.log("*scope.getLocation");
             Overlay.add(1);
             Location.geoLocate().then(function(d){
+            	console.log("Returned...");
+            	$scope.Location.busy = false;
                 if(d) {
                     $scope.User.setZipcode(d);
                 }
@@ -509,30 +513,32 @@ angular.module('myApp.controllers', [])
             cleanUpFunction();
         });
     }])
-    .controller('informationController', ['resolveSize', '$scope', '$window', function(resolveSize, $scope, $window){
+    .controller('informationController', ['Overlay', 'resolveSize', '$scope', '$window', 'Menu', function(Overlay, resolveSize, $scope, $window, Menu){
     	// when the info page is generated or the window is resized, fit the video perfectly into the page with no added
         // black borders.  Meaning is needs a 16/9 aspect ratio.  Calculate the width of the window and adjust the height
         // accordingly.
+		$scope.menu = Menu;
         function resizeVideo() {
             var width = $(".ui-view-container").width();
             var height = parseInt(( width / 16 ) * 9) + 2;
-            $("iframe").css({ "height": height + "px", "max-height" : "400px" });
+            $(".video-box").css({ "height": height + "px", "max-height" : "400px" });
             if(height < 400){
-                $("iframe").css({"width": "100%" });
+                $(".video-box").css({"width": "100%" });
             }
             else {
                 height = 400;
                 width = (height / 9) * 16;
-                $("iframe").css({"width": width + "px"});
+                $(".video-box").css({"width": width + "px"});
             }
         }
         $scope.videoHeight = resolveSize[0];
         $scope.videoWidth = resolveSize[1];
-        $("iframe").css(resolveSize[2]);
+        $(".video-box").css(resolveSize[2]);
 
         angular.element($window).bind('resize',function(){
             resizeVideo();
         });
+        resizeVideo();
     }])
     .controller('recordingController', ['$q', '$urlRouter', '$rootScope', '$state', 'Recording', '$scope', function($q, $urlRouter, $rootScope, $state, Recording, $scope){
         $scope.recording = Recording;
