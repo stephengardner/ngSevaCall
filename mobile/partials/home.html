@@ -15,6 +15,7 @@
                     <div class="shadow">
                         <input ng-class="{disabled : menu.active}" ng-model="User.zipcode" class="where-text" type="phone" placeholder="Zipcode" style="width:100%;"/>
                     </div>
+                    <img id="where-loader" ng-show="height="28px" width="28px" src="img/ajax_loader.gif"/>
                 </div>
             </div>
             <div class="button" id="where-button" ng-click="getLocation()" ng-class="{disabled : menu.active}">
