@@ -21,7 +21,7 @@ myApp.factory('Track', function() {
     var Track = {
     	init : function() {
         	if(window.localStorage) {
-                var clientId = device && device.uuid ? device.uuid : 1; // 1 = web, fix this for storage?
+                var clientId = window.device && window.device.uuid ? window.device.uuid : 1; // 1 = web, fix this for storage?
                 ga(
                     'create',
                     GA_IDs['Seva Call Mobile App'],
@@ -115,7 +115,7 @@ myApp.factory('MapLoader', function($window, $q){
 
             }
             return self.deferred.promise;
-        },
+        }
         
     };
     return MapLoader;
@@ -957,6 +957,7 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
         },
         geoLocate : function(opt_overlay) {
             var self = this;
+            this.busy=true;
             if(!this.deferred)
             	this.deferred = $q.defer();
             navigator.geolocation.getCurrentPosition(
