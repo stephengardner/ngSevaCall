@@ -146,6 +146,7 @@ angular.module('myApp.controllers', [])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
         $scope.isPhoneGap = isPhoneGap;
+        $scope.Location = Location;
         Request.reset();
         $scope.User = User;
         $scope.Request = Request;
@@ -173,8 +174,11 @@ angular.module('myApp.controllers', [])
         }, 1);
 
         $scope.getLocation = function(){
+        	console.log("*scope.getLocation");
             Overlay.add(1);
             Location.geoLocate().then(function(d){
+            	console.log("Returned...");
+            	$scope.Location.busy = false;
                 if(d) {
                     $scope.User.setZipcode(d);
                 }
