@@ -2,8 +2,8 @@
 <div class="sep"></div>
 <h1>WATCH OUR VIDEO</h1>
 
-<div class="video-box noGPUAccel">
-    <iframe src="http://player.vimeo.com/video/41472479?byline=0&amp;portrait=0&amp;color=ff9933" height="{{videoHeight}}" width="{{videoWidth}}" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
+<div class="video-box" ng-class="{disabled : menu.active || menu.busy }">
+    <iframe id="sc-video" src="http://player.vimeo.com/video/41472479?byline=0&amp;portrait=0&amp;color=ff9933" height="{{videoHeight}}" width="{{videoWidth}}" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
     </iframe>
     <!--
     <div id="info-play_video" class="video-box">

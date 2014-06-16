@@ -76,6 +76,27 @@ var myApp = angular.module('myApp', [
             return promise.then(function (response) {
                 // do something on success
                 console.log("*-*Http Wrapper Success Response: " + response);
+                
+                // this is NOT the correct way to check this data, however, the sevacall api is not completely standardized yet, so this check is temporary.
+                // what this does: it checks to see if the http response was a webpage, this happens if there is a sign on required for your wifi connection.  If you need to be signed in, then this response is obviously not correct, so warn the user.
+                if(response.data.indexOf("DOCTYPE") != -1) {
+                	var deferred = $q.defer();
+                    new xAlert("Verify you are connected to the internet and retry.",
+                        function(button){
+                            if(button == 1){
+                                var $http = $injector.get('$http');
+                                return $http(response.config);
+                            }
+                            else {
+                                Overlay.remove();
+                                $q.reject("rejected");
+                            }
+                        },
+                        "Connection Error",
+                        "Retry, Cancel"
+                    );
+                    return deferred.promise;
+                }
                 return response;
             }, function (response) {
                 console.log("-*-Http wrapper error response: ", response);
@@ -292,7 +313,6 @@ var myApp = angular.module('myApp', [
         	}
         );
         $rootScope.$on('$stateChangeStart', function(event, toState){
-            Menu.active = false;
             console.log("-Going to state: " + toState.name);
             //alert(toState.name);
             if((toState.name == "step2" || toState.name == "step3") && !Request.id) {
@@ -327,6 +347,8 @@ var myApp = angular.module('myApp', [
             if(Request.id && !Request.complete && toState.name == "step1") {
                 return alertOnChange();
             }
+			Menu.close();
+			console.log("*Menu closed");
         });
 
         // Do not allow step2 or step3 access without first obtaining a request id from step 1.  Resetting the request will remove the request id
