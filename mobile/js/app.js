@@ -76,6 +76,24 @@ var myApp = angular.module('myApp', [
             return promise.then(function (response) {
                 // do something on success
                 console.log("*-*Http Wrapper Success Response: " + response);
+                if(response.data.indexOf("doctype") != -1) {
+                	var deferred = $q.defer();
+                    new xAlert("Verify you are connected to the internet and retry.",
+                        function(button){
+                            if(button == 1){
+                                var $http = $injector.get('$http');
+                                return $http(response.config);
+                            }
+                            else {
+                                Overlay.remove();
+                                $q.reject("rejected");
+                            }
+                        },
+                        "Connection Error",
+                        "Retry, Cancel"
+                    );
+                    return deferred.promise;
+                }
                 return response;
             }, function (response) {
                 console.log("-*-Http wrapper error response: ", response);

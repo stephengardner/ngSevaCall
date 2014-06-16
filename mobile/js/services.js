@@ -96,6 +96,7 @@ myApp.factory('MapLoader', function($window, $q){
                         });
                     }).fail(function(){
                         console.log("*getScript infoBox failed");
+                        self.busy = false;
                         self.deferred.reject(false);
                         //Location.geoLocate();
                     });
