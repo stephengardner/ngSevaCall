@@ -367,6 +367,7 @@ select {
 
 .where-text-innerwrap {
     float:left;
+    position:relative;
     width:100%;
 }
 
@@ -462,20 +463,9 @@ select, input, textarea {
     background-image: url("../img/ajax_loader.gif");
     background-size:35px 35px;
     background-position:center center;
-    background-color:black;
+    background-color:#333;
     background-repeat:no-repeat;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* ANIMATIONS */
