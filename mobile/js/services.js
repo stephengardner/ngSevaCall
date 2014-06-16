@@ -21,7 +21,7 @@ myApp.factory('Track', function() {
     var Track = {
     	init : function() {
         	if(window.localStorage) {
-                var clientId = device && device.uuid ? device.uuid : 1; // 1 = web, fix this for storage?
+                var clientId = window.device && window.device.uuid ? window.device.uuid : 1; // 1 = web, fix this for storage?
                 ga(
                     'create',
                     GA_IDs['Seva Call Mobile App'],
