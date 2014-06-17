@@ -45,7 +45,11 @@ angular.module('myApp.controllers', [])
     .controller('wrapperController', ['Categories', 'Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', 'Storage', function(Categories, Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav, Storage) {
         Storage.import(); // loads the local storage into the user name, email, phone and zip
         SCAPI.init(Request);
-    	MapLoader.loadMaps();
+		/*
+    	MapLoader.loadMaps().then(function(){
+			Location.geoLocate(1);
+		});
+		*/
         
         $scope.categories = Categories;
         // Initialize the analytics tracker and log app opening
@@ -67,18 +71,20 @@ angular.module('myApp.controllers', [])
         	$scope.iphone4 = true;
         else if(iphone5)
         	$scope.iphone5 = true;
-            
-        function locate() {
+        
+		
+        function locate(opt_initial_check) {
+			console.log("***locating....");
             MapLoader.loadMaps().then(function(){
                 if(!User.zipcode) {
-            	console.log("*Going to geoLocate from the start after blipping");
-                    Location.geoLocate().then(function(d){
+					console.log("*Going to geoLocate from wrapperController");
+                    Location.geoLocate(opt_initial_check).then(function(d){
                         User.setZipcode(d);
                     });
                 }
             });
         }
-        
+		
         // Phonegap specific actions
         if(testingType=="recording") {
             Splash.blip().then(function(){
@@ -136,12 +142,9 @@ angular.module('myApp.controllers', [])
                 Recording.init().then(function(){
                     console.log("*Recording file initialized and ready for recording");
                 });
-                locate();
             });
         }
-        else {
-        	locate();
-        }
+		locate(1);
 	}])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
@@ -158,7 +161,7 @@ angular.module('myApp.controllers', [])
             }
             Request.setCategory(categoryFromParams);
         }
-
+		
         $scope.change = function(){
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {
@@ -398,7 +401,7 @@ angular.module('myApp.controllers', [])
             function alertOnChange() {
                 event.preventDefault();
                 Request.alert = new xAlert(alerts.abandon.body,
-                    function(button){
+                    function(button) {
                         if(button == 1){
                             Request.reset();
                             cleanUpFunction();
@@ -450,11 +453,11 @@ angular.module('myApp.controllers', [])
         Request.setID(112669);
         $scope.request = Request;
         $scope.acceptanceRate = Request.numCompaniesCalled ?  Math.round(((parseFloat( Request.numCompaniesAccepted  /  Request.numCompaniesCalled * 100)))) + "%" : "0%";
-        SCAPI.timeSaved().then(function(d){
+        SCAPI.timeSaved().then(function(d) {
             $scope.timeSaved = d.timeSaved;
         });
         $scope.twitterMessage = encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
-        $scope.twitterShare = function(){
+        $scope.twitterShare = function() {
             var url = "https://twitter.com/intent/tweet?url=http://www.sevacall.com&text="
             url += encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
             window.open(url, '_system');
@@ -474,7 +477,7 @@ angular.module('myApp.controllers', [])
     }])
     .controller('menuController', ['$rootScope', '$parse', '$attrs', '$scope', 'Menu', function($rootScope, $parse, $attrs, $scope, Menu){
         $scope.Menu = Menu;
-        $rootScope.$on("click",function(){
+        $rootScope.$on("click",function() {
             Menu.active = false;
         });
     }])
@@ -513,11 +516,12 @@ angular.module('myApp.controllers', [])
             cleanUpFunction();
         });
     }])
-    .controller('informationController', ['Overlay', 'resolveSize', '$scope', '$window', 'Menu', function(Overlay, resolveSize, $scope, $window, Menu){
+    .controller('informationController', ['$rootScope', 'Overlay', 'resolveSize', '$scope', '$window', 'Menu', function($rootScope, Overlay, resolveSize, $scope, $window, Menu){
     	// when the info page is generated or the window is resized, fit the video perfectly into the page with no added
         // black borders.  Meaning is needs a 16/9 aspect ratio.  Calculate the width of the window and adjust the height
         // accordingly.
 		$scope.menu = Menu;
+		
         function resizeVideo() {
             var width = $(".ui-view-container").width();
             var height = parseInt(( width / 16 ) * 9) + 2;
@@ -531,14 +535,11 @@ angular.module('myApp.controllers', [])
                 $(".video-box").css({"width": width + "px"});
             }
         }
-        $scope.videoHeight = resolveSize[0];
-        $scope.videoWidth = resolveSize[1];
-        $(".video-box").css(resolveSize[2]);
+		$(".video-box").css({"height" : resolveSize[0] + "px", "width" : resolveSize[1] + "px"});
 
         angular.element($window).bind('resize',function(){
             resizeVideo();
         });
-        resizeVideo();
     }])
     .controller('recordingController', ['$q', '$urlRouter', '$rootScope', '$state', 'Recording', '$scope', function($q, $urlRouter, $rootScope, $state, Recording, $scope){
         $scope.recording = Recording;
