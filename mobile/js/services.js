@@ -107,8 +107,6 @@ myApp.factory('MapLoader', function($window, $q){
                     if (typeof google !== 'object' && typeof google.maps !== 'object') {
                     	self.deferred.reject(false);
                     }
-                    //console.log("*Done getting google maps, resolving loadMaps");
-                    //self.deferred.resolve(true);
                 }).fail(function(){
                 	self.busy = false;
                     self.deferred.reject(false);
@@ -215,7 +213,6 @@ myApp.factory('Menu', function($timeout){
                 self.busy = false;
             }, 500);
             self.busy = true;
-            //$("#sc-menu").css("height", $("body").height());
 			var forceCSSRepaint = $("#menu")[0].offsetHeight;
 			if(self.active)
 				self.close();
@@ -227,7 +224,6 @@ myApp.factory('Menu', function($timeout){
 			if(!self.active) {
 				return;
 			}
-			console.log("**************CLOSING MENU*******************");
             self.busy = true;
             $timeout(function(){
                 self.busy = false;
@@ -339,6 +335,7 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             else {
                 nameOrStatus = companyObj.name;
             }
+            // aware that this is not the ideal angular way of doing things.  However, imported this from old code base and works flawless for now
             var infoBoxContent = '\
 									<table class="SCMapInfoBox clearfix">\
 										<tbody>\
@@ -404,6 +401,7 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             };
             self.map.panToWithOffset(loc, 0, -30);
         },
+        
         getInfoBoxDimensions: function (content) {
             var sensor = $("<div>").html(content);
             $(sensor).appendTo("body").css({"position": "absolute", "left": "-9999px", "top": "-9999px"});
@@ -412,6 +410,7 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             $(sensor).remove();
             return new Array(width, height);
         },
+        
         addMarkers : function(){
             var self = this;
             var marker = new google.maps.Marker({
@@ -450,6 +449,7 @@ myApp.factory('Times', function(){
         init : function(){
             this.setDays();
         },
+        
         postify : function(){
             var times = "";
             if(this.buttons.now){
@@ -605,7 +605,8 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
             }
             return false;
         },
-
+		
+        // when a user travels back to step 1, reset all necessary parameters
         reset : function() {
             Times.empty();
             Recording.reset();
@@ -647,7 +648,8 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
         setID : function(id){
             this.id = id;
         },
-
+		
+        // the timeout that will trigger if a request does not have any updated statuses after 60 seconds or 15 minutes
         verifiedTimeoutStart : function() {
             var self = this;
             self.timeSpentWaiting = 0;
@@ -927,19 +929,22 @@ myApp.factory('Overlay', function(){
             }
             return this;
         },
+        
         remove : function() {
-        	$(".overlay-text").html("");
+        	$(".overlay-text").html("").addClass("hidden");
             this.isActive = this.isActiveWithSpinner = false;
             this.overlayBackground.remove();
             this.overlaySpinner.remove();
             return this;
         },
+        
+        // add a message beneath the spinner
         message : function(text) {
             // for the message function, always add the overlay with spinner
             if(!this.isActiveWithSpinner){
                 this.add(1);
             }
-        	$(".overlay-text").html(text).show();
+        	$(".overlay-text").html(text).removeClass("hidden");
             return this;
         }
     };
@@ -958,14 +963,16 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
         	console.log("removing busy status from err");
             this.busy = false;
             Overlay.remove();
-            // on iPhone, the locationManager would call back even after the timeout was called and triggered this alert.  This would cause the alert to fire twice, so we're going to omit the error alert when the error code is 2.  This corresponds to an error message "The operation couldn't be completed"
-            if(err && err.code != 2)
+            // if there's a location error when we first check on startup, don't show the error.  This can get annoying
+            if(!this.opt_initial_check)
             	new xAlert("Unable to obtain location");
-            //this.deferred.resolve(false);
         },
         geoLocate : function(opt_initial_check) {
             var self = this;
             self.busy = true;
+            if(!opt_initial_check)
+            	Overlay.message("Locating...");
+            self.opt_initial_check = opt_initial_check;
         	var deferred = $q.defer();
             var preloadDeferred = $q.defer();
             function preload() {
@@ -1013,35 +1020,28 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                             var matches = newzip.match(/\b\d{5}\b/g);
                             if (!(matches && matches.length >= 1)) {
                             	self.error();
-                                deferred.resolve(false);
-                                /*
-                                Overlay.remove();
-                                new xAlert("Unable to obtain location");
-                                */
+                                deferred.resolve();
                             }
                             else {
                                 console.log("*Geolocated to zipcode: " + newzip);
                                 self.complete();
                                 deferred.resolve(newzip);
-                                //self.deferred.resolve(newzip);
                             }
                         }
                         else {
                         	self.error();
-                            deferred.resolve(false);
-                            /*
-                            Overlay.remove();
-                            new xAlert("Unable to obtain location");
-                            console.log(results);
-                            */
+                            deferred.resolve();
                         }
                     });
+                },
+                function(err) {
+                    self.error();
+        			deferred.resolve();
                 });
                 
             }, function(err){
             	self.busy = false;
         		deferred.resolve(false);
-            	//alert("reject preload");
             },
             {timeout : 4000}
             );

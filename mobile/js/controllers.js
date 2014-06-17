@@ -2,7 +2,6 @@
 
 /* Controllers */
 angular.module('myApp.controllers', [])
-
     .controller('test2', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         Request.reset();
         Request.setID(testRequestID);
@@ -28,30 +27,12 @@ angular.module('myApp.controllers', [])
             GoogleMap.init();
         });
     }])
-    .controller('bodyController', ['$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location', function($rootScope, Request, Menu, $attrs, $scope, $location){
-    	
-        if(testingType == "statusBug") {
-        	$location.path("/statusBug");
-        }
-        else {
-        	$location.path("/step1");
-        }
-        $scope.menu = Menu;
-        $scope.click = function($event) {
-            Menu.active = false;
-        };
-       	
-    }])
     .controller('wrapperController', ['Categories', 'Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', 'Storage', function(Categories, Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav, Storage) {
         Storage.import(); // loads the local storage into the user name, email, phone and zip
         SCAPI.init(Request);
-		/*
-    	MapLoader.loadMaps().then(function(){
-			Location.geoLocate(1);
-		});
-		*/
         
         $scope.categories = Categories;
+        
         // Initialize the analytics tracker and log app opening
         Track.init();
         Track.event({eventCategory : "page", eventAction :  "application_opened"});
@@ -146,6 +127,20 @@ angular.module('myApp.controllers', [])
         }
 		locate(1);
 	}])
+    .controller('bodyController', ['$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location', function($rootScope, Request, Menu, $attrs, $scope, $location){
+    	
+        if(testingType == "statusBug") {
+        	$location.path("/statusBug");
+        }
+        else {
+        	$location.path("/step1");
+        }
+        $scope.menu = Menu;
+        $scope.click = function($event) {
+            Menu.active = false;
+        };
+       	
+    }])
     .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
         $scope.isPhoneGap = isPhoneGap;
@@ -202,7 +197,7 @@ angular.module('myApp.controllers', [])
                 Overlay.remove();
                 console.log("*Step 1 Returned: ", d);
                 var results = d.split("|");
-                // this API formats a response with a pipe ("|") if it is successful
+                // this API formats a response with a string format ("requestID|#####...|") if it is successful
                 if(d.indexOf("requestID|") == -1) {
                     new xAlert(d);
                     return false;
@@ -516,12 +511,47 @@ angular.module('myApp.controllers', [])
             cleanUpFunction();
         });
     }])
-    .controller('informationController', ['$rootScope', 'Overlay', 'resolveSize', '$scope', '$window', 'Menu', function($rootScope, Overlay, resolveSize, $scope, $window, Menu){
+    // apologies for the amount of jQuery in the following controller, it is necessary for some things like adding a source to the iframe.  This wasn't doable in angular {{}} notation.  And event binding is a little easier here as well.
+    .controller('informationController', ['$rootScope', 'Overlay', 'resolveSize', '$scope', '$window', 'Menu', '$state', function($rootScope, Overlay, resolveSize, $scope, $window, Menu, $state){
     	// when the info page is generated or the window is resized, fit the video perfectly into the page with no added
         // black borders.  Meaning is needs a 16/9 aspect ratio.  Calculate the width of the window and adjust the height
         // accordingly.
 		$scope.menu = Menu;
-		
+        
+        // when the menu is no longer busy, append the vimeo video.
+        // this gives the menu time to close before performing a graphic intensive task such as loading the vimeo player.
+        // NOTE, VIMEO BUG: On the simulator, this video url is not playing.  The exact same code DOES play the vimeo example video.  So something is either wrong with how sevacall's video is accessed on the backend, or, I am clueless.
+        var addIframe = function() {
+        	if($state.current.name == "information") {
+                if($("#sc-video").attr("src") == "") {
+                    $("#sc-video").attr("src", "http://player.vimeo.com/video/41472479?player_id=sc-video&color=ff9933");
+                }
+                if($(".video-box").find("#sc-video").length == 0) {
+                    $(".video-box").append($("#sc-video").show().removeClass("offscreen"));
+                }
+            }
+        }
+        var addIframeOnTransitionEnd = function(type){
+        	$(this).css("left");
+        	if($(this).css("left") == "0px") {
+            	addIframe();
+            	$scope.$apply();
+                $("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+    			addIframeOnTransitionEnd);
+            }
+        };
+        $("#bodyContainer").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+        addIframeOnTransitionEnd);
+        $scope.$on('$destroy', function() {
+            // make sure this event is unbound!, in cases where a user navigates away immediately, this might not have been unbound
+            $(".menu-cover").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+            addIframeOnTransitionEnd);
+            
+        	// destroy the iframe by removing its source, this allows the page transition to happen much faster.  Append the empty iframe to the body and hide it for re-use later
+        	$("#sc-video").attr("src", "");
+            $("body").append($("#sc-video").hide().removeClass("offscreen"));
+        });
+        
         function resizeVideo() {
             var width = $(".ui-view-container").width();
             var height = parseInt(( width / 16 ) * 9) + 2;
@@ -543,7 +573,6 @@ angular.module('myApp.controllers', [])
     }])
     .controller('recordingController', ['$q', '$urlRouter', '$rootScope', '$state', 'Recording', '$scope', function($q, $urlRouter, $rootScope, $state, Recording, $scope){
         $scope.recording = Recording;
-        
         /*
         if(!Recording.saved && !Recording.mediaRecInitialized) {
         	// pre-initialize the startRecord cache so that it records immediately when button is clicked later
@@ -578,7 +607,7 @@ angular.module('myApp.controllers', [])
             }
         });
         
-        // When the back button is clicked, a location chaneg is triggered.
+        // When the back button is clicked, a location change is triggered.
         // Catch the back button click and make sure that the Recording service is not in the process of recording audio.
         // if it is, and the recording is less than 3 seconds, prevent the back button and alert the user.
         // if it is, and the recording is greater than 3 seconds, stop the recording and save it, and then go back.
@@ -614,7 +643,6 @@ angular.module('myApp.controllers', [])
             }
         	else if(!Recording.recording || Recording.length >= 3) {
             	Recording.stopRecord();
-            	//alert("Going bv recording.recording is: " + Recording.recording + " and length is: " + Recording.length);
                 $state.go("step2");
             }
             else if(Recording.recording && Recording.length < 3){
