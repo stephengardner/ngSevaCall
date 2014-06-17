@@ -89,7 +89,7 @@ myApp.factory('MapLoader', function($window, $q){
 							self.busy = false;
                             self.deferred.resolve(true);
                             //Location.geoLocate();
-                        }).fail(function(){
+                        }).fail(function() {
                         	self.busy = false;
                         	console.log("*getScript xMarker failed");
                             self.deferred.reject(false);
@@ -963,7 +963,7 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
             	new xAlert("Unable to obtain location");
             //this.deferred.resolve(false);
         },
-        geoLocate : function(opt_overlay) {
+        geoLocate : function(opt_initial_check) {
             var self = this;
             self.busy = true;
         	var deferred = $q.defer();
@@ -974,19 +974,24 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                     preloadDeferred.resolve(true);
                 }, function(){
                     console.log("not loaded");
-                    new xAlert(
-                    "Please verify you are connected to the internet and retry",
-                    function(button){
-                        if(button == 1) {
-                            preload();
-                        }
-                        else {
-                        	preloadDeferred.reject(false);
-                        }
-                    },
-                    "Location Services",
-                    "Retry,Cancel"
-                    );
+					if(opt_initial_check) {
+						preloadDeferred.reject(false);
+					}
+					else {
+						new xAlert(
+						"Please verify you are connected to the internet and retry",
+						function(button){
+							if(button == 1) {
+								preload();
+							}
+							else {
+								preloadDeferred.reject(false);
+							}
+						},
+						"Location Services",
+						"Retry,Cancel"
+						);
+					}
                 });
                 return preloadDeferred.promise;
             }
@@ -1041,101 +1046,6 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
             {timeout : 4000}
             );
             return deferred.promise;
-        /*
-            var self = this;
-            console.log("adding busy status from geoLocate");
-            if(this.busy) {
-            	this.error();
-                return self.deferred.promise;
-            }
-            this.deferred = $q.defer();
-            self.busy = true;
-            //Overlay.message("Locating...");
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-                	console.log("retrieved a position:");
-                    console.log(position);
-                    try {
-                        if (typeof google === 'object' && typeof google.maps === 'object') {
-                        	console.log("*google was an object and so was google.maps");
-                            var lat = position.coords.latitude;
-                            var lng = position.coords.longitude;
-							console.log("*0");
-                            var geocoder = new google.maps.Geocoder();
-							console.log("*00");
-                            var latlng = new google.maps.LatLng(lat, lng);
-							console.log("*1");
-                            geocoder.geocode({'latLng': latlng}, function (results, status) {
-								console.log("*2");
-                                if (status == google.maps.GeocoderStatus.OK) {
-                                    var address = results[0].address_components;
-                                    var newzip = address[address.length - 1].long_name;
-                                    // match five digits
-                                    //
-                                    var matches = newzip.match(/\b\d{5}\b/g);
-                                    if (!(matches && matches.length >= 1)) {
-                                        Overlay.remove();
-                                        new xAlert("Unable to obtain location");
-                                    }
-                                    else {
-                                   		Overlay.remove();
-                                        console.log("*Geolocated to zipcode: " + newzip);
-                                        self.complete();
-                                        self.deferred.resolve(newzip);
-                                    }
-                                }
-                                else {
-                                    Overlay.remove();
-                                    new xAlert("Unable to obtain location");
-                                    console.log(results);
-                                }
-                            });
-                        }
-                        else {
-                            Overlay.remove();
-                            new xAlert(
-                            	"Please verify you are connected to the internet and retry",
-                                function(button){
-                                    if(button == 1) {
-                                    	//self.complete();
-                                    	Overlay.add(1);
-                                        console.log("about to maploader");
-                                        MapLoader.loadMaps().then(
-                                        	function() {
-                                            	console.log("*Successfully connected to the internet");
-                                                Location.geoLocate();
-                                        	},
-                                            function() {
-                                            	console.log("*No internet");
-                                        		Location.geoLocate();
-                                        	}
-                                        );
-                                    }
-                                    else {
-                                    	//self.complete();
-                                    	console.log("*Dismissing the location alert");
-                                        self.deferred.resolve(false);
-                                    }
-                                },
-                                "Location Services",
-                                "Retry,cancel"
-                            );
-                        }
-                    }
-                    catch (err) {
-                		console.log("*geoLocate threw an error");
-                        console.log(err);
-                        self.error(err);
-                    }
-                },
-                function(err){
-                	console.log("getCurrentPosition called back with an error, code: " + err.code + " and message: " + err.message);
-                    self.error(err);
-                },
-                {timeout : 4000}
-                );
-            return this.deferred.promise;
-            */
         }
     };
     return Location;
