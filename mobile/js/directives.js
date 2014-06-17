@@ -36,16 +36,6 @@ angular.module('myApp.directives', []).
     .directive('phoneInput', function(){
         return {
             restrict : 'EA',
-            link : function(sc, el, at) {
-                el.bind('keydown keypress', function(e){
-                    /*console.log($(el).val());
-
-                     if(sc.User.phone.length >= 10) {
-                     e.preventDefault();
-                     e.stopPropagation();
-                     }*/
-                });
-            },
             replace : true,
             template: '<input id="phone" maxlength="10" type="tel" ng-model="User.phone"/>'
         }
