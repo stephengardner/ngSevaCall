@@ -191,6 +191,8 @@
     cursor:pointer;
     padding: 49px;
     float: left;
+	position: relative;
+	z-index: 1;
 }
 #description-button:before{
     position: absolute;
@@ -244,30 +246,43 @@
     height: 3px;
     width: 15px;
 }
-.description-wrapper {
+.description {
     position:relative;
+}
+.description-wrapper {
 }
 .description-wrapper.active {
     padding-left: 107px;
 }
 .recording-modal {
     opacity:0;
-    trasition:all 1.5s;
-    -webkit-transition: all 1.5s;
+    trasition: opacity 1s;
+    -webkit-transition: opacity 1s;
     position: absolute;
     background: rgba(211, 217, 255, 0.5);
     padding: 1em;
     border-radius: 6px;
     color: #003366;
     border: 2px solid;
-    bottom: 2em;
     margin-left: 1em;
     text-align: center;
+	z-index: 1;
+	bottom:12em;
 }
 .recording-modal.active {
-    trasition:all 1.5s;
-    -webkit-transition: all 1.5s;
+    trasition:bottom .5s, opacity 1s;
+    -webkit-transition: bottom .5s, opacity 1s;
     opacity: 1;
+	bottom:1em;
+}
+.recording-modal.removing {
+    trasition:opacity .5s;
+    -webkit-transition:opacity .5s;
+    opacity: 0;
+	bottom:1em;
+}
+.recording-modal.removed {
+	display:none;
 }
 .modal-close {
     color: #003366;
