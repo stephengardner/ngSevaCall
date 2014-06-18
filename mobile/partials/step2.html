@@ -6,6 +6,13 @@
             <a href="#"></a>
         </div>
         <div class="description-wrapper" ng-class="{active : isPhoneGap}">
+            <div ng-show="isPhoneGap" class="recording-modal" ng-class="{active : recordingModal.active}">
+                <div class="modal-close" ng-click="recordingModal.hide()">
+                    <i class="fa fa-times"></i>
+                </div>
+                <img src="img/modal-arrow.png"/>
+                Click here to record your description
+            </div>
             <textarea ng-class="{disabled : recordingSaved}" maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>
         </div>
         <div class="sep"></div>

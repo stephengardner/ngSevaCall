@@ -210,8 +210,13 @@ angular.module('myApp.controllers', [])
             return deferred.promise;
         };
     }])
-    .controller('step2Controller', ['Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state', function(Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
+    .controller('step2Controller', ['RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state',
+        function(RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
         $scope.isPhoneGap = isPhoneGap;
+            $timeout(function(){
+                RecordingModal.show();
+            }, 1000);
+            $scope.recordingModal = RecordingModal;
         if($.isEmptyObject(Request.companies))
             SCAPI.getCompaniesList();
             

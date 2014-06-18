@@ -2,6 +2,24 @@
 /* Services */
 // Register the services:
 angular.module('myApp.services', []);
+myApp.factory('RecordingModal', function(Storage){
+    var RecordingModal = {
+        active : false,
+        show : function(){
+            // only appear if the user has not dismissed this notice before
+            if(!Storage.recordingModalDismissed) {
+                this.active = true;
+            }
+        },
+        hide : function() {
+            // set the recording modal dismissal notice to never appear again
+            Storage.recordingModalDismissed = true;
+            Storage.set();
+            this.active = false;
+        }
+    };
+    return RecordingModal;
+});
 myApp.factory('AlertSwitch', function(){
 	var AlertSwitch = {
     	on : true,
@@ -802,6 +820,7 @@ myApp.factory('Storage', function(User, Request, $localStorage){
         email : false,
         phone : false,
         zip : false,
+        recordingModalDismissed : false,
 
         saveUser : function(){
             this.name = User.name;
@@ -819,6 +838,7 @@ myApp.factory('Storage', function(User, Request, $localStorage){
             this.email = $localStorage.sc_user_phone;
             this.phone = $localStorage.sc_user_phone;
             this.zip = $localStorage.sc_user_zip;
+            this.recordingModalDismissed = $localStorage.sc_recordingModalDismissed;
         },
 
         saveZip : function() {
@@ -831,6 +851,7 @@ myApp.factory('Storage', function(User, Request, $localStorage){
             $localStorage.sc_user_email = this.email;
             $localStorage.sc_user_phone = this.phone;
             $localStorage.sc_user_zip = this.zip;
+            $localStorage.sc_recordingModalDismissed = this.recordingModalDismissed;
         },
 
         empty : function() {

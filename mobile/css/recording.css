@@ -244,6 +244,42 @@
     height: 3px;
     width: 15px;
 }
+.description-wrapper {
+    position:relative;
+}
 .description-wrapper.active {
     padding-left: 107px;
+}
+.recording-modal {
+    opacity:0;
+    trasition:all 1.5s;
+    -webkit-transition: all 1.5s;
+    position: absolute;
+    background: rgba(211, 217, 255, 0.5);
+    padding: 1em;
+    border-radius: 6px;
+    color: #003366;
+    border: 2px solid;
+    bottom: 2em;
+    margin-left: 1em;
+    text-align: center;
+}
+.recording-modal.active {
+    trasition:all 1.5s;
+    -webkit-transition: all 1.5s;
+    opacity: 1;
+}
+.modal-close {
+    color: #003366;
+    position: absolute;
+    padding: .5em;
+    top: -.5em;
+    right: .2em;
+    cursor: pointer;
+}
+.recording-modal img {
+    position: absolute;
+    width: 60px;
+    left: -58px;
+    bottom: -27px;
 }

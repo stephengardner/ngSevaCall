@@ -9,7 +9,7 @@ var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
 var skipAPICalls = false;
 var testingType = ""; //statusBug
-var environment = "development", root, api_root;
+var environment = "local", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
 var alerts = {
