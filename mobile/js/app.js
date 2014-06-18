@@ -25,9 +25,13 @@ var alerts = {
         body : "Are you sure you want to abandon this request?"
     }
 };
-if(environment == "local") {
+if(environment == "local" && !isPhoneGap) {
     root = "/augie/ng/mobile/";
     api_root = "http://localhost/";
+}
+else if(environment == "local" && isPhoneGap) {
+	root = "";
+    api_root = "http://test.s17.sevacall.com/";
 }
 else if(environment == "development"){
     if(isPhoneGap) {

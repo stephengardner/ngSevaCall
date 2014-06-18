@@ -11,20 +11,38 @@ myApp.factory('AnimationService', function() {
     };
     return AnimationService;
 });
-myApp.factory('RecordingModal', function(Storage){
+// the modal window that will pop up on mobile phones that tells the user that they can click the recording button
+// to record audio
+myApp.factory('RecordingModal', function(Storage, $timeout){
     var RecordingModal = {
         active : false,
+		removing : false,
+		removed : false,
+		hasBeenActive : false,
+		message : "Click here to record your description.",
         show : function(){
-            // only appear if the user has not dismissed this notice before
-            if(!Storage.recordingModalDismissed) {
-                this.active = true;
-            }
+            // only show the message once a session
+            // this IF statement may be added or removed, if active, 
+			// it will never show the message again to the user
+			// once the user dismisses the modal
+			//if(!Storage.recordingModalDismissed) {
+			if(!this.hasBeenActive)
+				this.active = true;
+            //}
+			this.hasBeenActive = true;
         },
         hide : function() {
             // set the recording modal dismissal notice to never appear again
+			var self = this;
+			self.removing = true;
+            self.active = false;
+			
+			$timeout(function(){
+				self.removed = true;
+			}, 500);
+			
             Storage.recordingModalDismissed = true;
             Storage.set();
-            this.active = false;
         }
     };
     return RecordingModal;

@@ -225,10 +225,7 @@ angular.module('myApp.controllers', [])
     .controller('step2Controller', ['RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state',
         function(RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
         $scope.isPhoneGap = isPhoneGap;
-            $timeout(function(){
-                RecordingModal.show();
-            }, 1000);
-            $scope.recordingModal = RecordingModal;
+        $scope.recordingModal = RecordingModal;
         if($.isEmptyObject(Request.companies))
             SCAPI.getCompaniesList();
             
@@ -308,6 +305,25 @@ angular.module('myApp.controllers', [])
                 $state.go("step2a");
             }
         };
+        
+        var addModalOnTransitionEnd = function(){
+        	if($(this).css("left") == "0px") {
+            	//addIframe();
+                $timeout(function(){
+                    RecordingModal.show();
+            		$scope.$apply();
+                }, 1000);
+                $("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+    			addModalOnTransitionEnd);
+            }
+        };
+		
+        $("#bodyContainer").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+        addModalOnTransitionEnd);
+		
+        $scope.$on('$destroy', function() {
+			$("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd');
+        });
     }])
     .controller('step2aController', ['$http', 'Uploader', 'Overlay', 'Recording', 'Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window', function($http, Uploader, Overlay, Recording, Storage, $rootScope, User, Times, $scope, Request, $state, $window){
         var UserBackup = angular.copy(User);
