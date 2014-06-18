@@ -204,18 +204,6 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             }
             return deferred.promise;
         },
-		
-		reset : function() {
-        	this.length = 0;
-            this.position = 0;
-            this.lengthToString = "";
-            this.positionToString = "";
-            this.playing = 0;
-            this.paused = 0;
-            this.saved = 0;
-			this.mediaRec.release();
-        },
-		
         stopRecord : function(opt_disableAlert) {
             var self = this;
             self.recording = false;
@@ -271,6 +259,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
 
         reset : function() {
             var self = this;
+			console.log("*Recording.reset()");
             self.position = 0;
             self.playing = 0;
             self.paused = 0;
@@ -279,6 +268,11 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             self.saved = false;
             self.positionToString = "";
             self.lengthToString = "";
+			if(this.mediaRec) {
+				this.mediaRec.pause();
+				this.mediaRec.stop();
+				this.mediaRec.release();
+			}
         },
 
         rewind : function() {
@@ -307,14 +301,5 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         }
 
     };
-    /*
-    Recording.startRecord();
-    $timeout(function(){
-        Recording.play();
-    }, 3000);
-    $timeout(function(){
-        Recording.pause();
-    }, 3000);
-    */
     return Recording;
 });

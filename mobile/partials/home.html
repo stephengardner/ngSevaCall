@@ -13,7 +13,7 @@
             <div class="where-text-wrap">
                 <div class="where-text-innerwrap">
                     <div class="shadow">
-                        <input ng-class="{disabled : menu.active}" ng-model="User.zipcode" class="where-text" type="phone" placeholder="Zipcode" style="width:100%;"/>
+                        <input ng-class="{disabled : menu.active}" ng-model="User.zipcode" class="where-text" type="tel" placeholder="Zipcode" style="width:100%;"/>
                     </div>
                     <img id="where-loader" ng-show="Location.busy" src="img/ajax_loader.gif"/>
                 </div>
@@ -28,6 +28,6 @@
         <div class="sep"></div>
         <h3>We'll connect you with local businesses instantly!</h3>
         <div class="sep"></div>
-        <div ng-click="next()" action-button menu="menu" text="'Next'"/>
+        <div ng-click="next()" action-button menu="menu" text="'Next'" class="clearfix"></div>
     </form>
 </div>
