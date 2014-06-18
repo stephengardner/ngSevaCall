@@ -156,6 +156,10 @@ angular.module('myApp.controllers', [])
         $scope.$on('$destroy', function(event, toState){
             AnimationService.init();
         });
+            $("#bodyContainer").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+                function(){
+                    alert($(this).css("left"));
+                });
         if(categoryFromParams) {
             for(var i = 0; i < Categories.length; i++){
                 if (Categories[i].name == categoryFromParams) {
