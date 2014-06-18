@@ -119,11 +119,13 @@ angular.module('myApp.controllers', [])
 			alert("Test Recording Android");
 		}
         else if(isPhoneGap) {
+            /*
     		Splash.blip().then(function(){
                 Recording.init().then(function(){
                     console.log("*Recording file initialized and ready for recording");
                 });
             });
+            */
         }
 		locate(1);
 	}])
@@ -143,21 +145,14 @@ angular.module('myApp.controllers', [])
         $scope.animationService = AnimationService;
        	
     }])
-    .controller('step1Controller', ['AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
-        function(AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
+    .controller('step1Controller', ['Recording', 'Splash', 'AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
+        function(Recording, Splash, AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
         $scope.isPhoneGap = isPhoneGap;
         $scope.Location = Location;
-            $scope.$on('$viewContentLoaded', function() {
-                alert();
-            });
         Request.reset();
         $scope.User = User;
         $scope.Request = Request;
-            $rootScope.$on('$includeContentLoaded', function() {
-                alert();
-                //do your will
-            });
         $scope.$on('$destroy', function(event, toState){
             AnimationService.init();
         });
@@ -221,6 +216,16 @@ angular.module('myApp.controllers', [])
             });
             return deferred.promise;
         };
+
+        $scope.$on('$viewContentLoaded', function() {
+            if(isPhoneGap) {
+                Splash.blip().then(function(){
+                    Recording.init().then(function(){
+                        console.log("*Recording file initialized and ready for recording");
+                    });
+                });
+            }
+        });
     }])
     .controller('step2Controller', ['RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state',
         function(RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
