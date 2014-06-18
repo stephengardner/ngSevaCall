@@ -145,13 +145,9 @@ angular.module('myApp.controllers', [])
         $scope.animationService = AnimationService;
        	
     }])
-    .controller('step1Controller', ['$interval', 'Recording', 'Splash', 'AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
-        function($interval, Recording, Splash, AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
+    .controller('step1Controller', ['App', '$interval', 'Recording', 'Splash', 'AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
+        function(App, $interval, Recording, Splash, AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
-            alert($(".test-directive").is(':visible'));
-            $interval(function(){
-                alert($(".test-directive").is(':visible'));
-            }, 1000);
         $scope.isPhoneGap = isPhoneGap;
         $scope.Location = Location;
         Request.reset();
@@ -222,12 +218,18 @@ angular.module('myApp.controllers', [])
         };
 
         $scope.$on('$viewContentLoaded', function() {
-            if(isPhoneGap) {
-                Splash.blip().then(function(){
-                    Recording.init().then(function(){
-                        console.log("*Recording file initialized and ready for recording");
+            if(!App.loaded) {
+                App.loaded = true;
+                $(".menu-cover").css("background", "red");
+                $("#bodyContainer").css("background", "blue");
+                alert();
+                if(isPhoneGap) {
+                    Splash.blip().then(function(){
+                        Recording.init().then(function(){
+                            console.log("*Recording file initialized and ready for recording");
+                        });
                     });
-                });
+                }
             }
         });
     }])

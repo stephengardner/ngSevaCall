@@ -2,6 +2,17 @@
 /* Services */
 // Register the services:
 angular.module('myApp.services', []);
+
+// keep track of whether the app has loaded step 1 or not
+// this is needed to check on step1's viewcontentloaded if we should blip() and init recording, etc.
+myApp.factory('App', function() {
+   var App = {
+       loaded : false
+   };
+   return App;
+});
+
+// keep track of if the initial animation has processed
 myApp.factory('AnimationService', function() {
     var AnimationService = {
         initialized : false,
@@ -11,6 +22,7 @@ myApp.factory('AnimationService', function() {
     };
     return AnimationService;
 });
+
 // the modal window that will pop up on mobile phones that tells the user that they can click the recording button
 // to record audio
 myApp.factory('RecordingModal', function(Storage, $timeout){
