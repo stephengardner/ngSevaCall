@@ -49,6 +49,7 @@ angular.module('myApp.directives', []).
             templateUrl: 'partials/statusBar.html'
         }
     })
+    /*
     .directive('testDirective', function() {
         return {
             restrict: 'E',
@@ -64,6 +65,7 @@ angular.module('myApp.directives', []).
             }
         };
     })
+    */
     .directive('scBlur', ['$parse', function($parse) {
         return function(scope, element, attr) {
             var fn = $parse(attr['scBlur']);
