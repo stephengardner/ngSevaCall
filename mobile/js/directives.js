@@ -20,7 +20,8 @@ angular.module('myApp.directives', []).
             restrict: 'EA',
             replace: true,
             scope : {
-                text: "="
+                text: "=",
+				clickfunction: "="
             },
             templateUrl: 'partials/button.html'
         }

@@ -513,11 +513,6 @@ angular.module('myApp.controllers', [])
     }])
     // apologies for the amount of jQuery in the following controller, it is necessary for some things like adding a source to the iframe.  This wasn't doable in angular {{}} notation.  And event binding is a little easier here as well.
     .controller('informationController', ['$rootScope', 'Overlay', 'resolveSize', '$scope', '$window', 'Menu', '$state', function($rootScope, Overlay, resolveSize, $scope, $window, Menu, $state){
-    	// when the info page is generated or the window is resized, fit the video perfectly into the page with no added
-        // black borders.  Meaning is needs a 16/9 aspect ratio.  Calculate the width of the window and adjust the height
-        // accordingly.
-		$scope.menu = Menu;
-        
         // when the menu is no longer busy, append the vimeo video.
         // this gives the menu time to close before performing a graphic intensive task such as loading the vimeo player.
         // NOTE, VIMEO BUG: On the simulator, this video url is not playing.  The exact same code DOES play the vimeo example video.  So something is either wrong with how sevacall's video is accessed on the backend, or, I am clueless.
@@ -531,8 +526,7 @@ angular.module('myApp.controllers', [])
                 }
             }
         }
-        var addIframeOnTransitionEnd = function(type){
-        	$(this).css("left");
+        var addIframeOnTransitionEnd = function(){
         	if($(this).css("left") == "0px") {
             	addIframe();
             	$scope.$apply();
@@ -540,18 +534,21 @@ angular.module('myApp.controllers', [])
     			addIframeOnTransitionEnd);
             }
         };
+		
         $("#bodyContainer").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
         addIframeOnTransitionEnd);
+		
         $scope.$on('$destroy', function() {
-            // make sure this event is unbound!, in cases where a user navigates away immediately, this might not have been unbound
-            $(".menu-cover").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
-            addIframeOnTransitionEnd);
-            
         	// destroy the iframe by removing its source, this allows the page transition to happen much faster.  Append the empty iframe to the body and hide it for re-use later
         	$("#sc-video").attr("src", "");
-            $("body").append($("#sc-video").hide().removeClass("offscreen"));
+			$("body").append($("#sc-video").addClass("offscreen"));
+			// make sure this event is unbound!, in cases where a user navigates away immediately, this might not have been unbound
+			$("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd');
         });
-        
+		
+        // when the info page is generated or the window is resized, fit the video perfectly into the page with no added
+        // black borders.  Meaning is needs a 16/9 aspect ratio.  Calculate the width of the window and adjust the height
+        // accordingly.
         function resizeVideo() {
             var width = $(".ui-view-container").width();
             var height = parseInt(( width / 16 ) * 9) + 2;
