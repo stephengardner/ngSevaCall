@@ -49,6 +49,21 @@ angular.module('myApp.directives', []).
             templateUrl: 'partials/statusBar.html'
         }
     })
+    .directive('testDirective', function() {
+        return {
+            restrict: 'E',
+            template: '<div class="test-directive"><h1><div ng-transclude></div></h1></div>',
+            replace: true,
+            transclude: true,
+            compile: function() {
+                console.log("Compiling test-directive");
+                return {
+                    pre: function() { console.log("Prelink"); },
+                    post: function() { alert("LINKED!"); }
+                };
+            }
+        };
+    })
     .directive('scBlur', ['$parse', function($parse) {
         return function(scope, element, attr) {
             var fn = $parse(attr['scBlur']);
