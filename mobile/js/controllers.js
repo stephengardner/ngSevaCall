@@ -28,6 +28,7 @@ angular.module('myApp.controllers', [])
         });
     }])
     .controller('wrapperController', ['Categories', 'Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', 'Storage', function(Categories, Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav, Storage) {
+        /*
         Storage.import(); // loads the local storage into the user name, email, phone and zip
         SCAPI.init(Request);
         
@@ -119,15 +120,9 @@ angular.module('myApp.controllers', [])
 			alert("Test Recording Android");
 		}
         else if(isPhoneGap) {
-            /*
-    		Splash.blip().then(function(){
-                Recording.init().then(function(){
-                    console.log("*Recording file initialized and ready for recording");
-                });
-            });
-            */
         }
 		locate(1);
+		*/
 	}])
     .controller('bodyController', ['AnimationService' ,'$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location',
         function(AnimationService, $rootScope, Request, Menu, $attrs, $scope, $location){
@@ -223,9 +218,9 @@ angular.module('myApp.controllers', [])
                 alert("viewContentLoaded");
                 if(isPhoneGap) {
                     Splash.blip().then(function(){
-                        Recording.init().then(function(){
-                            console.log("*Recording file initialized and ready for recording");
-                        });
+                        //Recording.init().then(function(){
+                        //    console.log("*Recording file initialized and ready for recording");
+                        //});
                     });
                 }
             }
