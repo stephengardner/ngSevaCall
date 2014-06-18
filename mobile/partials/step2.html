@@ -2,18 +2,20 @@
     <form ng-submit="next()">
         <div class="sep"></div>
         <h1>DESCRIBE WHAT YOU NEED</h1>
-        <div id="description-button" class="action-button button" ng-show="isPhoneGap" ui-sref="recording">
+        <div id="description-button" class="action-button button" ng-show="1" ui-sref="recording">
             <a href="#"></a>
         </div>
-        <div class="description-wrapper" ng-class="{active : isPhoneGap}">
-            <div ng-show="isPhoneGap" class="recording-modal" ng-class="{active : recordingModal.active}">
-                <div class="modal-close" ng-click="recordingModal.hide()">
-                    <i class="fa fa-times"></i>
+        <div class="description">
+            <div class="description-wrapper" ng-class="{active : 1}">
+                <div ng-show="isPhoneGap" class="recording-modal" ng-class="{active : recordingModal.active}">
+                    <div class="modal-close" ng-click="recordingModal.hide()">
+                        <i class="fa fa-times"></i>
+                    </div>
+                    <img src="img/modal-arrow.png"/>
+                    Click here to record your description
                 </div>
-                <img src="img/modal-arrow.png"/>
-                Click here to record your description
+                <textarea ng-class="{disabled : recordingSaved}" maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>
             </div>
-            <textarea ng-class="{disabled : recordingSaved}" maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>
         </div>
         <div class="sep"></div>
         <h1>AND WHEN YOU WANT IT</h1>

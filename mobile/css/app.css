@@ -583,3 +583,11 @@ select, input, textarea {
 .ios7 #sc-menu {
 	top:75px!important;
 }
+
+.disable-initial-animation {
+    opacity: 1;
+    transition:opacity 0s!important;
+    -webkit-transform:none!important;
+    -moz-transform:none!important;
+    transform:none!important;
+}

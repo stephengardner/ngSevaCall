@@ -306,12 +306,6 @@ var myApp = angular.module('myApp', [
         $rootScope.$on('requestCompleted', function(){
             $state.go("summary");
         });
-        $rootScope.$on('$stateChangeSuccess',
-            function(event, toState, toParams, fromState, fromParams){
-                Menu.active = false;
-                console.log("-State Change: State change success!");
-        	}
-        );
         $rootScope.$on('$stateChangeStart', function(event, toState){
             console.log("-Going to state: " + toState.name);
             //alert(toState.name);

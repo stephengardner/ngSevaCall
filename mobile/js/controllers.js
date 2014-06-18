@@ -127,7 +127,8 @@ angular.module('myApp.controllers', [])
         }
 		locate(1);
 	}])
-    .controller('bodyController', ['$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location', function($rootScope, Request, Menu, $attrs, $scope, $location){
+    .controller('bodyController', ['AnimationService' ,'$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location',
+        function(AnimationService, $rootScope, Request, Menu, $attrs, $scope, $location){
     	
         if(testingType == "statusBug") {
         	$location.path("/statusBug");
@@ -139,15 +140,27 @@ angular.module('myApp.controllers', [])
         $scope.click = function($event) {
             Menu.active = false;
         };
+        $scope.animationService = AnimationService;
        	
     }])
-    .controller('step1Controller', ['$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http', function($stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
+    .controller('step1Controller', ['AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
+        function(AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
         $scope.isPhoneGap = isPhoneGap;
         $scope.Location = Location;
+            $scope.$on('$viewContentLoaded', function() {
+                alert();
+            });
         Request.reset();
         $scope.User = User;
         $scope.Request = Request;
+            $rootScope.$on('$includeContentLoaded', function() {
+                alert();
+                //do your will
+            });
+        $scope.$on('$destroy', function(event, toState){
+            AnimationService.init();
+        });
         if(categoryFromParams) {
             for(var i = 0; i < Categories.length; i++){
                 if (Categories[i].name == categoryFromParams) {
@@ -156,7 +169,6 @@ angular.module('myApp.controllers', [])
             }
             Request.setCategory(categoryFromParams);
         }
-		
         $scope.change = function(){
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {

@@ -74,7 +74,7 @@
             <div id="bodyContainer" ng-click="click($event)" ng-controller="bodyController" ng-class="{menuActive : Menu.active}" class="GPUAccel body-animate clearfix">
                 <div class="body-margin">
                     <div class="span12 ui-view-container clearfix">
-                        <div ui-view class="slide GPUAccel" ng-class="{disabled : Menu.active}"></div>
+                        <div ui-view class="slide GPUAccel" ng-class="{disabled : Menu.active, 'disable-initial-animation' : !animationService.initialized}"></div>
                     </div>
                 </div>
             </div>

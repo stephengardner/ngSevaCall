@@ -244,8 +244,10 @@
     height: 3px;
     width: 15px;
 }
-.description-wrapper {
+.description {
     position:relative;
+}
+.description-wrapper {
 }
 .description-wrapper.active {
     padding-left: 107px;

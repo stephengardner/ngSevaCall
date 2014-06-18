@@ -2,6 +2,15 @@
 /* Services */
 // Register the services:
 angular.module('myApp.services', []);
+myApp.factory('AnimationService', function() {
+    var AnimationService = {
+        initialized : false,
+        init : function() {
+            this.initialized = true;
+        }
+    };
+    return AnimationService;
+});
 myApp.factory('RecordingModal', function(Storage){
     var RecordingModal = {
         active : false,
