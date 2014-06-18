@@ -145,9 +145,13 @@ angular.module('myApp.controllers', [])
         $scope.animationService = AnimationService;
        	
     }])
-    .controller('step1Controller', ['Recording', 'Splash', 'AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
-        function(Recording, Splash, AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
+    .controller('step1Controller', ['$interval', 'Recording', 'Splash', 'AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
+        function($interval, Recording, Splash, AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
         var categoryFromParams = $location.search().source;
+            alert($(".test-directive").is(':visible'));
+            $interval(function(){
+                alert($(".test-directive").is(':visible'));
+            }, 1000);
         $scope.isPhoneGap = isPhoneGap;
         $scope.Location = Location;
         Request.reset();
