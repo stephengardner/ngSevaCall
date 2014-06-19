@@ -54,7 +54,6 @@ select {
     display: none !important;
 }
 
-
 .GPUAccel {
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
@@ -406,18 +405,13 @@ input {
     font-size:1.5em;
 }
 
-/*
-input {
-    border:none;
-}
-*/
 #where-loader {
     position: absolute;
     right: .5em;
     height: 50%;
     top: 25%;
-">
 }
+
 select, input, textarea {
     box-shadow: 0px 0px 7px 0px #aaa;
     -webkit-box-shadow: 0px 0px 7px 0px #aaa;
@@ -427,6 +421,7 @@ select, input, textarea {
     border-radius: 10px;
     border: 2px solid #ddd;
 }
+
 .calling-companies-placeholder {
     -webkit-animation: loader .33s linear infinite;
     background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, .3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .3) 50%, rgba(255, 255, 255, .3) 75%, transparent 75%, transparent);
@@ -473,9 +468,7 @@ select, input, textarea {
     height:100%;
 }
 
-
 /* ANIMATIONS */
-
 .well[ui-view].loaded{
     min-height: 100%;
 	perspective: 1000;
@@ -502,9 +495,6 @@ select, input, textarea {
     -webkit-transform:scale3d(0.5, 0.5, 0.5);
     -moz-transform:scale3d(0.5, 0.5, 0.5);
     transform:scale3d(0.5, 0.5, 0.5);
-	/*
-	*/
-	
 }
 
 .loaded [ui-view].ng-enter-active {
@@ -512,8 +502,6 @@ select, input, textarea {
     -webkit-transform:scale3d(1, 1, 1);
     -moz-transform:scale3d(1, 1, 1);
     transform:scale3d(1, 1, 1);
-	/*
-	*/
 }
 
 .loaded [ui-view].ng-leave {
@@ -521,8 +509,6 @@ select, input, textarea {
     -webkit-transform:translate3d(0, 0, 0);
     -moz-transform:translate3d(0, 0, 0);
     transform:translate3d(0, 0, 0);
-	/*
-	*/
 }
 
 .loaded [ui-view].ng-leave-active {
@@ -530,9 +516,8 @@ select, input, textarea {
     -webkit-transform:translate3d(100px, 0, 0);
     -moz-transform:translate3d(100px, 0, 0);
     transform:translate3d(100px, 0, 0);
-	/*
-	*/
 }
+
 .menu-cover {
     -webkit-transition:all .3s ease-in-out!important;
     -moz-transition:all .3s ease-in-out!important;
@@ -554,6 +539,7 @@ select, input, textarea {
 .menuActive {
     left: -70%;
 }
+
 .hidden {
     display:none;
 }
@@ -566,6 +552,7 @@ select, input, textarea {
 .ios7-bar {
 	display:none;
 }
+
 .ios7 .ios7-bar {
 	display:block;
 	position:fixed;
@@ -575,12 +562,15 @@ select, input, textarea {
     height:20px;
     background:white;
 }
+
 .ios7 header {
 	top:20px;
 }
+
 .ios7 #header-wrapper {
  	height:75px!important;
 }
+
 .ios7 #sc-menu {
 	top:75px!important;
 }

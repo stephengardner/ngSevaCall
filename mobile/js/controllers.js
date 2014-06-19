@@ -2,6 +2,8 @@
 
 /* Controllers */
 angular.module('myApp.controllers', [])
+    /*
+    TODO: testing controllers, remove these
     .controller('test2', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
         Request.reset();
         Request.setID(testRequestID);
@@ -27,18 +29,17 @@ angular.module('myApp.controllers', [])
             GoogleMap.init();
         });
     }])
-	/*
-    .controller('wrapperController', ['App', 'Categories', 'Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', 'Storage', 
-		function(App, Categories, Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav, Storage) {
-        */
-	.controller('wrapperController', ['$scope', 'App',
-		function($scope, App) {
+    */
+	.controller('wrapperController', ['$scope', 'App', 'Storage', 'SCAPI', 'Categories', 'Request', 'Track', '$rootScope',
+        '$location', 'Nav', 'MapLoader', 'Splash', '$state', 'Uploader', 'Recording', '$timeout', '$q', '$http',
+		function($scope, App, Storage, SCAPI, Categories, Request, Track, $rootScope, $location, Nav, MapLoader,
+                 Splash, $state, Uploader, Recording, $timeout, $q, $http) {
 	
 		$scope.app = App;
-		//Storage.import();
-		//SCAPI.init(Request);
-        //$scope.categories = Categories;
-		/*
+		Storage.import();
+		SCAPI.init(Request);
+        $scope.categories = Categories;
+
         Storage.import(); // loads the local storage into the user name, email, phone and zip
         SCAPI.init(Request);
         
@@ -126,13 +127,7 @@ angular.module('myApp.controllers', [])
                 });
             });
         }
-		else if (testingType=="recordingAndroid") {
-			alert("Test Recording Android");
-		}
-        else if(isPhoneGap) {
-        }
 		locate(1);
-		*/
 	}])
     .controller('bodyController', ['$location', '$scope', 'Menu', 'AnimationService',
 		function($location, $scope, Menu, AnimationService){
@@ -149,33 +144,33 @@ angular.module('myApp.controllers', [])
         };
         $scope.animationService = AnimationService;
     }])
-	/*
-    .controller('step1Controller', ['App', '$interval', 'Recording', 'Splash', 'AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
-        function(App, $interval, Recording, Splash, AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
-	*/
-		.controller('step1Controller', ['App', 'Splash', '$scope', 'Request', 'User', 'Overlay', '$location', 'Location',
-        function(App, Splash, $scope, Request, User, Overlay, $location, Location) {
+	.controller('step1Controller', ['App', 'Splash', '$scope', 'Request', 'User', 'Overlay', '$location', 'Location',
+        'Recording', '$state', '$q', 'SCAPI',
+        function(App, Splash, $scope, Request, User, Overlay, $location, Location, Recording, $state, $q, SCAPI) {
+        $scope.app = App;
         $scope.$on('$viewContentLoaded', function() {
 			if(!App.loaded) {
-				navigator.splashscreen.hide();
-				App.loaded = true;
-				alert("18");
+                App.loaded = true;
+                if(isPhoneGap) {
+                    Splash.blip().then(function(){
+                        Recording.init().then(function(){
+                            console.log("*Recording file initialized and ready for recording");
+                        });
+                    });
+                }
 			}
 		});
-		
-        var categoryFromParams = $location.search().source;
+
         $scope.isPhoneGap = isPhoneGap;
         $scope.Location = Location;
         
-		//Request.reset();
+		Request.reset();
         
-		//$scope.User = User;
-        //$scope.Request = Request;
-        /*
-		$scope.$on('$destroy', function(event, toState){
-            AnimationService.init();
-        });
-		
+		$scope.User = User;
+        $scope.Request = Request;
+
+        // determines if we came to this page from the blog, if so, populate with a pre-filled category
+        var categoryFromParams = $location.search().source;
         if(categoryFromParams) {
             for(var i = 0; i < Categories.length; i++){
                 if (Categories[i].name == categoryFromParams) {
@@ -184,7 +179,8 @@ angular.module('myApp.controllers', [])
             }
             Request.setCategory(categoryFromParams);
         }
-		
+
+        // on request category dropdown change
         $scope.change = function(){
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {
@@ -237,23 +233,6 @@ angular.module('myApp.controllers', [])
             });
             return deferred.promise;
         };
-		$scope.app = App;
-		*/
-		/*
-        $scope.$on('$viewContentLoaded', function() {
-            if(!App.loaded) {
-                App.loaded = true;
-                if(isPhoneGap) {
-                    Splash.blip().then(function(){
-						alert("done blip");
-                        //Recording.init().then(function(){
-                        //    console.log("*Recording file initialized and ready for recording");
-                        //});
-                    });
-                }
-            }
-        });
-		*/
     }])
     .controller('step2Controller', ['RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state',
         function(RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {
@@ -607,7 +586,11 @@ angular.module('myApp.controllers', [])
         $scope.$on('$destroy', function() {
         	// destroy the iframe by removing its source, this allows the page transition to happen much faster.  Append the empty iframe to the body and hide it for re-use later
         	$("#sc-video").attr("src", "");
-			$("body").append($("#sc-video").addClass("offscreen"));
+			// delay this using a timeout, or else on very slow phones there may be an animation performance issue (htc-one)
+			// the timeout may be 1, but we're making it 300 here to allow the transition to finish or partially finish
+			$timeout(function(){
+				$("body").append($("#sc-video").addClass("offscreen"));
+			}, 300)
 			// make sure this event is unbound!, in cases where a user navigates away immediately, this might not have been unbound
 			$("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd');
         });
