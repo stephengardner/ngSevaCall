@@ -27,8 +27,18 @@ angular.module('myApp.controllers', [])
             GoogleMap.init();
         });
     }])
-    .controller('wrapperController', ['Categories', 'Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', 'Storage', function(Categories, Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav, Storage) {
-        /*
+	/*
+    .controller('wrapperController', ['App', 'Categories', 'Splash', '$http', 'Overlay', '$state', 'SCAPI', 'Request', 'Uploader', '$scope', 'User', '$q', 'Location', 'Recording', '$timeout', '$window', 'MapLoader', 'Track', '$rootScope', '$location', 'Nav', 'Storage', 
+		function(App, Categories, Splash, $http, Overlay, $state, SCAPI, Request, Uploader, $scope, User, $q, Location, Recording, $timeout, $window, MapLoader, Track, $rootScope, $location, Nav, Storage) {
+        */
+	.controller('wrapperController', ['$scope', 'App',
+		function($scope, App) {
+	
+		$scope.app = App;
+		//Storage.import();
+		//SCAPI.init(Request);
+        //$scope.categories = Categories;
+		/*
         Storage.import(); // loads the local storage into the user name, email, phone and zip
         SCAPI.init(Request);
         
@@ -40,7 +50,7 @@ angular.module('myApp.controllers', [])
         
         // Track each page opening as it occurs
         $rootScope.$on('$locationChangeSuccess', function(){
-        	console.log("*/page/*" + $location.url());
+        	console.log("*page*" + $location.url());
             Track.event({eventCategory : "page", eventAction :  $location.url().replace("/", "") + "_screen_opened"});
             // only call if the event.preventDefault isn't active from the locationChangeStart
             Nav.reset();
@@ -124,8 +134,8 @@ angular.module('myApp.controllers', [])
 		locate(1);
 		*/
 	}])
-    .controller('bodyController', ['AnimationService' ,'$rootScope', 'Request', 'Menu', '$attrs', '$scope', '$location',
-        function(AnimationService, $rootScope, Request, Menu, $attrs, $scope, $location){
+    .controller('bodyController', ['$location', '$scope', 'Menu', 'AnimationService',
+		function($location, $scope, Menu, AnimationService){
     	
         if(testingType == "statusBug") {
         	$location.path("/statusBug");
@@ -138,19 +148,34 @@ angular.module('myApp.controllers', [])
             Menu.active = false;
         };
         $scope.animationService = AnimationService;
-       	
     }])
+	/*
     .controller('step1Controller', ['App', '$interval', 'Recording', 'Splash', 'AnimationService', '$rootScope', '$stateParams', '$state', '$q', '$location', 'SCAPI', 'Request', 'Categories', 'Overlay', 'User', '$scope', 'Location', '$http',
         function(App, $interval, Recording, Splash, AnimationService, $rootScope, $stateParams, $state, $q, $location, SCAPI, Request, Categories, Overlay, User, $scope, Location, $http) {
+	*/
+		.controller('step1Controller', ['App', 'Splash', '$scope', 'Request', 'User', 'Overlay', '$location', 'Location',
+        function(App, Splash, $scope, Request, User, Overlay, $location, Location) {
+        $scope.$on('$viewContentLoaded', function() {
+			if(!App.loaded) {
+				navigator.splashscreen.hide();
+				App.loaded = true;
+				alert("18");
+			}
+		});
+		
         var categoryFromParams = $location.search().source;
         $scope.isPhoneGap = isPhoneGap;
         $scope.Location = Location;
-        Request.reset();
-        $scope.User = User;
-        $scope.Request = Request;
-        $scope.$on('$destroy', function(event, toState){
+        
+		//Request.reset();
+        
+		//$scope.User = User;
+        //$scope.Request = Request;
+        /*
+		$scope.$on('$destroy', function(event, toState){
             AnimationService.init();
         });
+		
         if(categoryFromParams) {
             for(var i = 0; i < Categories.length; i++){
                 if (Categories[i].name == categoryFromParams) {
@@ -159,6 +184,7 @@ angular.module('myApp.controllers', [])
             }
             Request.setCategory(categoryFromParams);
         }
+		
         $scope.change = function(){
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {
@@ -211,13 +237,15 @@ angular.module('myApp.controllers', [])
             });
             return deferred.promise;
         };
-
+		$scope.app = App;
+		*/
+		/*
         $scope.$on('$viewContentLoaded', function() {
             if(!App.loaded) {
                 App.loaded = true;
-                alert("viewContentLoaded");
                 if(isPhoneGap) {
                     Splash.blip().then(function(){
+						alert("done blip");
                         //Recording.init().then(function(){
                         //    console.log("*Recording file initialized and ready for recording");
                         //});
@@ -225,6 +253,7 @@ angular.module('myApp.controllers', [])
                 }
             }
         });
+		*/
     }])
     .controller('step2Controller', ['RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', '$scope', 'User', 'Request', '$state',
         function(RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state) {

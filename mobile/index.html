@@ -71,7 +71,7 @@
         <!-- begin main view -->
         <div class="row body">
             <div class="menu-cover" ng-class="{menuActive : Menu.active}" style="top:0;"></div>
-            <div id="bodyContainer" ng-click="click($event)" ng-controller="bodyController" ng-class="{menuActive : Menu.active}" class="GPUAccel body-animate clearfix">
+            <div id="bodyContainer" ng-click="click($event)" ng-controller="bodyController" ng-class="{menuActive : Menu.active, loaded : app.loaded}" class="body-animate GPUAccel clearfix">
                 <div class="body-margin">
                     <div class="span12 ui-view-container clearfix">
                         <div ui-view class="slide GPUAccel" ng-class="{disabled : Menu.active}"></div>

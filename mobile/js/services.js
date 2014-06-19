@@ -641,7 +641,7 @@ myApp.factory('Times', function(){
     return Times;
 });
 
-myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User, $http, $q, Times, Uploader){
+myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*User,*/ $http, $q, Times, Uploader){
     var Request = {
         initialized : false,
         companies : {},
@@ -666,8 +666,10 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
         // when a user travels back to step 1, reset all necessary parameters
         reset : function() {
             Times.empty();
-            Recording.reset();
+            /*
+			Recording.reset();
 			Uploader.reset();
+			*/
             this.pingStatusesStop();
             this.verifiedTimeoutStop();
             this.description = "";
@@ -680,7 +682,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
             this.companies = {};
             this.processing = false;
             this.complete = false;
-        	SCAPI.init(Request);
+        	//SCAPI.init(Request);
         },
 
         addCompany : function(){
@@ -739,6 +741,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
         
         pingStatusesStart : function() {
             var self = this;
+			/*
             Request.processing = true;
             self.verifiedTimeoutStart();
             self.interval = $interval(function() {
@@ -789,10 +792,11 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
                     console.log("*The current throttle is: ", self.statusThrottle);
                 });
             }, 1000);
+			*/
         },
 
         requestComplete : function() {
-            $rootScope.$broadcast('requestCompleted');
+            //$rootScope.$broadcast('requestCompleted');
             this.complete = true;
         },
 
@@ -802,6 +806,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
         },
 
         submit : function() {
+			/*
             var self = this;
             var deferred = $q.defer();
             //
@@ -813,6 +818,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, User,
                 deferred.resolve(d);
             });
             return deferred.promise;
+			*/
         },
 
         setStatusThrottle : function(statusResponse) {
