@@ -272,12 +272,18 @@
 .recording-modal.active {
     trasition:bottom .5s, opacity 1s;
     -webkit-transition: bottom .5s, opacity 1s;
+    transition: bottom .5s, opacity 1s;
+    -moz-transition: bottom .5s, opacity 1s;
+    -o-transition: bottom .5s, opacity 1s;
     opacity: 1;
 	bottom:1em;
 }
 .recording-modal.removing {
     trasition:opacity .5s;
-    -webkit-transition:opacity .5s;
+    -webkit-transition: opacity .5s;
+    transition: opacity .5s;
+    -moz-transition: opacity .5s;
+    -o-transition: opacity .5s;
     opacity: 0;
 	bottom:1em;
 }

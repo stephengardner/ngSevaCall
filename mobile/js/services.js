@@ -32,7 +32,7 @@ myApp.factory('RecordingModal', function(Storage, $timeout){
 		removed : false,
 		hasBeenActive : false,
 		message : "Click here to record your description.",
-        show : function(){
+        show : function() {
             // only show the message once a session
             // this IF statement may be added or removed, if active, 
 			// it will never show the message again to the user
@@ -145,23 +145,21 @@ myApp.factory('MapLoader', function($window, $q){
 							self.loaded = true;
 							self.busy = false;
                             self.deferred.resolve(true);
-                            //Location.geoLocate();
                         }).fail(function() {
                         	self.busy = false;
                         	console.log("*getScript xMarker failed");
                             self.deferred.reject(false);
-                            //Location.geoLocate();
                         });
                     }).fail(function(){
                         console.log("*getScript infoBox failed");
                         self.busy = false;
                         self.deferred.reject(false);
-                        //Location.geoLocate();
                     });
                 };
                 $.getScript("http://maps.google.com/maps/api/js?v=3.13&key=AIzaSyBHtVxQeYDw2uzrMXpbkqnfqkftcjo-B3Y&sensor=false&callback=loadMapsPlugins").done(function(script, textStatus) {
                 	console.log("*Get google maps textStatus is: " + textStatus);
-                    if (typeof google !== 'object' && typeof google.maps !== 'object') {
+                    if (typeof window.google !== 'object' || typeof window.google.maps !== 'object') {
+						self.busy = false;
                     	self.deferred.reject(false);
                     }
                 }).fail(function(){
@@ -666,10 +664,8 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
         // when a user travels back to step 1, reset all necessary parameters
         reset : function() {
             Times.empty();
-            /*
 			Recording.reset();
 			Uploader.reset();
-			*/
             this.pingStatusesStop();
             this.verifiedTimeoutStop();
             this.description = "";
@@ -741,11 +737,12 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
         
         pingStatusesStart : function() {
             var self = this;
-			/*
             Request.processing = true;
             self.verifiedTimeoutStart();
             self.interval = $interval(function() {
                 SCAPI.getRequestStatus().then(function(d) {
+					console.log("*******************");
+					console.log(d.data);
                     self.setStatusThrottle(d);
                     if(self.statusThrottle.length > 0 && !$.isEmptyObject(self.companies)) {
                         self.verifiedTimeoutStop();
@@ -780,7 +777,6 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
                             	self.GoogleMap.setInfoBox(Request.companies[status.companyID]);
                             } catch(e) {
                             	// if the google map is not defined yet, it means the transition hasn't or will not happen
-                                
                             }
                         }
                         else {
@@ -792,11 +788,10 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
                     console.log("*The current throttle is: ", self.statusThrottle);
                 });
             }, 1000);
-			*/
         },
 
         requestComplete : function() {
-            //$rootScope.$broadcast('requestCompleted');
+            $rootScope.$broadcast('requestCompleted');
             this.complete = true;
         },
 
@@ -806,7 +801,6 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
         },
 
         submit : function() {
-			/*
             var self = this;
             var deferred = $q.defer();
             //
@@ -818,10 +812,10 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
                 deferred.resolve(d);
             });
             return deferred.promise;
-			*/
         },
 
         setStatusThrottle : function(statusResponse) {
+			console.log("Status throttle response is: " + statusResponse);
             function statusIDIsIn(requestStatusID, arrayOfObjects){
                 for(var i = 0; i < arrayOfObjects.length; i++){
                     var obj = arrayOfObjects[i];
@@ -1070,46 +1064,47 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
             }
             preload().then(function(){
                 navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    var geocoder = new google.maps.Geocoder();
-        
-                    var lat = position.coords.latitude;
-                    var lng = position.coords.longitude;
-                    var latlng = new google.maps.LatLng(lat, lng);
-                    
-                    geocoder.geocode({'latLng': latlng}, function (results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            var address = results[0].address_components;
-                            var newzip = address[address.length - 1].long_name;
-                            // match five digits
-                            //
-                            var matches = newzip.match(/\b\d{5}\b/g);
-                            if (!(matches && matches.length >= 1)) {
-                            	self.error();
-                                deferred.resolve();
-                            }
-                            else {
-                                console.log("*Geolocated to zipcode: " + newzip);
-                                self.complete();
-                                deferred.resolve(newzip);
-                            }
-                        }
-                        else {
-                        	self.error();
-                            deferred.resolve();
-                        }
-                    });
-                },
-                function(err) {
-                    self.error();
-        			deferred.resolve();
-                });
+					function (position) {
+						var geocoder = new google.maps.Geocoder();
+			
+						var lat = position.coords.latitude;
+						var lng = position.coords.longitude;
+						var latlng = new google.maps.LatLng(lat, lng);
+						
+						geocoder.geocode({'latLng': latlng}, function (results, status) {
+							if (status == google.maps.GeocoderStatus.OK) {
+								var address = results[0].address_components;
+								var newzip = address[address.length - 1].long_name;
+								// match five digits
+								//
+								var matches = newzip.match(/\b\d{5}\b/g);
+								if (!(matches && matches.length >= 1)) {
+									self.error();
+									deferred.resolve();
+								}
+								else {
+									console.log("*Geolocated to zipcode: " + newzip);
+									self.complete();
+									deferred.resolve(newzip);
+								}
+							}
+							else {
+								self.error();
+								deferred.resolve();
+							}
+						});
+					},
+					function(err) {
+						self.error();
+						deferred.resolve();
+					},
+					{timeout : 4000}
+				);
                 
             }, function(err){
             	self.busy = false;
         		deferred.resolve(false);
-            },
-            {timeout : 4000}
+            }
             );
             return deferred.promise;
         }

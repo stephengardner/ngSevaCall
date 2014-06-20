@@ -2,23 +2,6 @@
     <form ng-submit="next()">
         <div class="sep"></div>
         <h1>DESCRIBE WHAT YOU NEED</h1>
-<<<<<<< HEAD
-        <div id="description-button" class="action-button button" ng-show="1" ui-sref="recording">
-            <a href="#"></a>
-        </div>
-        <div class="description">
-            <div class="description-wrapper" ng-class="{active : 1}">
-                <div ng-show="isPhoneGap" class="recording-modal" ng-class="{active : recordingModal.active}">
-                    <div class="modal-close" ng-click="recordingModal.hide()">
-                        <i class="fa fa-times"></i>
-                    </div>
-                    <img src="img/modal-arrow.png"/>
-                    Click here to record your description
-                </div>
-                <textarea ng-class="{disabled : recordingSaved}" maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>
-            </div>
-        </div>
-=======
         <div id="description-button" class="action-button button" ng-show="isPhoneGap" ui-sref="recording" ng-click="recordingModal.hide()">
             <a href="#"></a>
         </div>
@@ -34,7 +17,6 @@
 	            <textarea ng-class="{disabled : recordingSaved}" maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>
 	        </div>
 	    </div>
->>>>>>> d72656e79ac0780c7509a533c8a992ec84188f75
         <div class="sep"></div>
         <h1>AND WHEN YOU WANT IT</h1>
         <div class="time-buttons clearfix">

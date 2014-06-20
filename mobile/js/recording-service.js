@@ -78,16 +78,21 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         playing : 0,
         permissionsStatus : 0, // O: Uknown (on start), 1: Good to record, 2: DENIED
         paused : 0,
+		initialized : false,
         // set using "setAudio()" : mimeType : "audio/wav",
         // set using "setAudiio()" : audioType : "aiff",
 		
         init : function(){
             // check for if file exists (it likely wont), so, create it.
             var self = this;
-			self.setAudio();
-            self.initialPromise = $q.defer();
-            window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, self.gotFS, function fail(){});
-            return self.initialPromise.promise;
+			if(!self.initialized) {
+				console.log("Attempting to initialize");
+				self.initialized = true;
+				self.setAudio();
+				self.initialPromise = $q.defer();
+				window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, self.gotFS, function fail(){});
+				return self.initialPromise.promise;
+			}
         },
 		
 		setAudio : function(opt_mimeType) {

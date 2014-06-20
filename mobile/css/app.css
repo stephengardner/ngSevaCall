@@ -312,6 +312,9 @@ header .icon {
 #logo img {
     height:30px;
     margin-top:2px;
+    text-align: center;
+	margin-left:auto; 
+	margin-right:auto;
 }
 
 header {
