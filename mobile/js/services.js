@@ -741,8 +741,6 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
             self.verifiedTimeoutStart();
             self.interval = $interval(function() {
                 SCAPI.getRequestStatus().then(function(d) {
-					console.log("*******************");
-					console.log(d.data);
                     self.setStatusThrottle(d);
                     if(self.statusThrottle.length > 0 && !$.isEmptyObject(self.companies)) {
                         self.verifiedTimeoutStop();
@@ -770,7 +768,6 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
                                 Request.companies[status.companyID].acceptedOrder = self.numCompaniesAccepted;
                                 self.numCompaniesAccepted++;
                             }
-                            console.log(status.requestStatusShort);
                             self.statusThrottle.shift();
                             
                             try {
@@ -853,7 +850,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
     return Request;
 });
 
-myApp.factory('Storage', function(User, Request, $localStorage){
+myApp.factory('Storage', function(User, Request, $localStorage) {
     var Storage = {
         name : false,
         email : false,
@@ -900,7 +897,7 @@ myApp.factory('Storage', function(User, Request, $localStorage){
     return Storage;
 });
 
-myApp.factory('User', function(){
+myApp.factory('User', function() {
     var User = {
         nameValidate : /[a-zA-Z]{2,}/,
         emailValidate : /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
@@ -963,7 +960,7 @@ myApp.factory('User', function(){
     return User;
 });
 
-myApp.factory('Overlay', function(){
+myApp.factory('Overlay', function() {
     var Overlay = {
         body : $("body"),
         isActive : false,
@@ -1037,10 +1034,10 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
             var preloadDeferred = $q.defer();
             function preload() {
                 MapLoader.loadMaps().then(function(){
-                    console.log("all loaded");
+                    console.log("*MapLoader, all loaded");
                     preloadDeferred.resolve(true);
                 }, function(){
-                    console.log("not loaded");
+                    console.log("*MapLoader rejected: not loaded");
 					if(opt_initial_check) {
 						preloadDeferred.reject(false);
 					}
