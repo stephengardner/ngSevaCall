@@ -310,7 +310,8 @@ var myApp = angular.module('myApp', [
         $stateProvider.state(settings);
         $stateProvider.state(information);
     }).run(function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
-        $rootScope.$on('requestCompleted', function(){
+		FastClick.attach(document.body);
+		$rootScope.$on('requestCompleted', function(){
             $state.go("summary");
         });
         $rootScope.$on('$stateChangeStart', function(event, toState){

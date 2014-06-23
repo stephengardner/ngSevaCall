@@ -1,31 +1,18 @@
-<!DOCTYPE html>
+
 <!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+ ______  ______
+/\  ___\/\  ___\
+\ \___  \ \ \__ \
+ \/\_____\ \_____\
+  \/_____/\/_____/
 -->
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <!--
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        -->
         <title>SevaCall</title>
         
         <link rel="stylesheet" href="vendors/bootstrap/css/bootstrap.css"/>
@@ -47,17 +34,6 @@
         <script src="vendors/fastclick/fastclick.js"></script>
     </head>
     <body ng-controller="wrapperController" class="container" ng-class="{iphone4 : iphone4, iphone5 : iphone5, ios7 : ios7, phonegap : isPhoneGap, mobileWeb : !isPhoneGap}">
-    	<!--
-        <div class="app">
-            <h1>Apache Cordova4</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div>
-        <iframe id="sc-video" src="" class="offscreen sc-video" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
-    	</iframe>
-        -->
         <div id="splashscreen" ng-show="isPhoneGap">
         	<img id="splashImg-iPhone4" src="img/splash-iphone4-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
     		<img id="splashImg-iPhone5" src="img/splash-iphone5-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
@@ -67,7 +43,6 @@
             <div sc-header class="clearfix"></div>
         </div>
         <!-- end header -->
-
         <!-- begin main view -->
         <div class="row body">
             <div class="menu-cover" ng-class="{menuActive : Menu.active}" style="top:0;"></div>
@@ -84,16 +59,19 @@
         <!-- begin menu -->
         <div sc-menu class="GPUAccel row"></div>
         <!-- end menu -->
-    
+
+        <!-- begin native js -->
         <script type="text/javascript" src="../../cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-        
+        <!-- end native js -->
+        <!-- begin angular components -->
         <script src="angular-components/angular-animate/angular-animate.js"></script>
         <script src="angular-components/angular-cookies/angular-cookies.js"></script>
         <script src="angular-components/angular-resource/angular-resource.js"></script>
         <script src="angular-components/angular-ui-router/angular-ui-router.js"></script>
         <script src="angular-components/angular-loading-bar/js/angular-loading-bar.js"></script>
-        
+        <!-- end angular components -->
+        <!-- begin all other app js -->
         <script src="js/app.js"></script>
         <script src="js/request-submittor-service.js"></script>
         <script src="js/scapi-service.js"></script>
@@ -105,10 +83,10 @@
         <script src="js/directives.js"></script>
         <script src="js/xAlert.js"></script>
 		<script src="js/ga.js"></script>
-        
+        <!-- end all other app js -->
+        <!-- begin app launch script -->
         <script type="text/javascript">
             app.initialize();
-            
             if(isPhoneGap) {
                 document.addEventListener('deviceready',function(){
                     angular.bootstrap(document, ["myApp"]);
@@ -117,26 +95,7 @@
             else {
                 angular.bootstrap(document, ["myApp"]);
             }
-			
-            /*
-            function loadMapsPlugins(){
-                $.getScript("js/infobox.js", function(){
-                    $.getScript("js/xMarker.js", function(){
-                    	// global maps loaded variable
-                        // mapsLoaded = true;
-                    });
-                })
-            }
-            
-            */
-        
-            $(document).ready(function(){
-                FastClick.attach(document.body);
-                // Special Fix: necessary on android phones with awkward z-index placement on transitioning.  This element would hide all other elements below it after transitioning.
-                //if(!isPhoneGap)
-                //    $("#splashBackground").css("display", "none");
-            });
-
         </script>
+        <!-- end app launch script -->
     </body>
 </html>
