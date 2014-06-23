@@ -149,7 +149,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                     }
                 }, function(statusChanged){
                 	console.log("*Recording status has changed to: " + statusChanged);
-                    //for reference:
+                    //for reference (do not delete):
                     //Media.MEDIA_NONE = 0;
                     //Media.MEDIA_STARTING = 1;
                     //Media.MEDIA_RUNNING = 2;

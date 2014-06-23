@@ -68,9 +68,7 @@ var myApp = angular.module('myApp', [
         'myApp.controllers',
         'ui.router',
         'ngAnimate',
-        'ngStorage',
-        'ngResource',
-        'ngCookies'
+        'ngStorage'
     ]).factory(
     'MyInterceptor',
     function ($q, $rootScope, $injector, $timeout, Overlay) {
