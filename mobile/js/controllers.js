@@ -65,7 +65,7 @@ angular.module('myApp.controllers', [])
         $scope.animationService = AnimationService;
     }])
 	.controller('step1Controller', ['App', '$scope', 'Location', 'User', 'Request', '$location', 'Categories', 'Overlay'
-		, 'SCAPI', '$q', 'Splash', '$state',
+		, 'SCAPI', '$q', 'Splash', '$state', 'Track',
 		function(App, $scope, Location, User, Request, $location, Categories, Overlay, SCAPI, $q, Splash, $state, Track) {
 		Request.reset();
 		$scope.app = App;

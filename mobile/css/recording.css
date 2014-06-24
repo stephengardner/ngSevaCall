@@ -291,7 +291,7 @@
 	display:none;
 }
 .modal-close {
-    color: #003366;
+    color: white;
     position: absolute;
     padding: .5em;
     top: -.5em;
