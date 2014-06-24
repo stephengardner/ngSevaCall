@@ -94,11 +94,19 @@ var myApp = angular.module('myApp', [
             var self = this;
             return promise.then(function (response) {
                 // do something on success
+<<<<<<< HEAD
+                console.log("*--*Http Wrapper Success Response: ", response);
+                
+                // this is NOT the correct way to check this data, however, the sevacall api is not completely standardized yet, so this check is temporary.
+                // what this does: it checks to see if the http response was a webpage, this happens if there is a sign on required for your wifi connection.  If you need to be signed in, then this response is obviously not correct, so warn the user.
+                if(response.data && typeof response.data == "string" && response.data.indexOf("DOCTYPE") != -1) {
+=======
 	            console.log("*--*Http Wrapper Success Response: ", response);
 
 	            // this is NOT the correct way to check this data, however, the sevacall api is not completely standardized yet, so this check is temporary.
 	            // what this does: it checks to see if the http response was a webpage, this happens if there is a sign on required for your wifi connection.  If you need to be signed in, then this response is obviously not correct, so warn the user.
 	            if(response.data && typeof response.data == "string" && response.data.indexOf("DOCTYPE") != -1) {
+>>>>>>> f3b915c4e37b93d79cc7df42c06f8c9d593c2523
                 	var deferred = $q.defer();
 		            trackInternetFailed();
                     new xAlert("Verify you are connected to the internet and retry.",
