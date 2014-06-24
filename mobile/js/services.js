@@ -72,27 +72,47 @@ myApp.factory('AlertSwitch', function(){
     return AlertSwitch;
 });
 myApp.factory('Track', function() {
-	var GA_IDs = {
-        'Seva Call Mobile App' : 'UA-51774414-1'
-    };
+	var GA_IDs = appOptions.analytics.gaIDs;
     var Track = {
     	init : function() {
         	if(window.localStorage) {
-                var clientId = window.device && window.device.uuid ? window.device.uuid : 1; // 1 = web, fix this for storage?
-                ga(
+		        var clientId;
+		        var ga_id;
+		        var ga_id_type; // just for personal log purposes
+		        if(window.device && window.device.uuid) {
+			        clientId = window.device.uuid;
+			        ga_id = GA_IDs['Seva Call Mobile App'];
+			        ga_id_type = 'Mobile App';
+			        console.log("setting localStorage.clientId to: " + clientId);
+			        window.localStorage.setItem(appOptions.analytics.gaStorageName, clientId);
+		        }
+		        else {
+			        ga_id = GA_IDs['Seva Call Mobile Web'];
+			        ga_id_type = 'Mobile Web';
+			        if(window.localStorage.getItem(appOptions.analytics.gaStorageName)){
+				        clientId = window.localStorage.getItem(appOptions.analytics.gaStorageName);
+			        }
+			        else {
+				        clientId = Math.round(2147483647 * Math.random()); // how google generates a clientId
+				        console.log("setting localStorage.clientId to: " + clientId);
+				        window.localStorage.setItem(appOptions.analytics.gaStorageName, clientId);
+			        }
+		        }
+                console.log("tracking to: " + ga_id_type + " with client id: " + window.localStorage.getItem(appOptions.analytics.gaStorageName));
+		        ga(
                     'create',
-                    GA_IDs['Seva Call Mobile App'],
+                    ga_id,
                     {
                         'storage' : 'none',
-                        'clientId' : window.localStorage.getItem('clientId')
+                        'clientId' : window.localStorage.getItem(appOptions.analytics.gaStorageName)
                     }
                 );
                 ga(function(tracker) {
-                    window.localStorage.setItem('ga_clientId', tracker.get('clientId'));
+	                console.log("google tracker returned client id: " + tracker.get('clientId'));
                 });
             }
             else {
-                ga('create',  GA_IDs['Seva Call Mobile App'], 'www.sevacall.com');
+                ga('create',  ga_id, 'www.sevacall.com');
             }
             ga('send', 'pageview', {'page' : 'step1'});
         },
@@ -104,19 +124,35 @@ myApp.factory('Track', function() {
             }
         },
         page : function(p) {
-        	ga('send', {
-            	'hitType' : 'pageview',
-                page : p
-            });
+	        // Note: Note currently used as of 6.24.2014
+	        var pageDetails = {
+		        'hitType' : 'pageview',
+			        page : p
+	        };
+	        console.log("--> TRACK_PAGEVIEW_: " + p.toUpperCase());
+        	ga('send', pageDetails);
         },
-        merge : function(params) {
-        
-        },
-        event : function(options) {
+        event : function() {
+	        var eventTypes = appOptions.analytics.eventTypes;
+	        var options = {};
+	        if(arguments.length == 1 && typeof arguments[0] == "object") {
+		        options = arguments[0];
+	        }
+	        if(arguments.length == 2){
+		        options.eventCategory = eventTypes[arguments[0]];
+		        options.eventAction = arguments[1];
+	        }
+	        else {
+		        options.eventCategory = "notify";
+		        options.eventAction = arguments[0];
+	        }
         	var defaults = this.defaults.event;
-            var options = options || {};
             var actual = $.extend({}, defaults, options);
             actual.eventAction = actual.eventAction.toUpperCase();
+	        var clientId;
+	        if(window.localStorage)
+	            clientId = window.localStorage.getItem(appOptions.analytics.goStorageName);
+	        console.log(" --> TRACK ACTION: " + actual.eventAction.toUpperCase());
         	ga('send', actual);
         }
     };
@@ -741,8 +777,6 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
             self.verifiedTimeoutStart();
             self.interval = $interval(function() {
                 SCAPI.getRequestStatus().then(function(d) {
-					console.log("*******************");
-					console.log(d.data);
                     self.setStatusThrottle(d);
                     if(self.statusThrottle.length > 0 && !$.isEmptyObject(self.companies)) {
                         self.verifiedTimeoutStop();
@@ -770,7 +804,6 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
                                 Request.companies[status.companyID].acceptedOrder = self.numCompaniesAccepted;
                                 self.numCompaniesAccepted++;
                             }
-                            console.log(status.requestStatusShort);
                             self.statusThrottle.shift();
                             
                             try {
@@ -853,7 +886,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
     return Request;
 });
 
-myApp.factory('Storage', function(User, Request, $localStorage){
+myApp.factory('Storage', function(User, Request, $localStorage) {
     var Storage = {
         name : false,
         email : false,
@@ -900,7 +933,7 @@ myApp.factory('Storage', function(User, Request, $localStorage){
     return Storage;
 });
 
-myApp.factory('User', function(){
+myApp.factory('User', function() {
     var User = {
         nameValidate : /[a-zA-Z]{2,}/,
         emailValidate : /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
@@ -963,7 +996,7 @@ myApp.factory('User', function(){
     return User;
 });
 
-myApp.factory('Overlay', function(){
+myApp.factory('Overlay', function() {
     var Overlay = {
         body : $("body"),
         isActive : false,
@@ -1011,15 +1044,24 @@ myApp.factory('Overlay', function(){
     return Overlay;
 });
 
-myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, MapLoader) {
+myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, MapLoader, Track, $state) {
     var Location = {
         busy : false,
         complete : function() {
+	        Track.event($state.current.name + "_location_delegate_success");
         	Overlay.remove();
         	console.log("removing busy status from complete");
             this.busy = false;
         },
         error : function(err) {
+	        var errType;
+	        if(err == 1) {
+		        errType = "location";
+	        }
+	        else if(err == 2) {
+		        errType = "geocoding";
+	        }
+	        Track.event($state.current.name + "_" + errType + "_delegate_failed");
         	console.log("removing busy status from err");
             this.busy = false;
             Overlay.remove();
@@ -1030,17 +1072,20 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
         geoLocate : function(opt_initial_check) {
             var self = this;
             self.busy = true;
-            if(!opt_initial_check)
+
+            if(!opt_initial_check) {
+                Track.event("interaction", $state.current.name + "_locate_button_pressed");
             	Overlay.message("Locating...");
+            }
             self.opt_initial_check = opt_initial_check;
         	var deferred = $q.defer();
             var preloadDeferred = $q.defer();
             function preload() {
                 MapLoader.loadMaps().then(function(){
-                    console.log("all loaded");
+                    console.log("*MapLoader, all loaded");
                     preloadDeferred.resolve(true);
                 }, function(){
-                    console.log("not loaded");
+                    console.log("*MapLoader rejected: not loaded");
 					if(opt_initial_check) {
 						preloadDeferred.reject(false);
 					}
@@ -1066,7 +1111,7 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                 navigator.geolocation.getCurrentPosition(
 					function (position) {
 						var geocoder = new google.maps.Geocoder();
-			
+
 						var lat = position.coords.latitude;
 						var lng = position.coords.longitude;
 						var latlng = new google.maps.LatLng(lat, lng);
@@ -1079,23 +1124,24 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
 								//
 								var matches = newzip.match(/\b\d{5}\b/g);
 								if (!(matches && matches.length >= 1)) {
-									self.error();
+									self.error(2);
 									deferred.resolve();
 								}
 								else {
+									Track.event($state.current.name + "_geocoding_delegate_success");
 									console.log("*Geolocated to zipcode: " + newzip);
 									self.complete();
 									deferred.resolve(newzip);
 								}
 							}
 							else {
-								self.error();
+								self.error(2);
 								deferred.resolve();
 							}
 						});
 					},
 					function(err) {
-						self.error();
+						self.error(1);
 						deferred.resolve();
 					},
 					{timeout : 4000}

@@ -1,41 +1,12 @@
 'use strict';
 
-/* Controllers */
+/* Begin Angular Controllers */
 angular.module('myApp.controllers', [])
-    /*
-    TODO: testing controllers, remove these
-    .controller('test2', ['$state', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($state, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
-        Request.reset();
-        Request.setID(testRequestID);
-        SCAPI.getCompaniesList().then(function(){
-            $state.go("step2").then(function(){
-                $state.go("step3");
-            });
-            Request.pingStatusesStart();
-            GoogleMap.init();
-        });
-    }])
-    .controller('test3', ['Splash', 'Test', '$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function(Splash, Test, $timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
-        Splash.remove();
-    	Test.test3();
-    }])
-    .controller('test', ['$timeout', 'GoogleMap', 'User', 'Request', 'Times', 'Location', 'Overlay', 'Categories', '$scope', 'SCAPI', function($timeout, GoogleMap, User, Request, Times, Location, Overlay, Categories, $scope, SCAPI){
-        $scope.companies = Request.companies;
-        $scope.request = Request;
-        $scope.numCompaniesAccepted = Request.numCompaniesAccepted;
-        Request.setID(testRequestID);
-        SCAPI.getCompaniesList().then(function(){
-            Request.pingStatusesStart();
-            GoogleMap.init();
-        });
-    }])
-    */
-	/*
-	.controller('wrapperController', ['$scope', 'App', 'Storage', 'SCAPI', 'Categories', 'Request', 'Track', '$rootScope',
-        '$location', 'Nav', 'MapLoader', 'Splash', '$state', 'Uploader', 'Recording', '$timeout', '$q', '$http',
-		function($scope, App, Storage, SCAPI, Categories, Request, Track, $rootScope, $location, Nav, MapLoader,
-                 Splash, $state, Uploader, Recording, $timeout, $q, $http) {
-	*/
+	.controller('actionButtonController', ['$scope', '$state', 'Track', function($scope, $state, Track){
+		$scope.click = function(text){
+			Track.event(2, $state.current.name + "_" + text + "_button_pressed");
+		};
+	}])
 	.controller('wrapperController', ['$scope', 'App', 'Storage', 'SCAPI', 'Categories', 'Track', '$rootScope', 'Request',
 		'Nav', 'MapLoader', 'Location', 'User', '$location',
 		function($scope, App, Storage, SCAPI, Categories, Track, $rootScope, Request, Nav, MapLoader, Location, User, $location) {
@@ -43,16 +14,15 @@ angular.module('myApp.controllers', [])
 		Storage.import();
 		SCAPI.init(Request);
         $scope.categories = Categories;
-        
-		
+
         // Initialize the analytics tracker and log app opening
         Track.init();
-        Track.event({eventCategory : "page", eventAction :  "application_opened"});
-        
+        Track.event(1, "application_opened");
+
         // Track each page opening as it occurs
         $rootScope.$on('$locationChangeSuccess', function(){
         	console.log("*page*" + $location.url());
-            Track.event({eventCategory : "page", eventAction :  $location.url().replace("/", "") + "_screen_opened"});
+            Track.event(1, $location.url().replace("/", "") + "_screen_opened");
             // only call if the event.preventDefault isn't active from the locationChangeStart
             Nav.reset();
         });
@@ -77,57 +47,6 @@ angular.module('myApp.controllers', [])
                 }
             });
         }
-		/*
-        // TODO: Remove, testing
-        if(testingType=="recording") {
-            Splash.blip().then(function(){
-                Request.setID(112669);
-                User.setName("Augie Testing");
-                User.setPhone("3017047437");
-                User.setEmail("augie@augie.augie");
-                Request.setCategory("Test Spin");
-                User.setZipcode("20854");
-                SCAPI.step1().then(function(d) {
-                	Overlay.remove();
-                    console.log("*Step1 Returned: ", d);
-                    var results = d.split("|");
-                    // this API formats a response with a pipe ("|") if it is successful
-                    if(d.indexOf("|") == -1) {
-                        new xAlert(d);
-                        return false;
-                    }
-                    else {
-                        $state.go("step2");
-                    }
-                	SCAPI.getCompaniesList().then(function(){
-                        $state.go("recording").then(function(){
-                            Recording.init().then(function(){
-                                console.log("*Recording initialized");
-                                Recording.startRecord();
-                                $timeout(function(){
-                                	Recording.stopRecord();
-                                    Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(){
-                                    	console.log("*Audio Encoding Successful");
-                                        $http({
-                                            url : api_root + "api/mobile/v2/encodeAudio.php?audioType=" + Recording.audioType + "&requestID=" + Request.id,
-                                            method : "GET",
-                                            headers : {'Content-Type': 'application/json'}
-                                        }).success(function(d){
-                                            console.log("*Audio Encoding returned: " + d);
-                                            $state.go("step3");
-                            				//Request.submit();
-                                        }).error(function(){
-                                            new xAlert("Error Encoding Recording");
-                                        });
-                                    });
-                               	}, 2000);
-                            });
-                        });
-                    });
-                });
-            });
-        }
-		*/
 		locate(1);
 	}])
     .controller('bodyController', ['$location', '$scope', 'Menu', 'AnimationService',
@@ -145,14 +64,9 @@ angular.module('myApp.controllers', [])
         };
         $scope.animationService = AnimationService;
     }])
-	/*
-	.controller('step1Controller', ['App', 'Splash', '$scope', 'Request', 'User', 'Overlay', '$location', 'Location',
-        'Recording', '$state', '$q', 'SCAPI',
-        function(App, Splash, $scope, User, Overlay, $location, Location, Recording, $state, $q) {
-	*/
 	.controller('step1Controller', ['App', '$scope', 'Location', 'User', 'Request', '$location', 'Categories', 'Overlay'
 		, 'SCAPI', '$q', 'Splash', '$state',
-		function(App, $scope, Location, User, Request, $location, Categories, Overlay, SCAPI, $q, Splash, $state) {
+		function(App, $scope, Location, User, Request, $location, Categories, Overlay, SCAPI, $q, Splash, $state, Track) {
 		Request.reset();
 		$scope.app = App;
 		$scope.isPhoneGap = isPhoneGap;
@@ -174,6 +88,7 @@ angular.module('myApp.controllers', [])
 
         // on request category dropdown change
         $scope.change = function(){
+	        Track.event(2, "step1_category_selected");
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {
                     Request.setCategory($scope.categories[i].name);
@@ -245,27 +160,6 @@ angular.module('myApp.controllers', [])
         $scope.recordingModal = RecordingModal;
         if($.isEmptyObject(Request.companies))
             SCAPI.getCompaniesList();
-		// initializing the recording on step 2, so that step 1 is not further delayed during processing.
-		// delay this until transition end so that slower processing phones don't have a problem on transitioning
-		/*var initializeRecording = function() {
-        	if(!Recording.initialized) {
-				Recording.init().then(function(){
-				   console.log("*Recording file initialized and ready for recording");
-				});
-            }
-        };
-		
-        var initializeRecordingOnTransitionEnd = function() {
-        	if($(this).css("left") == "0px") {
-            	initializeRecording();
-                $("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
-    			initializeRecordingOnTransitionEnd);
-            }
-        };
-		
-        $("#bodyContainer").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
-        initializeRecordingOnTransitionEnd);
-		*/
 		
         $scope.Times = Times;
         $scope.Request = Request;
@@ -326,7 +220,6 @@ angular.module('myApp.controllers', [])
                                 }, function(){
                                     // if the recording upload was rejected due to a bad internet connection.
                                     Overlay.remove();
-                                    
                                 });
                             }
                             else {
@@ -343,7 +236,9 @@ angular.module('myApp.controllers', [])
                 $state.go("step2a");
             }
         };
-        
+
+	    // initializing the recording on step 2, so that step 1 is not further delayed during processing.
+	    // delay this until transition end so that slower processing phones don't have a problem on transitioning
         var addModalOnTransitionEnd = function(){
         	if($(this).css("left") == "0px") {
             	//addIframe();
@@ -569,11 +464,15 @@ angular.module('myApp.controllers', [])
             return false;
         }
     }])
-    .controller('menuController', ['$rootScope', '$parse', '$attrs', '$scope', 'Menu', function($rootScope, $parse, $attrs, $scope, Menu){
+    .controller('menuController', ['$rootScope', '$parse', '$attrs', '$scope', 'Menu', 'Track', '$state',
+		function($rootScope, $parse, $attrs, $scope, Menu, Track, $state){
         $scope.Menu = Menu;
         $rootScope.$on("click",function() {
             Menu.active = false;
         });
+		$scope.click = function(button) {
+			Track.event(2, $state.current.name + "_" + button + "_button_pressed");
+		};
     }])
     .controller('headerController', ['Nav', 'Request', '$rootScope', '$state', '$window', 'Menu', '$attrs', '$scope', function(Nav, Request, $rootScope, $state, $window, Menu, $attrs, $scope){
         $scope.request = Request; // this might case a bug on iphones, please check
@@ -754,4 +653,5 @@ angular.module('myApp.controllers', [])
             cleanUpFunctionTwo();
         });
     }]);
-	
+
+/* End Angular Controllers */

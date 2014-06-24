@@ -13,3 +13,5 @@ mobile/test2.html
 mobile/cordova.js
 mobile/cordova_plugins.js
 plugins
+Gruntfile.js
+package.json

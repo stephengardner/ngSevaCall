@@ -19,10 +19,16 @@ angular.module('myApp.directives', []).
         return {
             restrict: 'EA',
             replace: true,
-            scope : {
-                text: "=",
-				clickfunction: "="
-            },
+	        controller : "actionButtonController",
+	        scope : {
+		        text: "=",
+		        clickfunction: "="
+	        },
+	        link : function(scope, element, attrs) {
+		        element.bind("click", function(){
+			        scope.click(scope.text);
+		        });
+	        },
             templateUrl: 'partials/button.html'
         }
     })

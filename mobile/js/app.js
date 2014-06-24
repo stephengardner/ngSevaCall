@@ -4,14 +4,28 @@ var checkPhoneGap = function() {
 	return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
 }
 var isPhoneGap = checkPhoneGap();
-var testing = false;
+var testing = true;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
-var skipAPICalls = false;
+var skipAPICalls = true;
 var testingType = ""; //statusBug
 var environment = "local", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
+var appOptions = {
+	analytics : {
+		gaStorageName : 'sc_clientId',
+		gaIDs : {
+			'Seva Call Mobile App' : 'UA-51774414-1',
+			'Seva Call Mobile Web' : 'UA-52209319-1'
+		},
+		eventTypes : {
+			1 : "page",
+			2 : "interaction",
+			3 : "alert"
+		}
+	}
+};
 var alerts = {
     call_companies :  {
         body : "Call companies now? You may receive up to three calls"
@@ -68,23 +82,33 @@ var myApp = angular.module('myApp', [
         'myApp.controllers',
         'ui.router',
         'ngAnimate',
-        'ngStorage',
-        'ngResource',
-        'ngCookies'
+        'ngStorage'
     ]).factory(
     'MyInterceptor',
-    function ($q, $rootScope, $injector, $timeout, Overlay) {
+    function ($q, $rootScope, $injector, $timeout, Overlay, Track) {
         var errorCount = 0;
         var MyInterceptor = function(promise){
+	        var trackInternetFailed = function(){
+		        Track.event(3, "alert_internet_failed");
+	        }
             var self = this;
             return promise.then(function (response) {
                 // do something on success
+<<<<<<< HEAD
                 console.log("*--*Http Wrapper Success Response: ", response);
                 
                 // this is NOT the correct way to check this data, however, the sevacall api is not completely standardized yet, so this check is temporary.
                 // what this does: it checks to see if the http response was a webpage, this happens if there is a sign on required for your wifi connection.  If you need to be signed in, then this response is obviously not correct, so warn the user.
                 if(response.data && typeof response.data == "string" && response.data.indexOf("DOCTYPE") != -1) {
+=======
+	            console.log("*--*Http Wrapper Success Response: ", response);
+
+	            // this is NOT the correct way to check this data, however, the sevacall api is not completely standardized yet, so this check is temporary.
+	            // what this does: it checks to see if the http response was a webpage, this happens if there is a sign on required for your wifi connection.  If you need to be signed in, then this response is obviously not correct, so warn the user.
+	            if(response.data && typeof response.data == "string" && response.data.indexOf("DOCTYPE") != -1) {
+>>>>>>> f3b915c4e37b93d79cc7df42c06f8c9d593c2523
                 	var deferred = $q.defer();
+		            trackInternetFailed();
                     new xAlert("Verify you are connected to the internet and retry.",
                         function(button){
                             if(button == 1){
@@ -113,6 +137,7 @@ var myApp = angular.module('myApp', [
                 if(errorCount >= 2 ) { // checks to see if this is the third error
                     errorCount = 0;
                     var deferred = $q.defer();
+	                trackInternetFailed();
                     new xAlert("Verify you are connected to the internet and retry.",
                         function(button){
                             if(button == 1){
@@ -178,44 +203,6 @@ var myApp = angular.module('myApp', [
             name : 'step1',
             url : '/step1',
             controller : 'step1Controller',
-            templateUrl: root + 'partials/home.html'
-        };
-        if(testing && testingType == "step3") {
-            var step1 = {
-                name : 'step1',
-                url : '/step1',
-                controller : 'test2',
-                templateUrl: root + 'partials/home.html'
-            };
-        }
-        else if(testingType == "recording") {
-            var step1 = {
-                name : 'step1',
-                url : '/step1',
-                controller : 'testRecording',
-                templateUrl: root + 'partials/home.html'
-            };
-        }
-        else if(testingType == "recordingAndroid") {
-            var step1 = {
-                name : 'step1',
-                url : '/step1',
-                controller : 'test3',
-                templateUrl: root + 'partials/home.html'
-            };
-        }
-        else if(testingType == "times") {
-            var step1 = {
-                name : 'step1',
-                url : '/step1',
-                controller : 'test3',
-                templateUrl: root + 'partials/home.html'
-            };
-        }
-        var statusBug = {
-            name : 'statusBug',
-            url : '/statusBug',
-            controller : 'test3',
             templateUrl: root + 'partials/home.html'
         };
         var step2 = {
@@ -300,7 +287,6 @@ var myApp = angular.module('myApp', [
             templateUrl: root + 'partials/summary.html'
         };
         $stateProvider.state(step1);
-        $stateProvider.state(statusBug);
         $stateProvider.state(step2);
         $stateProvider.state(step3);
         $stateProvider.state(recording);
@@ -310,7 +296,8 @@ var myApp = angular.module('myApp', [
         $stateProvider.state(settings);
         $stateProvider.state(information);
     }).run(function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
-        $rootScope.$on('requestCompleted', function(){
+		FastClick.attach(document.body);
+		$rootScope.$on('requestCompleted', function(){
             $state.go("summary");
         });
         $rootScope.$on('$stateChangeStart', function(event, toState){

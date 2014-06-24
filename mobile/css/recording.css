@@ -259,10 +259,10 @@
     trasition: opacity 1s;
     -webkit-transition: opacity 1s;
     position: absolute;
-    background: rgba(211, 217, 255, 0.5);
+    background: rgba(0, 51, 102, 0.9);
     padding: 1em;
     border-radius: 6px;
-    color: #003366;
+    color: #ffffff;
     border: 2px solid;
     margin-left: 1em;
     text-align: center;
@@ -302,5 +302,5 @@
     position: absolute;
     width: 60px;
     left: -58px;
-    bottom: -27px;
+    bottom: -17px;
 }
