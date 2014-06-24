@@ -2,6 +2,11 @@
 
 /* Begin Angular Controllers */
 angular.module('myApp.controllers', [])
+	.controller('actionButtonController', ['$scope', '$state', 'Track', function($scope, $state, Track){
+		$scope.click = function(text){
+			Track.event(2, $state.current.name + "_" + text + "_button_pressed");
+		};
+	}])
 	.controller('wrapperController', ['$scope', 'App', 'Storage', 'SCAPI', 'Categories', 'Track', '$rootScope', 'Request',
 		'Nav', 'MapLoader', 'Location', 'User', '$location',
 		function($scope, App, Storage, SCAPI, Categories, Track, $rootScope, Request, Nav, MapLoader, Location, User, $location) {
@@ -9,16 +14,15 @@ angular.module('myApp.controllers', [])
 		Storage.import();
 		SCAPI.init(Request);
         $scope.categories = Categories;
-        
-		
+
         // Initialize the analytics tracker and log app opening
         Track.init();
-        Track.event("page", "application_opened");
+        Track.event(1, "application_opened");
 
         // Track each page opening as it occurs
         $rootScope.$on('$locationChangeSuccess', function(){
         	console.log("*page*" + $location.url());
-            Track.event("page", $location.url().replace("/", "") + "_screen_opened");
+            Track.event(1, $location.url().replace("/", "") + "_screen_opened");
             // only call if the event.preventDefault isn't active from the locationChangeStart
             Nav.reset();
         });
@@ -62,7 +66,7 @@ angular.module('myApp.controllers', [])
     }])
 	.controller('step1Controller', ['App', '$scope', 'Location', 'User', 'Request', '$location', 'Categories', 'Overlay'
 		, 'SCAPI', '$q', 'Splash', '$state',
-		function(App, $scope, Location, User, Request, $location, Categories, Overlay, SCAPI, $q, Splash, $state) {
+		function(App, $scope, Location, User, Request, $location, Categories, Overlay, SCAPI, $q, Splash, $state, Track) {
 		Request.reset();
 		$scope.app = App;
 		$scope.isPhoneGap = isPhoneGap;
@@ -84,6 +88,7 @@ angular.module('myApp.controllers', [])
 
         // on request category dropdown change
         $scope.change = function(){
+	        Track.event(2, "step1_category_selected");
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {
                     Request.setCategory($scope.categories[i].name);
@@ -215,7 +220,6 @@ angular.module('myApp.controllers', [])
                                 }, function(){
                                     // if the recording upload was rejected due to a bad internet connection.
                                     Overlay.remove();
-                                    
                                 });
                             }
                             else {
@@ -460,11 +464,15 @@ angular.module('myApp.controllers', [])
             return false;
         }
     }])
-    .controller('menuController', ['$rootScope', '$parse', '$attrs', '$scope', 'Menu', function($rootScope, $parse, $attrs, $scope, Menu){
+    .controller('menuController', ['$rootScope', '$parse', '$attrs', '$scope', 'Menu', 'Track', '$state',
+		function($rootScope, $parse, $attrs, $scope, Menu, Track, $state){
         $scope.Menu = Menu;
         $rootScope.$on("click",function() {
             Menu.active = false;
         });
+		$scope.click = function(button) {
+			Track.event(2, $state.current.name + "_" + button + "_button_pressed");
+		};
     }])
     .controller('headerController', ['Nav', 'Request', '$rootScope', '$state', '$window', 'Menu', '$attrs', '$scope', function(Nav, Request, $rootScope, $state, $window, Menu, $attrs, $scope){
         $scope.request = Request; // this might case a bug on iphones, please check

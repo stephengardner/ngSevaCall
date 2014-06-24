@@ -7,11 +7,11 @@
         </div>
         <div class="description">
 	        <div class="description-wrapper" ng-class="{active : isPhoneGap}">
-	            <div ng-show="isPhoneGap" class="recording-modal" ng-class="{active : recordingModal.active, removing : recordingModal.removing, removed : recordingModal.removed}">
+	            <div ng-show="1" class="recording-modal" ng-class="{active : 1, removing : recordingModal.removing, removed : recordingModal.removed}">
 	                <div class="modal-close" ng-click="recordingModal.hide()">
 	                    <i class="fa fa-times"></i>
 	                </div>
-	                <img src="img/modal-arrow.png"/>
+	                <img src="img/modal-arrow2.png"/>
 	                {{recordingModal.message}}
 	            </div>
 	            <textarea ng-class="{disabled : recordingSaved}" maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>

@@ -133,13 +133,18 @@ myApp.factory('Track', function() {
         	ga('send', pageDetails);
         },
         event : function() {
+	        var eventTypes = appOptions.analytics.eventTypes;
 	        var options = {};
 	        if(arguments.length == 1 && typeof arguments[0] == "object") {
 		        options = arguments[0];
 	        }
 	        if(arguments.length == 2){
-		        options.eventCategory = arguments[0];
+		        options.eventCategory = eventTypes[arguments[0]];
 		        options.eventAction = arguments[1];
+	        }
+	        else {
+		        options.eventCategory = "notify";
+		        options.eventAction = arguments[0];
 	        }
         	var defaults = this.defaults.event;
             var actual = $.extend({}, defaults, options);
@@ -147,7 +152,7 @@ myApp.factory('Track', function() {
 	        var clientId;
 	        if(window.localStorage)
 	            clientId = window.localStorage.getItem(appOptions.analytics.goStorageName);
-	        console.log(" --> _TRACK_ACTION_" + actual.eventAction.toUpperCase());
+	        console.log(" --> TRACK ACTION: " + actual.eventAction.toUpperCase());
         	ga('send', actual);
         }
     };
@@ -1039,15 +1044,24 @@ myApp.factory('Overlay', function() {
     return Overlay;
 });
 
-myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, MapLoader) {
+myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, MapLoader, Track, $state) {
     var Location = {
         busy : false,
         complete : function() {
+	        Track.event($state.current.name + "_location_delegate_success");
         	Overlay.remove();
         	console.log("removing busy status from complete");
             this.busy = false;
         },
         error : function(err) {
+	        var errType;
+	        if(err == 1) {
+		        errType = "location";
+	        }
+	        else if(err == 2) {
+		        errType = "geocoding";
+	        }
+	        Track.event($state.current.name + "_" + errType + "_delegate_failed");
         	console.log("removing busy status from err");
             this.busy = false;
             Overlay.remove();
@@ -1058,8 +1072,11 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
         geoLocate : function(opt_initial_check) {
             var self = this;
             self.busy = true;
-            if(!opt_initial_check)
+
+            if(!opt_initial_check) {
+                Track.event("interaction", $state.current.name + "_locate_button_pressed");
             	Overlay.message("Locating...");
+            }
             self.opt_initial_check = opt_initial_check;
         	var deferred = $q.defer();
             var preloadDeferred = $q.defer();
@@ -1094,7 +1111,7 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
                 navigator.geolocation.getCurrentPosition(
 					function (position) {
 						var geocoder = new google.maps.Geocoder();
-			
+
 						var lat = position.coords.latitude;
 						var lng = position.coords.longitude;
 						var latlng = new google.maps.LatLng(lat, lng);
@@ -1107,23 +1124,24 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
 								//
 								var matches = newzip.match(/\b\d{5}\b/g);
 								if (!(matches && matches.length >= 1)) {
-									self.error();
+									self.error(2);
 									deferred.resolve();
 								}
 								else {
+									Track.event($state.current.name + "_geocoding_delegate_success");
 									console.log("*Geolocated to zipcode: " + newzip);
 									self.complete();
 									deferred.resolve(newzip);
 								}
 							}
 							else {
-								self.error();
+								self.error(2);
 								deferred.resolve();
 							}
 						});
 					},
 					function(err) {
-						self.error();
+						self.error(1);
 						deferred.resolve();
 					},
 					{timeout : 4000}
