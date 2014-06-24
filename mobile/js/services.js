@@ -72,27 +72,47 @@ myApp.factory('AlertSwitch', function(){
     return AlertSwitch;
 });
 myApp.factory('Track', function() {
-	var GA_IDs = {
-        'Seva Call Mobile App' : 'UA-51774414-1'
-    };
+	var GA_IDs = appOptions.analytics.gaIDs;
     var Track = {
     	init : function() {
         	if(window.localStorage) {
-                var clientId = window.device && window.device.uuid ? window.device.uuid : 1; // 1 = web, fix this for storage?
-                ga(
+		        var clientId;
+		        var ga_id;
+		        var ga_id_type; // just for personal log purposes
+		        if(window.device && window.device.uuid) {
+			        clientId = window.device.uuid;
+			        ga_id = GA_IDs['Seva Call Mobile App'];
+			        ga_id_type = 'Mobile App';
+			        console.log("setting localStorage.clientId to: " + clientId);
+			        window.localStorage.setItem(appOptions.analytics.gaStorageName, clientId);
+		        }
+		        else {
+			        ga_id = GA_IDs['Seva Call Mobile Web'];
+			        ga_id_type = 'Mobile Web';
+			        if(window.localStorage.getItem(appOptions.analytics.gaStorageName)){
+				        clientId = window.localStorage.getItem(appOptions.analytics.gaStorageName);
+			        }
+			        else {
+				        clientId = Math.round(2147483647 * Math.random()); // how google generates a clientId
+				        console.log("setting localStorage.clientId to: " + clientId);
+				        window.localStorage.setItem(appOptions.analytics.gaStorageName, clientId);
+			        }
+		        }
+                console.log("tracking to: " + ga_id_type + " with client id: " + window.localStorage.getItem(appOptions.analytics.gaStorageName));
+		        ga(
                     'create',
-                    GA_IDs['Seva Call Mobile App'],
+                    ga_id,
                     {
                         'storage' : 'none',
-                        'clientId' : window.localStorage.getItem('clientId')
+                        'clientId' : window.localStorage.getItem(appOptions.analytics.gaStorageName)
                     }
                 );
                 ga(function(tracker) {
-                    window.localStorage.setItem('ga_clientId', tracker.get('clientId'));
+	                console.log("google tracker returned client id: " + tracker.get('clientId'));
                 });
             }
             else {
-                ga('create',  GA_IDs['Seva Call Mobile App'], 'www.sevacall.com');
+                ga('create',  ga_id, 'www.sevacall.com');
             }
             ga('send', 'pageview', {'page' : 'step1'});
         },
@@ -104,19 +124,30 @@ myApp.factory('Track', function() {
             }
         },
         page : function(p) {
-        	ga('send', {
-            	'hitType' : 'pageview',
-                page : p
-            });
+	        // Note: Note currently used as of 6.24.2014
+	        var pageDetails = {
+		        'hitType' : 'pageview',
+			        page : p
+	        };
+	        console.log("--> TRACK_PAGEVIEW_: " + p.toUpperCase());
+        	ga('send', pageDetails);
         },
-        merge : function(params) {
-        
-        },
-        event : function(options) {
+        event : function() {
+	        var options = {};
+	        if(arguments.length == 1 && typeof arguments[0] == "object") {
+		        options = arguments[0];
+	        }
+	        if(arguments.length == 2){
+		        options.eventCategory = arguments[0];
+		        options.eventAction = arguments[1];
+	        }
         	var defaults = this.defaults.event;
-            var options = options || {};
             var actual = $.extend({}, defaults, options);
             actual.eventAction = actual.eventAction.toUpperCase();
+	        var clientId;
+	        if(window.localStorage)
+	            clientId = window.localStorage.getItem(appOptions.analytics.goStorageName);
+	        console.log(" --> _TRACK_ACTION_" + actual.eventAction.toUpperCase());
         	ga('send', actual);
         }
     };

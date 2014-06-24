@@ -1,4 +1,4 @@
-myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
+myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q, Track){
     var SCAPI = {
         init : function(Request) {
             this.Request = Request;
@@ -62,8 +62,11 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q){
             }).success(function(d) {
             	
                 var companyNodes = d.split("|");
-                console.log("*Retrieved " + ((companyNodes.length) - 1) + " companies in the CompanyList:");
-                for (var i = 0; i < companyNodes.length - 1; i++) {
+	            var numCompanies = companyNodes.length - 1;
+                console.log("*Retrieved " + (numCompanies) + " companies in the CompanyList:");
+	            if(numCompanies)
+		            Track.event("notify", "notify_company_list_success");
+	            for (var i = 0; i < numCompanies; i++) {
                     console.log("*CompanyNodes: " + companyNodes);
                     var companyAttrs = companyNodes[i].split("^~^");
                     
