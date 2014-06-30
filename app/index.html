@@ -7,14 +7,14 @@
         <meta name="format-detection" content="telephone=no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
-        
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
         <!-- build:css(.) styles/vendor.css -->
         <!-- bower:css -->
-        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
         <!-- endbower -->
         <!-- endbuild -->
+
         <!-- build:css(.tmp) styles/sevacall.css -->
         <link rel="stylesheet" href="styles/app.css"/>
         <link rel="stylesheet" href="styles/overlay.css"/>
@@ -26,36 +26,26 @@
         <link rel="stylesheet" href="styles/summary.css"/>
         <link rel="stylesheet" href="styles/recording.css"/>
         <link rel="stylesheet" href="styles/media.css"/>
-        <!--
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        -->
-        <title>SevaCall</title>
-        <!-- endbuild -->
-        <!-- build:css(.tmp) styles/main.css -->
-        <!--
-        <link rel="stylesheet" href="styles/main.css">
-        -->
         <!-- endbuild -->
 
-        <script src="../bower_components/jquery/dist/jquery.js"></script>
-        <script src="../bower_components/angular/angular.js"></script>
-        <script src="../bower_components/fastclick/lib/fastclick.js"></script>
     </head>
     <body ng-controller="wrapperController" class="container" ng-class="{iphone4 : iphone4, iphone5 : iphone5, ios7 : ios7, phonegap : isPhoneGap, mobileWeb : !isPhoneGap}">
         <!--[if lt IE 7]>
           <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <!-- Add your site or application content here -->
+        <!-- Application Content -->
         <div id="splashscreen" ng-show="isPhoneGap">
             <img id="splashImg-iPhone4" src="images/splash-iphone4-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
             <img id="splashImg-iPhone5" src="images/splash-iphone5-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
         </div>
+
         <!-- begin header -->
         <div id="header-wrapper" style="height:55px;" class="clearfix">
             <div sc-header class="clearfix"></div>
         </div>
         <!-- end header -->
+
         <!-- begin main view -->
         <div class="row body">
             <div class="menu-cover" ng-class="{menuActive : Menu.active}" style="top:0;"></div>
@@ -73,33 +63,26 @@
         <div sc-menu class="GPUAccel row"></div>
         <!-- end menu -->
 
+        <!-- build:js(.) scripts/ie_shims.js -->
         <!--[if lt IE 9]>
         <script src="../bower_components/es5-shim/es5-shim.js"></script>
         <script src="../bower_components/json3/lib/json3.min.js"></script>
         <![endif]-->
+        <!-- endbuild -->
 
         <!-- build:js(.) scripts/vendor.js -->
         <!-- bower:js -->
-        <script src="bower_components/jquery/dist/jquery.js"></script>
-        <script src="bower_components/es5-shim/es5-shim.js"></script>
-        <script src="bower_components/angular/angular.js"></script>
-        <script src="bower_components/json3/lib/json3.js"></script>
-        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-        <script src="bower_components/ngstorage/ngStorage.js"></script>
-        <script src="bower_components/fastclick/lib/fastclick.js"></script>
-        <script src="bower_components/angular-animate/angular-animate.js"></script>
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/angular/angular.js"></script>
+        <script src="../bower_components/json3/lib/json3.js"></script>
+        <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="../bower_components/ngstorage/ngStorage.js"></script>
+        <script src="../bower_components/fastclick/lib/fastclick.js"></script>
+        <script src="../bower_components/angular-animate/angular-animate.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
 
-
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <!--
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>
-        -->
-        <!-- endbuild -->
         <!-- build:js(.tmp) scripts/ngsevacall.js -->
         <script src="../../cordova.js"></script>
         <script src="scripts/other/index.js"></script>
@@ -113,8 +96,8 @@
         <script src="scripts/directives/directives.js"></script>
         <script src="scripts/other/xAlert.js"></script>
         <script src="scripts/other/ga.js"></script>
-
         <!-- endbuild -->
+
         <!-- begin app launch script -->
         <script type="text/javascript">
             app.initialize();
@@ -134,5 +117,6 @@
             }
         </script>
         <!-- end app launch script -->
+
     </body>
 </html>
