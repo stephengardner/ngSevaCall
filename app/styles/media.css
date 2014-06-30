@@ -1,0 +1,111 @@
+#step2a input[type="text"], #phone {
+    padding: 6px 5px!important;
+    font-size:1.3em!important;
+}
+#step2a  .sep {
+    margin-top:22px!important;
+}
+#step2a  .sep-buttons {
+    margin-top:27px!important;
+}
+
+#step2a h1 {
+    font-size: 32px;
+}
+    
+/* iPhone 5 */
+@media screen and (device-aspect-ratio: 40/71) {
+	/*
+    .body {
+        padding-bottom:25px!important;
+    }
+    .mobileWeb #step2a input[type="text"] {
+        padding:8px!important;
+    }
+    .mobileWeb #step2a h1 {
+        font-size:2.2em!important;
+    }
+    .mobileWeb #step2a  .mobileWeb .sep {
+        margin-top:22px!important;
+    }
+    .mobileWeb #step2a  .mobileWeb .sep-buttons {
+        margin-top:25px!important;
+    }
+    .mobileWeb #step2a input[type="text"], .mobileWeb #phone {
+        padding: 6px 5px!important;
+    }
+    .mobileWeb .timetable {
+        font-size: .74em!important;
+    }
+	*/
+    /* Phonegap */
+    .phonegap h1 {
+    	font-size:3.75em!important;
+    }
+    
+    .phonegap .sep {
+    	margin-top:2.3em;
+    }
+
+
+    .phonegap .sep-buttons {
+    	margin-top:3.4em;
+    }
+
+    .phonegap #step2 .sep {
+    	margin-top:3.3em;
+    }
+    .phonegap #step2 .sep-buttons {
+    	margin-top:3.9em;
+    }
+
+    .indent .sep {
+    	margin-top:.5em;
+    }
+
+    .phonegap input, .phonegap select {
+        padding:1em .5em;
+    }
+    
+	.phonegap .where-text-wrap {
+    	padding-right:4em;
+    }
+    .phonegap #where-button {
+        position:relative;
+        float:right;
+        padding: 1.7em;
+        background:#003366;
+        border-radius:4px;
+    }
+    .phonegap #step2a h1 {
+		font-size:3.2em!important;
+    }
+    .phonegap #step2a input[type="text"], .phonegap #phone {
+    	padding: .5em .25em!important;
+    	font-size:1.5em!important;
+	}
+    .phonegap .setting-wrapper i {
+        width:3.4em;
+        height:3.4em;
+    }
+    .phonegap #step2 h1 {
+    	font-size:2.95em!important;
+    }
+    .phonegap .timetable {
+        font-size: 1.25em!important;
+    }
+    .phonegap .time-button {
+    	padding:1.3em;
+    }
+
+}
+
+/* iPhone 4 */
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+    .microphone {
+        height: 6em;
+        width: 4.5em;
+    }
+}

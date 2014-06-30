@@ -1,0 +1,145 @@
+.timetable {
+    font-size:1em;
+    width:100%;
+    text-align:center;
+}
+
+/*
+.timetable .sep {
+	margin-top:1.5em!important;
+}
+
+.timetable .sep-buttons {
+	margin-top:1.6em!important;
+}
+*/
+.timetable .aside {
+    font-size:.8em!important;
+    text-align: center;
+    padding: .1em .3em .1em 0em;
+    white-space: nowrap;
+}
+
+.timetable .head {
+	font-size:.8em;
+}
+
+.timetable .head {
+    width:33%;
+}
+
+.timetable .blank {
+    background:white;
+    cursor:pointer;
+    border:1px solid #bbb;
+}
+
+.timetable tr:nth-of-type(2) td:nth-of-type(2){
+    border-top-left-radius:6px;
+    border-left-width:2px;
+}
+
+.timetable tr:nth-of-type(2) td:nth-of-type(2),
+.timetable tr:nth-of-type(2) td:nth-of-type(3),
+.timetable tr:nth-of-type(2) td:nth-of-type(4){
+    /*box-shadow: 0px 0px 10px 0px #ccc;*/
+    border-top-width:2px;
+}
+
+.timetable tr:nth-of-type(2) td:last-of-type{
+    /*box-shadow: 0px 0px 10px 0px #ccc;*/
+    border-top-right-radius:6px;
+    border-right-width:2px;
+}
+
+.timetable tr:not(:first-child) td:nth-of-type(2){
+    /*box-shadow: 0px 0px 10px 0px #ccc;*/
+    border-left-width:2px;
+}
+
+.timetable tr:not(:first-child) td:last-of-type{
+    /*box-shadow: 0px 0px 10px 0px #ccc;*/
+    border-right-width:2px;
+}
+
+.timetable tr:last-of-type td:not(:first-child){
+    /*box-shadow: 0px 0px 10px 0px #ccc;*/
+    border-bottom-width:2px;
+}
+
+.timetable tbody tr td.active {
+    background:#003366;
+    cursor:pointer;
+    border:1px solid #bbb;
+}
+
+.timetable td{
+    position:relative;
+}
+.timetable .icon {
+    position:absolute;
+    left:0; right:0; top:0; bottom:0;
+}
+.timetable tbody tr td.active div:before {
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    margin-top: -10px;
+    margin-left: -10px;
+    cursor: pointer;
+    width: 25px;
+    height: 14px;
+    border-bottom: 6px solid white;
+    border-left: 6px solid white;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.timetable .active:after {
+}
+
+.timetable tbody tr td.cancel div{
+    position:relative;
+    background:white;
+    cursor:pointer;
+}
+
+.timetable tbody tr td.cancel div:before{
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    background: #036;
+    cursor: pointer;
+    width: 26px;
+    height: 6px;
+    margin-left: -12px;
+    margin-top: -2px;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.timetable tbody tr td.cancel div:after{
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    background: #036;
+    cursor: pointer;
+    width: 26px;
+    height: 6px;
+    margin-left: -12px;
+    margin-top: -2px;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}

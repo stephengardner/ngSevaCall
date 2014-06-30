@@ -1,0 +1,36 @@
+<div id="step2">
+    <form ng-submit="next()">
+        <div class="sep"></div>
+        <h1>DESCRIBE WHAT YOU NEED</h1>
+        <div id="description-button" class="action-button button" ng-show="isPhoneGap" ui-sref="recording" ng-click="recordingModal.hide()">
+            <a href="#"></a>
+        </div>
+        <div class="description">
+	        <div class="description-wrapper" ng-class="{active : isPhoneGap}">
+	            <div ng-show="isPhoneGap" class="recording-modal" ng-class="{active : recordingModal.active, removing : recordingModal.removing, removed : recordingModal.removed}">
+	                <div class="modal-close" ng-click="recordingModal.hide()">
+	                    <i class="fa fa-times"></i>
+	                </div>
+	                <img src="images/modal-arrow2.png"/>
+	                {{recordingModal.message}}
+	            </div>
+	            <textarea ng-class="{disabled : recordingSaved}" maxlength="500" placeholder="Describe what you need help with in as much detail as possible..." ng-model="Request.description"></textarea>
+	        </div>
+	    </div>
+        <div class="sep"></div>
+        <h1>AND WHEN YOU WANT IT</h1>
+        <div class="time-buttons clearfix">
+            <div class="time-button" ng-class="{active : Times.buttons.now}" ng-click="Times.changeTime('now');">
+                NOW
+            </div>
+            <div class="time-button" ng-class="{active : Times.buttons.anytime}" ng-click="Times.changeTime('anytime');">
+                ANYTIME
+            </div>
+            <div class="time-button" ng-class="{active : Times.timesActive.length > 0}" ng-click="Times.changeTime('pick_time'); timetable()">
+                PICK TIME
+            </div>
+        </div>
+        <div class="sep-buttons"></div>
+        <div ng-click="next()" action-button text="'Next'"/>
+    </form>
+</div>

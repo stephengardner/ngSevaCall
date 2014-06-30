@@ -1,0 +1,43 @@
+<div id="step2a">
+    <form ng-submit="next()">
+        <div class="sep"></div>
+        <h1>NAME</h1>
+        <div class="setting-wrapper">
+            <div class="shadow">
+                <input type="text" ng-model="User.name"/>
+            </div>
+            <i ng-class="{valid : User.isNameValid()}">
+                <div class="secure" >
+                </div>
+            </i>
+        </div>
+
+        <div class="sep"></div>
+        <h1>E-MAIL</h1>
+        <div class="setting-wrapper">
+            <div class="shadow">
+                <input type="text" ng-model="User.email"/>
+            </div>
+            <i ng-class="{valid : User.isEmailValid()}">
+                <div class="secure" >
+                </div>
+            </i>
+        </div>
+        <div class="sep"></div>
+        <h1>PHONE</h1>
+        <div class="setting-wrapper">
+            <div class="shadow">
+                <div phone-input sc-blur="onPhoneBlur()" sc-focus="onPhoneFocus()"></div> <!-- custom directive to mask/validate the phone for only 10 numbers -->
+            </div>
+            <i ng-class="{valid : User.isPhoneValid()}">
+                <div class="secure" >
+                </div>
+            </i>
+        </div>
+        <div class="sep-buttons"></div>
+        <!--
+        <input type="submit" ng-click="next()" action-button text="'Save'"/>
+        -->
+        <div ng-click="next()" action-button menu="menu" text="'Save'" ></div>
+    </form>
+</div>

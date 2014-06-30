@@ -1,0 +1,117 @@
+#map_canvas {
+    position:absolute;
+    left:-8px;
+    right:-8px;
+    height:200px;
+}
+#map_spacer {
+    height:200px;
+    width:100%;
+}
+.SCMapMarker {
+    text-align:center;
+    width: 20px;
+    height: 34px;
+    background: url("../images/SCMapMarker.png");
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor:pointer;
+    position:absolute;
+    font-size: 12px;
+}
+
+.SCMapMarker::after {
+    font-size: 12px;
+    content: attr(rel);
+    color: white;
+    text-align:center;
+    /*display:inline-block;
+    margin-top:3px;
+    */
+    position: relative;
+    top: 3px;
+}
+
+
+/* ;;;;;;;;;;;;;;;;;;;;;
+ * ;     Info Box      ;
+ * ;;;;;;;;;;;;;;;;;;;;; */
+.SCMapInfoBox {
+    background: -webkit-linear-gradient(top, rgba(121, 121, 121, 0.8) 0%,rgba(88, 88, 88, 0.8) 49%,rgba(49, 49, 49, 0.8) 51%,rgba(20, 20, 20, 0.8) 100%);
+    background: -webkit-gradient(linear,left top,left bottom, color-stop(0%, rgba(121, 121, 121, 0.8)), color-stop(49%, rgba(88, 88, 88, 0.8)),color-stop(51%, rgba(49, 49, 49, 0.8)),color-stop(100%, rgba(20, 20, 20, 0.8)));
+
+    color: white;
+    padding: 5px 10px 5px 5px;
+    border-radius: 5px;
+    box-shadow: inset 0px 2px 2px 0px #bbb, 0px 5px 5px 0px rgba(0,0,0,.2);
+    border: 1px solid #444;
+    display: inline-block;
+    position: relative;
+
+    /* new */
+    background: -webkit-linear-gradient(top, rgba(121, 121, 121, 0.8) 0%,rgba(88, 88, 88, 0.8) 49%,rgba(49, 49, 49, 0.8) 51%,rgba(20, 20, 20, 0.8) 100%);
+    background: -webkit-gradient(linear,left top,left bottom, color-stop(0%, rgba(121, 121, 121, 0.8)), color-stop(49%, rgba(88, 88, 88, 0.8)),color-stop(51%, rgba(49, 49, 49, 0.8)),color-stop(100%, rgba(20, 20, 20, 0.8)));
+    padding: 5px 10px 5px 5px;
+    border-radius: 5px;
+    display: inline-block;
+    background: #fff;
+    position: relative;
+    border: 1px solid #ddd;
+    box-shadow: inset 0px 1px 0pc 0pc #fff, 0px 2px 9px 0px #666;
+    color: black;
+
+    background: -moz-linear-gradient(top,  rgba(255,255,255,0.85) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.85)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(255,255,255,0.85) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(255,255,255,0.85) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(255,255,255,0.85) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(255,255,255,0.85) 0%,rgba(237,237,237,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d9ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+}
+
+.SCMapInfoBox::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 16px 16px 0 16px;
+    border-color: rgba(237,237,237,1) transparent transparent transparent;
+    left: 50%;
+    margin-left: -20px;
+    bottom: -16px;
+    clear: both;
+}
+
+.SCMapInfoBox-icon {
+    margin-right: 5px;
+    background-position: top !important;
+    background-size: contain !important;
+    height: 35px;
+    background-repeat: no-repeat !important;
+    width: 40px;
+    float: left;
+}
+.SCMapInfoBox-content {
+    float:left;
+}
+.SCMapInfoBox-status {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.SCMapInfoBox-company {
+    font-size: .75em;
+    margin-top: 2px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 200px;
+    font-weight: bold;
+}
+.SCMapInfoBox-location {
+    color: #777;
+    font-size: 12px;
+}
