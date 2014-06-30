@@ -1,4 +1,7 @@
 'use strict';
+window.onerror = function(message, url, lineNumber) {
+    console.log("SCError: "+message+" in "+url+" at line "+lineNumber);
+}
 //var isPhoneGap = true;
 var checkPhoneGap = function() {
 	return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
