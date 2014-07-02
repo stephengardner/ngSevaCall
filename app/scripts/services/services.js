@@ -15,7 +15,7 @@ myApp.factory('App', function() {
 myApp.factory('TwitterService', function($timeout, Track) {
 	var TwitterService = {
 		initialized : false,
-		init : function(){
+		init : function() {
 			if(!this.initialized) {
 				this.initialized = true;
 				window.twttr = (function (d, s, id) {

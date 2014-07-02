@@ -77,6 +77,20 @@ angular.module('myApp.directives', []).
             });
         }
     }])
+	.directive('a', function(){
+		return {
+			restrict : 'EAC',
+			link : function(scope, element, attrs) {
+				if(isPhoneGap) {
+					var href = attrs.href;
+					element.on('click', function(e){
+						window.open(href, "_system");
+						e.preventDefault();
+					})
+				}
+			}
+		}
+	})
 	.directive('customValidation', ['User', function(User){
 		return {
 			require: 'ngModel',
