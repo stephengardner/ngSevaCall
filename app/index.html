@@ -8,14 +8,14 @@
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
 
-        <!-- build:css(.) styles/vendor.css -->
+        <!-- build:css({.tmp,app}) styles/vendor.css -->
         <!-- bower:css -->
         <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
         <!-- endbower -->
         <!-- endbuild -->
 
-        <!-- build:css(.tmp) styles/sevacall.css -->
+        <!-- build:css({.tmp,app}) styles/sevacall.css -->
         <link rel="stylesheet" href="styles/app.css"/>
         <link rel="stylesheet" href="styles/overlay.css"/>
         <link rel="stylesheet" href="styles/timetable.css"/>
@@ -31,7 +31,7 @@
     </head>
     <body ng-controller="wrapperController" class="container" ng-class="{iphone4 : iphone4, iphone5 : iphone5, ios7 : ios7, phonegap : isPhoneGap, mobileWeb : !isPhoneGap}">
         <!--[if lt IE 7]>
-          <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
         <!-- Application Content -->
@@ -63,14 +63,14 @@
         <div sc-menu class="GPUAccel row"></div>
         <!-- end menu -->
 
-        <!-- build:js(.) scripts/ie_shims.js -->
+        <!-- build:js({.tmp,app}) scripts/ie_shims.js -->
         <!--[if lt IE 9]>
         <script src="../bower_components/es5-shim/es5-shim.js"></script>
         <script src="../bower_components/json3/lib/json3.min.js"></script>
         <![endif]-->
         <!-- endbuild -->
 
-        <!-- build:js(.) scripts/vendor.js -->
+        <!-- build:js({.tmp,app}) scripts/vendor.js -->
         <!-- bower:js -->
         <script src="../bower_components/jquery/dist/jquery.js"></script>
         <script src="../bower_components/angular/angular.js"></script>
@@ -83,7 +83,7 @@
         <!-- endbower -->
         <!-- endbuild -->
 
-        <!-- build:js(.tmp) scripts/ngsevacall.js -->
+        <!-- build:js({.tmp,app}) scripts/ngsevacall.js -->
         <script src="../../cordova.js"></script>
         <script src="scripts/other/index.js"></script>
         <script src="scripts/app.js"/>
