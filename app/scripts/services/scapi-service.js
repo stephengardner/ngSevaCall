@@ -65,7 +65,7 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q, Tra
 	            var numCompanies = companyNodes.length - 1;
                 console.log("*Retrieved " + (numCompanies) + " companies in the CompanyList:");
 	            if(numCompanies)
-		            Track.event("notify", "notify_company_list_success");
+		            Track.event("notify_company_list_success");
 	            for (var i = 0; i < numCompanies; i++) {
                     console.log("*CompanyNodes: " + companyNodes);
                     var companyAttrs = companyNodes[i].split("^~^");
@@ -226,6 +226,12 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q, Tra
             var self = this;
             var deferred = $q.defer();
 
+	        var responses = {
+		        errors : 0,
+		        successes: 0,
+		        max : 3
+	        };
+
             function parseCompany(){
                 var params = {
                     companyName : company.name,
@@ -234,28 +240,39 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q, Tra
                 };
                 return $.param(params);
             }
+
             function getRating(source){
                 var deferred = $q.defer();
                 var url = self.urls.getRating + "?source=" + source + "&" +  parseCompany();
+
                 $http({
                     url : url,
                     method : "GET",
                     headers : {'Content-Type': 'application/json'}
                 }).success(function(d){
                     deferred.resolve(d);
+	                responses.successes++;
                     var ratingSplit = d.split("|");
                     var rating = ratingSplit[0];
                     var numRatings = ratingSplit[1];
                 }).error(function(d){
+	                responses.errors++;
+	                deferred.reject();
                     console.log("*GetRating error: " + d);
                 });
                 return deferred.promise;
             }
-            var numRatings = 0;
+
             function gotRating(){
-                numRatings++;
-                if(numRatings == 3)
-                    deferred.resolve(true);
+	            console.log("GOT RATING WITH RESPONSES OBJECT == ", responses);
+	            if(responses.errors + responses.successes == responses.max) {
+					if(responses.errors > 0) {
+						deferred.reject();
+					}
+		            else {
+						deferred.resolve(true);
+					}
+	            }
             }
             getRating("yelp").then(function(d){
                 var data = d.split("|");

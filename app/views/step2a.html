@@ -27,7 +27,7 @@
         <h1>PHONE</h1>
         <div class="setting-wrapper">
             <div class="shadow">
-                <div phone-input sc-blur="onPhoneBlur()" sc-focus="onPhoneFocus()"></div> <!-- custom directive to mask/validate the phone for only 10 numbers -->
+                <div phone-input custom-validation sc-blur="onPhoneBlur()" sc-focus="onPhoneFocus()"></div> <!-- custom directive to mask/validate the phone for only 10 numbers -->
             </div>
             <i ng-class="{valid : User.isPhoneValid()}">
                 <div class="secure" >

@@ -22,13 +22,15 @@
 <h1>CONTACT US</h1>
 <ul>
     <li>
-        <a href="tel:18779877382">1-877-987-SEVA</a>
+        <a href="tel:18779877382"><span ng-click="trackButton('phone');">1-877-987-SEVA</span></a>
     </li>
     <li>
-        <a href="mailto:mobileapp@sevacall.com?subject=Seva Call's Mobile App">mobileapp@sevacall.com</a>
+        <a href="mailto:mobileapp@sevacall.com?subject=Seva Call's Mobile App">
+            <span ng-click="trackButton('email');">mobileapp@sevacall.com</span>
+        </a>
     </li>
     <li>
-        <a href="http://www.sevacall.com">http://www.sevacall.com</a>
+        <a ng-click="trackButton('website');" target="_blank" href="http://www.sevacall.com">http://www.sevacall.com</a>
     </li>
 </ul>
 <!-- End Information Page -->

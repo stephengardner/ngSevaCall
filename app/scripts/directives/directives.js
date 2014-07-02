@@ -59,9 +59,11 @@ angular.module('myApp.directives', []).
         return function(scope, element, attr) {
             var fn = $parse(attr['scBlur']);
             element.bind('blur', function(event) {
+	            /*
                 scope.$apply(function() {
                     fn(scope, {$event:event});
                 });
+                */
             });
         }
     }])
@@ -74,4 +76,19 @@ angular.module('myApp.directives', []).
                 });
             });
         }
-    }]);
+    }])
+	.directive('customValidation', ['User', function(User){
+		return {
+			require: 'ngModel',
+			link: function(scope, element, attrs, modelCtrl) {
+				modelCtrl.$parsers.push(function (inputValue) {
+					var transformedInput = inputValue.toLowerCase().replace(/[a-zA-Z\s]*/g, '');
+					if (transformedInput!=inputValue) {
+						modelCtrl.$setViewValue(transformedInput);
+						modelCtrl.$render();
+					}
+					return transformedInput;
+				});
+			}
+		}
+	}]);

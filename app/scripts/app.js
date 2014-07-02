@@ -7,10 +7,10 @@ var checkPhoneGap = function() {
 	return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
 }
 var isPhoneGap = checkPhoneGap();
-var testing = false;
+var testing = true;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
-var skipAPICalls = false;
+var skipAPICalls = true;
 var testingType = ""; //statusBug
 var environment = "local", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
@@ -18,11 +18,24 @@ var mapsLoaded = false; // requires internet to grab google map
 var appOptions = {
 	analytics : {
 		gaStorageName : 'sc_clientId',
-		gaIDs : {
-			'Seva Call Mobile App' : 'UA-51774414-1',
-			'Seva Call Mobile Web' : 'UA-52209319-1'
+		app : {
+			iPhone : {
+				'Google Analytics Property Name' : 'Seva Call Consumer iPhone App v2',
+				'gaID' : 'UA-9179910-16'
+
+			},
+			Android : {
+				'Google Analytics Property Name' : 'Seva Call Consumer Android App v2',
+				'gaID' : 'UA-9179910-17'
+
+			}
+		},
+		web : {
+			'Google Analytics Property Name' : 'Seva Call Consumer Mobile Web v2',
+			'gaID' : 'UA-9179910-18'
 		},
 		eventTypes : {
+			'default' : 'notify', // when no eventType specified as first param
 			1 : "page",
 			2 : "interaction",
 			3 : "alert"
@@ -87,11 +100,12 @@ var myApp = angular.module('myApp', [
         'ngStorage'
     ]).factory(
     'MyInterceptor',
-    function ($q, $rootScope, $injector, $timeout, Overlay, Track) {
+    function ($q, $rootScope, $injector, $timeout, Overlay) {
         var errorCount = 0;
         var MyInterceptor = function(promise){
 	        var trackInternetFailed = function(){
-		        Track.event(3, "alert_internet_failed");
+		        $injector.get('Track').event(3, "alert_internet_failed");
+		        //Track.event(3, "alert_internet_failed");
 	        }
             var self = this;
             return promise.then(function (response) {
@@ -290,6 +304,15 @@ var myApp = angular.module('myApp', [
         $stateProvider.state(information);
     }).run(function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
 		FastClick.attach(document.body);
+		// store whether or not the settings have EVER been completed, for purposes of tracking.
+		// Don't double-track when someone clicks delete, keyup, etc
+		$rootScope.settingsCompletedOnce = {
+			name : false,
+			email : false,
+			phone : false
+		};
+		$rootScope.twitterInitialized = false;
+		
 		$rootScope.$on('requestCompleted', function(){
             $state.go("summary");
         });

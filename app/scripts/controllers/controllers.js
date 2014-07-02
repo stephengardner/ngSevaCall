@@ -2,9 +2,9 @@
 
 /* Begin Angular Controllers */
 angular.module('myApp.controllers', [])
-	.controller('actionButtonController', ['$scope', '$state', 'Track', function($scope, $state, Track){
+	.controller('actionButtonController', ['$scope', 'Track', function($scope,  Track){
 		$scope.click = function(text){
-			Track.event(2, $state.current.name + "_" + text + "_button_pressed");
+			Track.event(2, text + "_button_pressed", true);
 		};
 	}])
 	.controller('wrapperController', ['$scope', 'App', 'Storage', 'SCAPI', 'Categories', 'Track', '$rootScope', 'Request',
@@ -88,7 +88,7 @@ angular.module('myApp.controllers', [])
 
         // on request category dropdown change
         $scope.change = function(){
-	        Track.event(2, "step1_category_selected");
+	        Track.event(2, "category_selected", true);
             for(var i = 0; i < $scope.categories.length; i++){
                 if($scope.categories[i].id == Request.categoryID) {
                     Request.setCategory($scope.categories[i].name);
@@ -130,10 +130,17 @@ angular.module('myApp.controllers', [])
                 var results = d.split("|");
                 // this API formats a response with a string format ("requestID|#####...|") if it is successful
                 if(d.indexOf("requestID|") == -1) {
+	                var trackingEventByError = {
+		                'Invalid Service Category' : 'invalid_category_notification',
+		                'Invalid Location' : 'invalid_location_notification'
+	                };
+	                Track.event(3, 'alert_' + trackingEventByError[d]);
+	                Track.event('step1_service_search_delegate_failed');
                     new xAlert(d);
                     return false;
                 }
                 else {
+	                Track.event('step1_service_search_delegate_success');
                     deferred.resolve(d);
                     $state.go("step2");
                 }
@@ -153,11 +160,12 @@ angular.module('myApp.controllers', [])
         }
 
     }])
-    .controller('step2Controller', ['RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times', 
+    .controller('step2Controller', ['Track', 'RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times',
 	'$scope', 'User', 'Request', '$state', '$interval',
-        function(RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state, $interval) {
+        function(Track, RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state, $interval) {
         $scope.isPhoneGap = isPhoneGap;
         $scope.recordingModal = RecordingModal;
+		console.log(SCAPI);
         if($.isEmptyObject(Request.companies))
             SCAPI.getCompaniesList();
 		
@@ -200,6 +208,7 @@ angular.module('myApp.controllers', [])
                 new xAlert(alerts.call_companies.body,
                     function(button) {
                         if(button == 2) {
+	                        Track.event(2, 'confirm_notification_ok', true);
                             Overlay.add(1);
                             if(Recording.saved) {
                                 Overlay.message("Uploading Recording...");
@@ -226,6 +235,9 @@ angular.module('myApp.controllers', [])
                                 Overlay.message("Preparing Request...");
                                 finalStep();
                             }
+                        }
+	                    else {
+	                        Track.event(2, 'confirm_notification_no', true);
                         }
                     },
                     "Alert",
@@ -270,7 +282,7 @@ angular.module('myApp.controllers', [])
 		// set an interval to initialize the recording of the app.  Delaying it so that less processing is done during the transition
 		// this leaves for a cleaner transition
 		var recordingInitializeInterval = $interval(function() {
-			if(!Recording.initialized) {
+			if(!Recording.initialized && isPhoneGap) {
 				if($("#bodyContainer").css("left") == "0px") {
 					Recording.init();
 					$interval.cancel(recordingInitializeInterval);
@@ -285,8 +297,8 @@ angular.module('myApp.controllers', [])
 			$("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd');
         });
     }])
-    .controller('step2aController', ['$http', 'Uploader', 'Overlay', 'Recording', 'Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window', 
-		function($http, Uploader, Overlay, Recording, Storage, $rootScope, User, Times, $scope, Request, $state, $window){
+    .controller('step2aController', ['Track', '$http', 'Uploader', 'Overlay', 'Recording', 'Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window',
+		function(Track, $http, Uploader, Overlay, Recording, Storage, $rootScope, User, Times, $scope, Request, $state, $window){
         var UserBackup = angular.copy(User);
         var cleanUpFunction = $rootScope.$on('back', function(){
             User.setName(UserBackup.getName());
@@ -294,13 +306,34 @@ angular.module('myApp.controllers', [])
             User.setPhone(UserBackup.getPhone());
         });
         $scope.User = User;
+
+		// Analytics - Track whether or not the name, phone, and email have been filled in properly.
+		// Watch the variables, and only report this statistic once
+		$scope.$watch('User.name', function(){
+			if(!$rootScope.settingsCompletedOnce.name && User.isNameValid()){
+				Track.event(2, "name_completed", true);
+				$rootScope.settingsCompletedOnce.name = true;
+			}
+		});
+		$scope.$watch('User.email', function(){
+			if(!$rootScope.settingsCompletedOnce.email && User.isEmailValid()){
+				Track.event(2, "email_completed", true);
+				$rootScope.settingsCompletedOnce.email = true;
+			}
+		});
+		$scope.$watch('User.phone', function(){
+			if(!$rootScope.settingsCompletedOnce.phone && User.isPhoneValid()){
+				Track.event(2, "phone_completed", true);
+				$rootScope.settingsCompletedOnce.phone = true;
+			}
+		});
         $scope.Times = Times;
         $scope.emailKeyup = function(d){
             d.stopPropagation();
             console.log(d);
         };
         var unMaskPhone = function() {
-            if(User.phone != "")
+            if(User.phone && User.phone != "")
                 User.phone = String(parseInt(User.phone.replace(/[)( -]/g, "")));
         };
 
@@ -335,12 +368,15 @@ angular.module('myApp.controllers', [])
                 return;
             }
             if(!User.isNameValid()) {
+	            Track.event(3, "invalid_name_notification", true);
                 new xAlert("Invalid name");
             }
             else if(!User.isEmailValid()) {
+	            Track.event(3, "invalid_email_notification", true);
                 new xAlert("Invalid email");
             }
             else if(!User.isPhoneValid()) {
+	            Track.event(3, "invalid_phone_notification", true);
                 new xAlert("Invalid phone number");
             }
             else {
@@ -351,6 +387,7 @@ angular.module('myApp.controllers', [])
                 	new xAlert(alerts.call_companies.body,
                         function(button) {
                             if(button == 2) {
+	                            Track.event(2, 'confirm_notification_ok', true);
                                 Overlay.add(1);
                                 if(Recording.saved) {
                                 	Overlay.message("Uploading Recording...");
@@ -373,6 +410,9 @@ angular.module('myApp.controllers', [])
                                 else {
                                     finalStep();
                                 }
+                            }
+	                        else {
+	                            Track.event(2, 'confirm_notification_no', true);
                             }
                         },
                         "Alert",
@@ -438,20 +478,23 @@ angular.module('myApp.controllers', [])
         GoogleMap.init();
         $scope.statuses = Request.statuses;
     }])
-    .controller('summaryController', ['Request', 'SCAPI', '$scope', function(Request, SCAPI, $scope){
-        Request.setID(112669);
+    .controller('summaryController', ['TwitterService', 'Track', 'Request', 'SCAPI', '$scope', function(TwitterService, Track, Request, SCAPI, $scope){
+		TwitterService.init();
+		Request.setID(112669);
         $scope.request = Request;
         $scope.acceptanceRate = Request.numCompaniesCalled ?  Math.round(((parseFloat( Request.numCompaniesAccepted  /  Request.numCompaniesCalled * 100)))) + "%" : "0%";
         SCAPI.timeSaved().then(function(d) {
             $scope.timeSaved = d.timeSaved;
         });
         $scope.twitterMessage = encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
-        $scope.twitterShare = function() {
-            var url = "https://twitter.com/intent/tweet?url=http://www.sevacall.com&text="
-            url += encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
-            window.open(url, '_system');
+        $scope.twttrURL = "https://twitter.com/intent/tweet?url=http://www.sevacall.com&text=" + encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
+
+		$scope.twitterShare = function() {
+	        Track.event(2, 'twitter_share_button_pressed', true);
         }
+
         $scope.facebookShare = function() {
+	        Track.event(2, 'facebook_share_button_pressed', true);
             var url = "http://facebook.com/dialog/feed";
             url += "?app_id=543995755650717";
             url += "&link=www.sevacall.com";
@@ -471,10 +514,11 @@ angular.module('myApp.controllers', [])
             Menu.active = false;
         });
 		$scope.click = function(button) {
-			Track.event(2, $state.current.name + "_" + button + "_button_pressed");
+			Track.event(2, button + "_button_pressed", true);
 		};
     }])
-    .controller('headerController', ['Nav', 'Request', '$rootScope', '$state', '$window', 'Menu', '$attrs', '$scope', function(Nav, Request, $rootScope, $state, $window, Menu, $attrs, $scope){
+    .controller('headerController', ['Track', 'Nav', 'Request', '$rootScope', '$state', '$window', 'Menu', '$attrs',
+		'$scope', function(Track, Nav, Request, $rootScope, $state, $window, Menu, $attrs, $scope){
         $scope.request = Request; // this might case a bug on iphones, please check
         $scope.$on("$stateChangeSuccess", function(event, state){
             // weird bug -- reading the "state.name" object in the partial for ng-show will cause this page to flash
@@ -486,10 +530,12 @@ angular.module('myApp.controllers', [])
         $scope.navigation = Nav;
         $scope.nav = function(){
             if(Nav.direction == "forward") {
+	            Track.event(2, "forward_button_pressed", true);
                 $rootScope.$broadcast('forward');
                 $state.go("summary");
             }
             else {
+	            Track.event(2, "back_button_pressed", true);
                 $rootScope.$broadcast('back');
                 $window.history.back();
             }
@@ -510,11 +556,17 @@ angular.module('myApp.controllers', [])
         });
     }])
     // apologies for the amount of jQuery in the following controller, it is necessary for some things like adding a source to the iframe.  This wasn't doable in angular {{}} notation.  And event binding is a little easier here as well.
-    .controller('informationController', ['$rootScope', 'Overlay', 'resolveSize', '$scope', '$window', 'Menu', '$state', function($rootScope, Overlay, resolveSize, $scope, $window, Menu, $state){
-        // when the menu is no longer busy, append the vimeo video.
+    .controller('informationController', ['Track', '$rootScope', 'Overlay', 'resolveSize', '$scope', '$window', 'Menu',
+		'$state', function(Track, $rootScope, Overlay, resolveSize, $scope, $window, Menu, $state){
+       // when the menu is no longer busy, append the vimeo video.
         // this gives the menu time to close before performing a graphic intensive task such as loading the vimeo player.
         // NOTE, VIMEO BUG: On the simulator, this video url is not playing.  The exact same code DOES play the vimeo example video.  So something is either wrong with how sevacall's video is accessed on the backend, or, I am clueless.
-        var addIframe = function() {
+        var trackButton = function(type) {
+	        Track.event(2, type + "_button_pressed", true);
+        };
+		$scope.trackButton = trackButton;
+
+		var addIframe = function() {
         	if($state.current.name == "information") {
 				$("#sc-video").removeClass("hidden");
             }

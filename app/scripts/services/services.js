@@ -12,6 +12,31 @@ myApp.factory('App', function() {
    return App;
 });
 
+myApp.factory('TwitterService', function($timeout, Track) {
+	var TwitterService = {
+		initialized : false,
+		init : function(){
+			if(!this.initialized) {
+				this.initialized = true;
+				window.twttr = (function (d, s, id) {
+					var t, js, fjs = d.getElementsByTagName(s)[0];
+					if (d.getElementById(id)) return;
+					js = d.createElement(s); js.id = id; js.src= "https://platform.twitter.com/widgets.js";
+					fjs.parentNode.insertBefore(js, fjs);
+					return window.twttr || (t = { _e: [], ready: function (f) { t._e.push(f) } });
+				}(document, "script", "twitter-wjs"));
+				// load the twitter api so we can tell if the user ended up tweeting something
+				//
+				window.twttr.ready(function () {
+					twttr.events.bind('tweet', function (event) {
+						Track.event(2, "twitter_share_completed", true);
+					});
+				});
+			}
+		}
+	};
+	return TwitterService;
+});
 // keep track of if the initial animation has processed
 myApp.factory('AnimationService', function() {
     var AnimationService = {
@@ -71,8 +96,8 @@ myApp.factory('AlertSwitch', function(){
     };
     return AlertSwitch;
 });
-myApp.factory('Track', function() {
-	var GA_IDs = appOptions.analytics.gaIDs;
+myApp.factory('Track', function($state) {
+	var GA_IDs = appOptions.analytics;
     var Track = {
     	init : function() {
         	if(window.localStorage) {
@@ -81,13 +106,18 @@ myApp.factory('Track', function() {
 		        var ga_id_type; // just for personal log purposes
 		        if(window.device && window.device.uuid) {
 			        clientId = window.device.uuid;
-			        ga_id = GA_IDs['Seva Call Mobile App'];
-			        ga_id_type = 'Mobile App';
+			        if(window.device.platform == "iOS") {
+				        ga_id = GA_IDs['app']['iPhone']['gaID'];
+			        }
+			        if(window.device.platform == "Android") {
+				        ga_id = GA_IDs['app']['Android']['gaID'];
+			        }
+			        ga_id_type = 'Mobile App'; // simply for console logging
 			        console.log("setting localStorage.clientId to: " + clientId);
 			        window.localStorage.setItem(appOptions.analytics.gaStorageName, clientId);
 		        }
 		        else {
-			        ga_id = GA_IDs['Seva Call Mobile Web'];
+			        ga_id = GA_IDs['web']['gaID'];
 			        ga_id_type = 'Mobile Web';
 			        if(window.localStorage.getItem(appOptions.analytics.gaStorageName)){
 				        clientId = window.localStorage.getItem(appOptions.analytics.gaStorageName);
@@ -119,7 +149,7 @@ myApp.factory('Track', function() {
         defaults : {
         	event : {
             	hitType : 'event',
-            	eventCategory : 'sc-action',
+            	eventCategory : 'notify',
                 eventAction : 'none'
             }
         },
@@ -138,14 +168,20 @@ myApp.factory('Track', function() {
 	        if(arguments.length == 1 && typeof arguments[0] == "object") {
 		        options = arguments[0];
 	        }
-	        if(arguments.length == 2){
+	        if(arguments.length >= 2){
 		        options.eventCategory = eventTypes[arguments[0]];
 		        options.eventAction = arguments[1];
 	        }
 	        else {
-		        options.eventCategory = "notify";
+		        options.eventCategory = this.defaults.event.eventCategory;
 		        options.eventAction = arguments[0];
 	        }
+	        // automatically append the state of the page where the action occurred
+	        // if there is a third parameter to this function
+	        if(arguments.length == 3) {
+		        options.eventAction = $state.current.name + "_" + options.eventAction;
+	        }
+
         	var defaults = this.defaults.event;
             var actual = $.extend({}, defaults, options);
             actual.eventAction = actual.eventAction.toUpperCase();
@@ -290,7 +326,7 @@ myApp.factory('Nav', function(){
     return Nav;
 });
 
-myApp.factory('Menu', function($timeout){
+myApp.factory('Menu', function(Track, $timeout){
     var Menu = {
         active : false,
         busy : false,
@@ -300,6 +336,12 @@ myApp.factory('Menu', function($timeout){
             // Must be a problem with Angular's animation checking but I could not pinpoint it.
             if(self.busy)
                 return;
+	        if(self.active){
+		        Track.event(2, 'menu_closed', true);
+	        }
+	        else{
+		        Track.event(2, 'menu_opened', true);
+	        }
             $timeout(function(){
                 self.busy = false;
             }, 500);
@@ -334,7 +376,7 @@ myApp.factory('Ratings', function(Request){
     return Ratings;
 });
 
-myApp.factory('GoogleMap', function($timeout, $q, Request){
+myApp.factory('GoogleMap', function(Track, $timeout, $q, Request){
     var GoogleMap = {
         bounds : [],
         latLngList : [],
@@ -352,25 +394,34 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
             };
             function initialize() {
                 var deferred = $q.defer();
-                getLatLongByZip().then(function(d){
-                    var mapOptions = {
-                        center: d,
-                        zoom: 8
-                    };
-                    self.map = new google.maps.Map(document.getElementById("map_canvas"),
-                        mapOptions);
-                    Request.GoogleMap = self;
-                    // remove the automatic google map styling including roboto font
-                    google.maps.event.addListener(self.map, 'idle', function () {
-                        $('style').remove();
-                    });
-                    deferred.resolve(true);
-                });
+	            try {
+	                getLatLongByZip().then(function(d){
+	                    var mapOptions = {
+	                        center: d,
+	                        zoom: 8
+	                    };
+	                    self.map = new google.maps.Map(document.getElementById("map_canvas"),
+	                        mapOptions);
+	                    Request.GoogleMap = self;
+	                    // remove the automatic google map styling including roboto font
+	                    google.maps.event.addListener(self.map, 'idle', function () {
+	                        $('style').remove();
+	                    });
+	                    deferred.resolve(true);
+	                });
+	            }
+	            catch(e) {
+		            console.log(e);
+		            deferred.reject();
+	            }
                 return deferred.promise;
             }
             initialize().then(function(){
+	            Track.event(1, 'map_loading_success', true);
                 self.mapFitBounds();
                 self.addMarkers();
+            }, function(){
+	            Track.event(1, 'map_loading_failed', true);
             });
         },
 
@@ -529,7 +580,14 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
     return GoogleMap;
 });
 
-myApp.factory('Times', function(){
+// going to be used for common storage to rootScope, set in app.run
+myApp.factory('Common', function(){
+	var Common = {
+	};
+	return Common;
+});
+
+myApp.factory('Times', function(Track){
     var Times = {
         timesActive : [],
         timesInactive : [],
@@ -563,6 +621,7 @@ myApp.factory('Times', function(){
         },
 
         fullAlert : function(){
+	        Track.event(3, "maximum_time_slots_notification", true);
             new xAlert("Please select a maximum of 5 times");
         },
 
@@ -586,7 +645,23 @@ myApp.factory('Times', function(){
             return this;
         },
 
+
         changeTime : function(time){
+	        // track the time selected
+	        function trackDeselect(){
+		        Track.event(2, time + "_button_deselected", true);
+	        }
+	        function trackSelect(){
+		        Track.event(2, time + "_button_selected", true);
+	        }
+	        if(this.buttons[time] == time || time == "pick_time") {
+		        trackDeselect();
+	        }
+	        else {
+		        trackSelect();
+	        }
+
+	        // perform logic based on time selected
             if(time == "now" && this.buttons['anytime'] == 1){
                 this.buttons['anytime'] = 0;
             }
@@ -599,7 +674,11 @@ myApp.factory('Times', function(){
                 this.buttons['anytime'] = 0;
                 return true;
             }
+
+	        // switch the button
             this.buttons[time] = !this.buttons[time];
+
+	        // perform more login based on button switched
             if(time == "anytime" && this.buttons['anytime'] == 1) {
                 this.empty();
                 this.buttons = { anytime : 1 };
@@ -655,6 +734,12 @@ myApp.factory('Times', function(){
             }
             console.log("*Toggling time:" + row + "-" + col);
             var index = this.timesActive.indexOf(row + "-" + col);
+	        if(index != -1) {
+		        Track.event(2, "time_selected", true);
+	        }
+	        else if(index == -1) {
+		        Track.event(2, "time_deselected", true);
+	        }
             if(index == -1 && !this.isFull()) {
                 this.timesActive.push(row + "-" + col);
             }
@@ -675,7 +760,7 @@ myApp.factory('Times', function(){
     return Times;
 });
 
-myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*User,*/ $http, $q, Times, Uploader){
+myApp.factory('Request', function(Track, Recording, $rootScope, SCAPI, $interval, /*User,*/ $http, $q, Times, Uploader){
     var Request = {
         initialized : false,
         companies : {},
@@ -747,6 +832,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
             self.verifiedTimeout = $interval(function(){
                 self.timeSpentWaiting++;
                 if(self.timeSpentWaiting == 60) {
+	                Track.event(3, 'verification_notification', true);
                     new xAlert("To ensure the highest quality matches your request needs to be verified, which may take up to 15 minutes. If you need service right away please call us at 1-877-987-SEVA (7382)");
                 }
                 else if(self.timeSpentWaiting == (15 * 60)) {
@@ -777,6 +863,7 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
             self.verifiedTimeoutStart();
             self.interval = $interval(function() {
                 SCAPI.getRequestStatus().then(function(d) {
+	                Track.event(1, 'company_status_api_success', true);
                     self.setStatusThrottle(d);
                     if(self.statusThrottle.length > 0 && !$.isEmptyObject(self.companies)) {
                         self.verifiedTimeoutStop();
@@ -798,6 +885,9 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
                             if(status.requestStatusShort == "Accepted") {
                                 SCAPI.getRatings(Request.companies[status.companyID]).then(function(d){
                                     console.log("*All ratings for company have been retrieved");
+	                                Track.event(1, 'company_rating_api_success', true);
+                                }, function(){
+									Track.event(1, 'company_rating_api_failed', true);
                                 });
                                 Request.companies[status.companyID].accepted = 1;
 
@@ -819,12 +909,15 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
                         }
                     }
                     console.log("*The current throttle is: ", self.statusThrottle);
+                }, function(){
+	                Track.event(1, 'company_status_api_failed', true);
                 });
             }, 1000);
         },
 
         requestComplete : function() {
             $rootScope.$broadcast('requestCompleted');
+	        Track.event('')
             this.complete = true;
         },
 
@@ -1110,6 +1203,7 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
             preload().then(function(){
                 navigator.geolocation.getCurrentPosition(
 					function (position) {
+						Track.event("location_permission_granted");
 						var geocoder = new google.maps.Geocoder();
 
 						var lat = position.coords.latitude;
@@ -1140,7 +1234,9 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
 							}
 						});
 					},
-					function(err) {
+					function(position) {
+						if (position.code == position.PERMISSION_DENIED)
+							Track.event("location_permission_denied");
 						self.error(1);
 						deferred.resolve();
 					},

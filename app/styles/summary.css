@@ -31,3 +31,7 @@
 #summary .indent strong {
     margin-left:.2em;
 }
+
+#twitter a {
+    display:inline-block;
+}

@@ -10,24 +10,26 @@ String.prototype.toHHMMSS = function () {
     var time    = /*hours+':'+*/minutes+':'+seconds;
     return time;
 }
-myApp.factory('Uploader', function($q) {
+myApp.factory('Uploader', function(Track, $q) {
 		var Uploader = {
             url : api_root + "components/audio-upload/upload.php",
             success : function(r) {
                 console.log("Code = " + r.responseCode);
                 console.log("Response = " + r.response);
                 console.log("Sent = " + r.bytesSent);
+	            Track.event(1, "amazon_audio_upload_success", true);
                 Uploader.uploadPromise.resolve(r);
             },
+			fail : function(error) {
+				new xAlert("An error has occurred when sending your recording: Code = " + error.code);
+				console.log("upload error source " + error.source);
+				console.log("upload error target " + error.target);
+				Track.event(1, "amazon_audio_upload_failed", true);
+				Uploader.uploadPromise.reject(error);
+			},
 			reset : function() {
 				this.busy = false;
 			},
-            fail : function(error) {
-                new xAlert("An error has occurred when sending your recording: Code = " + error.code);
-                console.log("upload error source " + error.source);
-                console.log("upload error target " + error.target);
-                Uploader.uploadPromise.reject(error);
-            },
             uploadRecording : function(src, opts) {
                 var self = this;
                 self.uploadPromise = $q.defer();
@@ -69,7 +71,7 @@ myApp.factory('Uploader', function($q) {
         };
         return Uploader;
 });
-myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootScope){
+myApp.factory('Recording', function(Track, $timeout, $interval, User, $http, $q, $rootScope){
     var Recording = {
         length : 0,
         position : 0,
@@ -182,6 +184,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                 new xAlert("Are you sure you want to delete the details recording?",
                 function(button){
                     if(button == 1) {
+	                    Track.event(2, "delete_notification_ok", true);
 						self.mediaRec.release();
                         self.recording = false;
                         self.reset();
@@ -189,6 +192,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                         deferred.resolve(self);
                     }
                     else {
+	                    Track.event(2, "delete_notification_cancel", true);
                         deferred.resolve(self);
                     }
                 },
@@ -219,6 +223,7 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
             }
             $interval.cancel(self.interval);
             if(self.length < 3 && testingType != "recording" && !opt_disableAlert) {
+	            Track.event(3, "audio_too_short_notification", true);
                 new xAlert("Recording must be at least 3 seconds");
                 self.reset();
             }
@@ -227,11 +232,12 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
                 self.saved = true;
             }
         },
-
         toggleRecord : function() {
             var self = this;
-            if(!self.recording)
-                self.startRecord();
+	        Track.event(2, "record_button_pressed", true);
+            if(!self.recording){
+	            self.startRecord();
+            }
             else if(self.recording) {
                 self.recording = false;
                 self.stopRecord();
@@ -241,9 +247,11 @@ myApp.factory('Recording', function($timeout, $interval, User, $http, $q, $rootS
         togglePlay : function() {
             var self = this;
             if(self.playing){
+	            Track.event(2, "pause_button_pressed", true);
                 self.pause();
             }
             else if (!self.playing) {
+	            Track.event(2, "play_button_pressed", true);
                 self.play();
             }
         },
