@@ -728,10 +728,10 @@ myApp.factory('Times', ['Track', function(Track){
             }
             console.log("*Toggling time:" + row + "-" + col);
             var index = this.timesActive.indexOf(row + "-" + col);
-	        if(index != -1) {
+	        if(index == -1) {
 		        Track.event(2, "time_selected", true);
 	        }
-	        else if(index == -1) {
+	        else if(index != -1) {
 		        Track.event(2, "time_deselected", true);
 	        }
             if(index == -1 && !this.isFull()) {

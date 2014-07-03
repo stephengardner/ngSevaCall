@@ -165,7 +165,6 @@ angular.module('myApp.controllers', [])
         function(Track, RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state, $interval) {
         $scope.isPhoneGap = isPhoneGap;
         $scope.recordingModal = RecordingModal;
-		console.log(SCAPI);
         if($.isEmptyObject(Request.companies))
             SCAPI.getCompaniesList();
 		
