@@ -97,10 +97,11 @@ myApp.factory('AlertSwitch', [function(){
     return AlertSwitch;
 }]);
 myApp.factory('Track', [function() {
-	var GA_IDs = appOptions.analytics.gaIDs;
     var Track = {
+	    GA_IDs : appOptions.analytics,
     	init : function() {
         	if(window.localStorage) {
+		        var GA_IDs = this.GA_IDs;
 		        var clientId;
 		        var ga_id;
 		        var ga_id_type; // just for personal log purposes

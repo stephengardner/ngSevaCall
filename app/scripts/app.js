@@ -1,6 +1,6 @@
 'use strict';
 window.onerror = function(message, url, lineNumber) {
-    console.log("SCError: "+message+" in "+url+" at line "+lineNumber);
+	console.log("SCError: "+message+" in "+url+" at line "+lineNumber);
 }
 
 //var isPhoneGap = true;
@@ -44,52 +44,55 @@ var appOptions = {
 	}
 };
 var alerts = {
-    call_companies :  {
-        body : "Call companies now? You may receive up to three calls"
-    },
-    home : {
-        title : "Start Over?",
-        body : "Returning to step 1 will cancel your current request, continue?"
-    },
-    abandon : {
-        title : "Start Over?",
-        body : "Are you sure you want to abandon this request?"
-    }
+	call_companies :  {
+		body : "Call companies now? You may receive up to three calls"
+	},
+	home : {
+		title : "Start Over?",
+		body : "Returning to step 1 will cancel your current request, continue?"
+	},
+	abandon : {
+		title : "Start Over?",
+		body : "Are you sure you want to abandon this request?"
+	}
 };
 if(environment == "local" && !isPhoneGap) {
-    root = "../../";
-    api_root = "http://localhost/";
+	root = "../../";
+	api_root = "http://localhost/";
 }
 else if(environment == "local" && isPhoneGap) {
 	root = "";
-    api_root = "http://test.s17.sevacall.com/";
+	api_root = "http://test.s17.sevacall.com/";
 }
 else if(environment == "development"){
-    if(isPhoneGap) {
+	if(isPhoneGap) {
 		root = "";
-    }
-    else {
-    	root = "http://test.s17.sevacall.com/mobile/";
-    }
-    api_root = "http://test.s17.sevacall.com/";
+	}
+	else {
+		root = "http://test.s17.sevacall.com/mobile/";
+	}
+	api_root = "http://test.s17.sevacall.com/";
 }
 else if(environment == "production") {
-    console.log = function(msg) {};
-    console.warn = function(msg) {};
-    console.error = function(msg) {};
-    root = "";
-    if(isPhoneGap) {
-    	api_root = "http://www.sevacall.com/";
-    }
-    else {
-    	api_root = "../";
-    }
+	console.log = function(msg) {};
+	console.warn = function(msg) {};
+	console.error = function(msg) {};
+	root = "";
+	if(isPhoneGap) {
+		api_root = "http://www.sevacall.com/";
+	}
+	else {
+		api_root = "../";
+	}
 }
 String.prototype.capitalize = function () {
-    return this.toLowerCase().replace(/^.|\s\S/g, function (a) {
-        return a.toUpperCase();
-    });
+	return this.toLowerCase().replace(/^.|\s\S/g, function (a) {
+		return a.toUpperCase();
+	});
 };
+/**
+ * Created by Developer on 7/3/14.
+ */
 
 // Declare app level module which depends on filters, and services
 var myApp = angular.module('myApp', [
