@@ -103,12 +103,12 @@ var myApp = angular.module('myApp', [
         'ngAnimate',
         'ngStorage'
     ])
-	.factory('MyInterceptor', ['$q', '$rootScope', '$injector', '$timeout', 'Overlay', 'Track',
-	function ($q, $rootScope, $injector, $timeout, Overlay, Track) {
+	.factory('MyInterceptor', ['$q', '$rootScope', '$injector', '$timeout', 'Overlay',
+	function ($q, $rootScope, $injector, $timeout, Overlay) {
         var errorCount = 0;
         var MyInterceptor = function(promise){
             var trackInternetFailed = function(){
-	            Track.event(3, "alert_internet_failed");
+	            $injector.get('Track').event(3, "alert_internet_failed");
             }
             var self = this;
             return promise.then(function (response) {

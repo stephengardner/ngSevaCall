@@ -232,9 +232,9 @@ input {
 /* fonts */
 @font-face {
     font-family: 'League_Gothic';
-    src: url("../League-Gothic-fontfacekit/League_Gothic-webfont.ttf"),
-    url('../League-Gothic-fontfacekit/League_Gothic-webfont.eot'), /* IE9 */
-    url('../League-Gothic-fontfacekit/League_Gothic-webfont.woff');
+    src: url("../fonts/League_Gothic-webfont.ttf"),
+    url('../fonts/League_Gothic-webfont.eot'), /* IE9 */
+    url('../fonts/League_Gothic-webfont.woff');
 }
 
 h1{

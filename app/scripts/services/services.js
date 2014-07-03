@@ -96,7 +96,7 @@ myApp.factory('AlertSwitch', [function(){
     };
     return AlertSwitch;
 }]);
-myApp.factory('Track', [function() {
+myApp.factory('Track', ['$state', function($state) {
     var Track = {
 	    GA_IDs : appOptions.analytics,
     	init : function() {
@@ -213,8 +213,8 @@ myApp.factory('MapLoader', ['$window', '$q', function($window, $q){
             else {
 				self.busy = true;
                 $window.loadMapsPlugins = function(){
-                    $.getScript("scripts/other/infobox.js").done(function(){
-                        $.getScript("scripts/other/xMarker.js").done(function(){
+                    $.getScript("scripts-get/infobox.js").done(function(){
+                        $.getScript("scripts-get/xMarker.js").done(function(){
 							self.loaded = true;
 							self.busy = false;
                             self.deferred.resolve(true);
@@ -327,7 +327,7 @@ myApp.factory('Nav', [function(){
     return Nav;
 }]);
 
-myApp.factory('Menu', ['$timeout', function($timeout){
+myApp.factory('Menu', ['$timeout', 'Track', function($timeout, Track){
     var Menu = {
         active : false,
         busy : false,
@@ -1088,7 +1088,7 @@ myApp.factory('Overlay', [function() {
         body : $("body"),
         isActive : false,
         isActiveWithSpinner : false,
-        overlaySpinner : $("<div class='overlay-spinner'><img src='" + root + "images/ajax_loader.gif'/><div class='overlay-text-wrapper'><div class='overlay-text hidden'></div></div></div>"),
+        overlaySpinner : $("<div class='overlay-spinner'><div class='ajax_loader'></div><div class='overlay-text-wrapper'><div class='overlay-text hidden'></div></div></div>"),
         overlayBackground : $("<div class='overlay'></div>"),
         add : function(opt_spinner, opt_message) {
             if(opt_spinner && !this.isActiveWithSpinner) {

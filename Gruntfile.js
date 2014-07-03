@@ -16,6 +16,7 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
 
   // Configurable paths for the application
+  // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
     dist: 'dist'
@@ -314,7 +315,14 @@ module.exports = function (grunt) {
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
-        }, {
+        },
+	    // move my infobox / xmarker into dist.  Needed because we're using .getScript which can't be minified
+	    {
+	        expand: true,
+	        cwd: '<%= yeoman.app %>/scripts-get',
+	        dest: '<%= yeoman.dist %>/scripts-get',
+	        src: '**/*'
+        },{
           expand: true,
           cwd: '.tmp/images',
           dest: '<%= yeoman.dist %>/images',
