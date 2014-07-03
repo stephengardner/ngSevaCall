@@ -1,4 +1,7 @@
-myApp.factory('Test', function(RequestSubmittor, $q, Times, User, Request, SCAPI, Recording, $state, $timeout, AlertSwitch) {
+
+myApp.factory('Test', ['RequestSubmittor', '$q', 'Times', 'User', 'Request', 'SCAPI', 'Recording', '$state', '$timeout',
+	'AlertSwitch',
+	function(RequestSubmittor, $q, Times, User, Request, SCAPI, Recording, $state, $timeout, AlertSwitch) {
 	var Test = function() { };
     
     Test.prototype = {
@@ -82,4 +85,4 @@ myApp.factory('Test', function(RequestSubmittor, $q, Times, User, Request, SCAPI
         
     };
     return new Test();
-});
+}]);

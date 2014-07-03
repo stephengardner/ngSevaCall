@@ -63,14 +63,14 @@
         <div sc-menu class="GPUAccel row"></div>
         <!-- end menu -->
 
-        <!-- build:js({.tmp,app}) scripts/ie_shims.js -->
+        <!-- build:js(.tmp) scripts/ie_shims.js -->
         <!--[if lt IE 9]>
         <script src="../bower_components/es5-shim/es5-shim.js"></script>
         <script src="../bower_components/json3/lib/json3.min.js"></script>
         <![endif]-->
         <!-- endbuild -->
 
-        <!-- build:js({.tmp,app}) scripts/vendor.js -->
+        <!-- build:js(.tmp) scripts/vendor.js -->
         <!-- bower:js -->
         <script src="../bower_components/jquery/dist/jquery.js"></script>
         <script src="../bower_components/angular/angular.js"></script>
@@ -83,40 +83,25 @@
         <!-- endbower -->
         <!-- endbuild -->
 
-        <!-- build:js({.tmp,app}) scripts/ngsevacall.js -->
+        <!-- build:js scripts/addins.js -->
         <script src="../../cordova.js"></script>
+        <script src="scripts/other/ga.js"></script>
+        <script src="scripts/other/xAlert.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js scripts/ngsevacall.js -->
         <script src="scripts/other/index.js"></script>
-        <script src="scripts/app.js"/>
-        <script src="scripts/services/request-submittor-service.js"></script>
+        <script src="scripts/app.js"></script>
+        <script src="services/request-submittor-service.js"></script>
         <script src="scripts/services/scapi-service.js"></script>
         <script src="scripts/services/test-service.js"></script>
         <script src="scripts/services/services.js"></script>
         <script src="scripts/services/recording-service.js"></script>
         <script src="scripts/controllers/controllers.js"></script>
         <script src="scripts/directives/directives.js"></script>
-        <script src="scripts/other/xAlert.js"></script>
-        <script src="scripts/other/ga.js"></script>
+        <script src="scripts/other/initialize.js"></script>
         <!-- endbuild -->
 
-        <!-- begin app launch script -->
-        <script type="text/javascript">
-            app.initialize();
-            if(isPhoneGap) {
-                document.addEventListener('deviceready',function(){
-                    angular.bootstrap(document, ["myApp"]);
-                });
-            }
-            else {
-                try {
-                    // Wrap this call to try/catch
-                    angular.bootstrap(document, ['myApp']);
-                }
-                catch (e) {
-                    console.error(e.stack || e.message || e);
-                }
-            }
-        </script>
-        <!-- end app launch script -->
 
     </body>
 </html>

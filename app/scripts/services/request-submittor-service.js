@@ -1,5 +1,7 @@
 // a service that takes request dependencies and will submit the request or alert...
-myApp.factory("RequestSubmittor", function($q, Overlay, Request, $state, Times, User, Recording, $timeout, Uploader, $http, SCAPI, AlertSwitch){
+myApp.factory("RequestSubmittor", ['$q', 'Overlay', 'Request', '$state', 'Times', 'User', 'Recording', '$timeout',
+	'Uploader', '$http', 'SCAPI',
+	function($q, Overlay, Request, $state, Times, User, Recording, $timeout, Uploader, $http, SCAPI){
     var RequestSubmittor = {
         step1 : function() {
             var deferred = $q.defer();
@@ -102,4 +104,4 @@ myApp.factory("RequestSubmittor", function($q, Overlay, Request, $state, Times, 
         }
 	};
     return RequestSubmittor;
-});
+}]);

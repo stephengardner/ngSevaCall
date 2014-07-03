@@ -10,7 +10,7 @@ String.prototype.toHHMMSS = function () {
     var time    = /*hours+':'+*/minutes+':'+seconds;
     return time;
 }
-myApp.factory('Uploader', function(Track, $q) {
+myApp.factory('Uploader', ['$q', function($q) {
 		var Uploader = {
             url : api_root + "components/audio-upload/upload.php",
             success : function(r) {
@@ -70,8 +70,9 @@ myApp.factory('Uploader', function(Track, $q) {
             
         };
         return Uploader;
-});
-myApp.factory('Recording', function(Track, $timeout, $interval, User, $http, $q, $rootScope){
+}]);
+myApp.factory('Recording', ['$timeout', '$interval', 'User', '$http', '$q', '$rootScope',
+	function($timeout, $interval, User, $http, $q, $rootScope){
     var Recording = {
         length : 0,
         position : 0,
@@ -101,7 +102,7 @@ myApp.factory('Recording', function(Track, $timeout, $interval, User, $http, $q,
 			if(opt_mimeType) {
 				this.mimeType = opt_mimeType;
 			}
-			else if(device.platform == "Android") {
+			else if(window.device.platform == "Android") {
 				this.mimeType = "audio/amr";
 			}
 			else {
@@ -315,4 +316,4 @@ myApp.factory('Recording', function(Track, $timeout, $interval, User, $http, $q,
 
     };
     return Recording;
-});
+}]);
