@@ -2,6 +2,7 @@
 window.onerror = function(message, url, lineNumber) {
     console.log("SCError: "+message+" in "+url+" at line "+lineNumber);
 }
+
 //var isPhoneGap = true;
 var checkPhoneGap = function() {
 	return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
@@ -85,14 +86,14 @@ var myApp = angular.module('myApp', [
         'ui.router',
         'ngAnimate',
         'ngStorage'
-    ]).factory(
-    'MyInterceptor',
-    function ($q, $rootScope, $injector, $timeout, Overlay, Track) {
+    ])
+	.factory('MyInterceptor', ['$q', '$rootScope', '$injector', '$timeout', 'Overlay', 'Track',
+	function ($q, $rootScope, $injector, $timeout, Overlay, Track) {
         var errorCount = 0;
         var MyInterceptor = function(promise){
-	        var trackInternetFailed = function(){
-		        Track.event(3, "alert_internet_failed");
-	        }
+            var trackInternetFailed = function(){
+	            Track.event(3, "alert_internet_failed");
+            }
             var self = this;
             return promise.then(function (response) {
                 // do something on success
@@ -156,38 +157,41 @@ var myApp = angular.module('myApp', [
             });
         };
         return MyInterceptor;
-    }).config(function ($httpProvider) {
+    }])
+	.config(["$httpProvider", function ($httpProvider) {
         $httpProvider.responseInterceptors.push('MyInterceptor');
-    })
-    .config(function ($httpProvider) {
+    }])
+    .config(["$httpProvider", function ($httpProvider) {
         $httpProvider.defaults.transformRequest = function(data) {
             if (data === undefined) {
                 return data;
             }
             return $.param(data);
         }
-    })
-// config the $http to coincide with our progressBar
+    }])
+	// config the $http to coincide with our progressBar
     .config(["$httpProvider", function($httpProvider){
-        $httpProvider.responseInterceptors.push(function($q, $rootScope){
-            return function(promise){
-                $rootScope.$broadcast("event:routeChangeStart");
-                return promise
-                    .then(
-                    function(response){
-                        $rootScope.$broadcast("event:routeChangeSuccess");
-                        return response;
-                    },
-                    function(response){ //on error
-                        $rootScope.$broadcast("event:routeChangeError");
-                        return $q.reject(response);
-                    }
-                )
-            }
-        })
+        $httpProvider.responseInterceptors.push(['$q', '$rootScope',
+	        function($q, $rootScope){
+	            return function(promise){
+	                $rootScope.$broadcast("event:routeChangeStart");
+	                return promise
+	                    .then(
+	                    function(response){
+	                        $rootScope.$broadcast("event:routeChangeSuccess");
+	                        return response;
+	                    },
+	                    function(response){ //on error
+	                        $rootScope.$broadcast("event:routeChangeError");
+	                        return $q.reject(response);
+	                    }
+	                )
+	            }
+            }]
+        )
     }])
 // UI-router config
-    .config(function($stateProvider, $urlRouterProvider) {
+    .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
         // route to root if no valid route found
         $urlRouterProvider.otherwise('/step1');
 
@@ -204,21 +208,22 @@ var myApp = angular.module('myApp', [
             controller : 'step2Controller',
             templateUrl: root + 'views/step2.html',
             resolve : {
-                resolveAPI : function(Overlay, $q, SCAPI, $location, Request){
-                    if(Request.id)
-                        return true;
-                    var deferred = $q.defer();
-                    Overlay.add(1);
-                    SCAPI.step1().then(function(d){
-                        if(d == "Invalid Location"){
-                            console.log("-*-Invalid step 2");
-                            $location.path("/");
-                        }
-                        Overlay.remove();
-                        deferred.resolve(d);
-                    });
-                    return deferred.promise;
-                }
+                resolveAPI : ['Overlay', '$q', 'SCAPI', '$location', 'Request',
+	                function(Overlay, $q, SCAPI, $location, Request){
+	                    if(Request.id)
+	                        return true;
+	                    var deferred = $q.defer();
+	                    Overlay.add(1);
+	                    SCAPI.step1().then(function(d){
+	                        if(d == "Invalid Location"){
+	                            console.log("-*-Invalid step 2");
+	                            $location.path("/");
+	                        }
+	                        Overlay.remove();
+	                        deferred.resolve(d);
+	                    });
+	                    return deferred.promise;
+	                }]
             }
         };
         var step3 = {
@@ -257,7 +262,7 @@ var myApp = angular.module('myApp', [
             controller : 'informationController',
             templateUrl: root + 'views/information.html',
             resolve : {
-                resolveSize : function() {
+                resolveSize : [function() {
                     var width = $(".ui-view-container").width();
                     var height = parseInt(( width / 16 ) * 9) + 2; // i don't know why this is -8 right now
                     var css = { "height": height + "px", "max-height" : "400px" };
@@ -270,7 +275,7 @@ var myApp = angular.module('myApp', [
                         css = {"width": width + "px"};
                     }
                     return [height, width, css];
-                }
+                }]
             }
         };
         var summary = {
@@ -288,11 +293,14 @@ var myApp = angular.module('myApp', [
         $stateProvider.state(step2a);
         $stateProvider.state(settings);
         $stateProvider.state(information);
-    }).run(function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
+    }])
+	.run(['Storage', 'SCAPI', 'Request', '$rootScope', 'Menu', '$state', '$urlRouter', '$window', '$location', 'Nav',
+		'AlertSwitch',
+		function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
 		FastClick.attach(document.body);
-		$rootScope.$on('requestCompleted', function(){
+		$rootScope.$on('requestCompleted', [function(){
             $state.go("summary");
-        });
+        }]);
         $rootScope.$on('$stateChangeStart', function(event, toState){
             console.log("-Going to state: " + toState.name);
             //alert(toState.name);
@@ -303,7 +311,7 @@ var myApp = angular.module('myApp', [
             function alertOnChange() {
                 console.log("*-*Preventing default change on state change Menu Button");
                 event.preventDefault();
-                
+
                 var reset = function() {
                 	Request.reset();
                     $state.go(toState.name);
@@ -371,7 +379,7 @@ var myApp = angular.module('myApp', [
                 }
             }
         );
-    }).filter('orderObjectBy', function() {
+    }]).filter('orderObjectBy', [function() {
         return function(items, field, reverse) {
             var filtered = [];
             angular.forEach(items, function(item) {
@@ -383,10 +391,9 @@ var myApp = angular.module('myApp', [
             if(reverse) filtered.reverse();
             return filtered;
         };
-    });
-
-myApp.filter('reverse', function() {
-    return function(items) {
-        return items.slice().reverse();
-    };
-});
+    }])
+	.filter('reverse', [function() {
+	    return function(items) {
+	        return items.slice().reverse();
+	    };
+	}]);

@@ -5,15 +5,15 @@ angular.module('myApp.services', []);
 
 // keep track of whether the app has loaded step 1 or not
 // this is needed to check on step1's viewcontentloaded if we should blip() and init recording, etc.
-myApp.factory('App', function() {
+myApp.factory('App', [function() {
    var App = {
        loaded : false
    };
    return App;
-});
+}]);
 
 // keep track of if the initial animation has processed
-myApp.factory('AnimationService', function() {
+myApp.factory('AnimationService', [function() {
     var AnimationService = {
         initialized : false,
         init : function() {
@@ -21,11 +21,11 @@ myApp.factory('AnimationService', function() {
         }
     };
     return AnimationService;
-});
+}]);
 
 // the modal window that will pop up on mobile phones that tells the user that they can click the recording button
 // to record audio
-myApp.factory('RecordingModal', function(Storage, $timeout){
+myApp.factory('RecordingModal', ['Storage', '$timeout', function(Storage, $timeout){
     var RecordingModal = {
         active : false,
 		removing : false,
@@ -58,8 +58,8 @@ myApp.factory('RecordingModal', function(Storage, $timeout){
         }
     };
     return RecordingModal;
-});
-myApp.factory('AlertSwitch', function(){
+}]);
+myApp.factory('AlertSwitch', [function(){
 	var AlertSwitch = {
     	on : true,
         turnOff : function() {
@@ -70,8 +70,8 @@ myApp.factory('AlertSwitch', function(){
         }
     };
     return AlertSwitch;
-});
-myApp.factory('Track', function() {
+}]);
+myApp.factory('Track', [function() {
 	var GA_IDs = appOptions.analytics.gaIDs;
     var Track = {
     	init : function() {
@@ -157,8 +157,8 @@ myApp.factory('Track', function() {
         }
     };
     return Track;
-});
-myApp.factory('MapLoader', function($window, $q){
+}]);
+myApp.factory('MapLoader', ['$window', '$q', function($window, $q){
 	var MapLoader = {
     	busy : false,
         loaded : false,
@@ -209,9 +209,9 @@ myApp.factory('MapLoader', function($window, $q){
         
     };
     return MapLoader;
-});
+}]);
 
-myApp.factory('Splash', function($q) {
+myApp.factory('Splash', ['$q', function($q) {
 	var Splash = {
     	intervalLength : 400,
     	images : {
@@ -278,9 +278,9 @@ myApp.factory('Splash', function($q) {
     };
     return Splash;
 	
-});
+}]);
 
-myApp.factory('Nav', function(){
+myApp.factory('Nav', [function(){
     var Nav = {
         direction : "back",
         reset : function() {
@@ -288,9 +288,9 @@ myApp.factory('Nav', function(){
         }
     };
     return Nav;
-});
+}]);
 
-myApp.factory('Menu', function($timeout){
+myApp.factory('Menu', ['$timeout', function($timeout){
     var Menu = {
         active : false,
         busy : false,
@@ -323,18 +323,18 @@ myApp.factory('Menu', function($timeout){
         }
     };
     return Menu;
-});
+}]);
 
-myApp.factory('Ratings', function(Request){
+myApp.factory('Ratings', ['Request', function(Request){
     var Ratings = {
         getRating : function(company){
             var url = api_root + 'api/mobile/v2/getRating.php?source=' + source + '&companyName=' + encodeURIComponent(company.name) + '&companyZipcode=' + encodeURIComponent(company.zip) + '&companyPhone=' + encodeURIComponent(company.phone);
         }
     };
     return Ratings;
-});
+}]);
 
-myApp.factory('GoogleMap', function($timeout, $q, Request){
+myApp.factory('GoogleMap', ['$timeout', '$q', 'Request', function($timeout, $q, Request){
     var GoogleMap = {
         bounds : [],
         latLngList : [],
@@ -527,9 +527,9 @@ myApp.factory('GoogleMap', function($timeout, $q, Request){
         }
     };
     return GoogleMap;
-});
+}]);
 
-myApp.factory('Times', function(){
+myApp.factory('Times', [function(){
     var Times = {
         timesActive : [],
         timesInactive : [],
@@ -673,9 +673,9 @@ myApp.factory('Times', function(){
     };
     Times.init();
     return Times;
-});
+}]);
 
-myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*User,*/ $http, $q, Times, Uploader){
+myApp.factory('Request', ['Recording', '$rootScope', 'SCAPI', '$interval', '$http', '$q', 'Times', 'Uploader', function(Recording, $rootScope, SCAPI, $interval, $http, $q, Times, Uploader){
     var Request = {
         initialized : false,
         companies : {},
@@ -884,9 +884,9 @@ myApp.factory('Request', function(Recording, $rootScope, SCAPI, $interval, /*Use
         }
     };
     return Request;
-});
+}]);
 
-myApp.factory('Storage', function(User, Request, $localStorage) {
+myApp.factory('Storage', ['User', 'Request', '$localStorage', function(User, Request, $localStorage) {
     var Storage = {
         name : false,
         email : false,
@@ -931,9 +931,9 @@ myApp.factory('Storage', function(User, Request, $localStorage) {
         }
     };
     return Storage;
-});
+}]);
 
-myApp.factory('User', function() {
+myApp.factory('User', [function() {
     var User = {
         nameValidate : /[a-zA-Z]{2,}/,
         emailValidate : /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
@@ -994,9 +994,9 @@ myApp.factory('User', function() {
 
     }
     return User;
-});
+}]);
 
-myApp.factory('Overlay', function() {
+myApp.factory('Overlay', [function() {
     var Overlay = {
         body : $("body"),
         isActive : false,
@@ -1042,9 +1042,10 @@ myApp.factory('Overlay', function() {
         }
     };
     return Overlay;
-});
+}]);
 
-myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, MapLoader, Track, $state) {
+myApp.factory('Location', ['User', '$q', '$http', 'Overlay', '$timeout', '$window', 'MapLoader', 'Track', '$state',
+	function(User, $q, $http, Overlay, $timeout, $window, MapLoader, Track, $state) {
     var Location = {
         busy : false,
         complete : function() {
@@ -1156,9 +1157,9 @@ myApp.factory('Location', function(User, $q, $http, Overlay, $timeout, $window, 
         }
     };
     return Location;
-});
+}]);
 
-myApp.factory('Categories', function() {
+myApp.factory('Categories', [function() {
     var Categories =  [
         { id : '6745', name : 'Test Spin'},
         { id : '13', name : 'Accountants'},
@@ -1212,4 +1213,4 @@ myApp.factory('Categories', function() {
         { id : '6769', name : 'Window Replacement'}
     ];
     return Categories;
-});
+}]);

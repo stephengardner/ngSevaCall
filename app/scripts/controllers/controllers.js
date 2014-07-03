@@ -269,17 +269,19 @@ angular.module('myApp.controllers', [])
 		
 		// set an interval to initialize the recording of the app.  Delaying it so that less processing is done during the transition
 		// this leaves for a cleaner transition
-		var recordingInitializeInterval = $interval(function() {
-			if(!Recording.initialized) {
-				if($("#bodyContainer").css("left") == "0px") {
-					Recording.init();
-					$interval.cancel(recordingInitializeInterval);
-				}
-			}
-			else {
-				$interval.cancel(recordingInitializeInterval);
-			}
-		}, 1000);
+        if(isPhoneGap) {
+	        var recordingInitializeInterval = $interval(function() {
+		        if(!Recording.initialized) {
+			        if($("#bodyContainer").css("left") == "0px") {
+				        Recording.init();
+				        $interval.cancel(recordingInitializeInterval);
+			        }
+		        }
+		        else {
+			        $interval.cancel(recordingInitializeInterval);
+		        }
+	        }, 1000);
+        }
 		
         $scope.$on('$destroy', function() {
 			$("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd');

@@ -7,15 +7,15 @@ angular.module('myApp.directives', []).
             elm.text(version);
         };
     }])
-    .directive('scHeader', function(){
+    .directive('scHeader', [function(){
         return {
             restrict: 'EA',
             replace: true,
             controller : 'headerController',
             templateUrl: 'views/header.html'
         }
-    })
-    .directive('actionButton', function(User){
+    }])
+    .directive('actionButton', ['User', function(User){
         return {
             restrict: 'EA',
             replace: true,
@@ -31,30 +31,30 @@ angular.module('myApp.directives', []).
 	        },
             templateUrl: 'views/button.html'
         }
-    })
-    .directive('scMenu', function(){
+    }])
+    .directive('scMenu', [function(){
         return {
             restrict : 'EA',
             replace : true,
             controller : 'menuController',
             templateUrl: 'views/menu.html'
         }
-    })
-    .directive('phoneInput', function(){
+    }])
+    .directive('phoneInput', [function(){
         return {
             restrict : 'EA',
             replace : true,
             template: '<input id="phone" maxlength="10" type="tel" ng-model="User.phone"/>'
         }
-    })
-    .directive('ios7StatusBar', function() {
+    }])
+    .directive('ios7StatusBar', [function() {
         return {
             restrict : 'EA',
             replace : true,
             controller : 'ios7StatusBarController',
             templateUrl: 'views/statusBar.html'
         }
-    })
+    }])
     .directive('scBlur', ['$parse', function($parse) {
         return function(scope, element, attr) {
             var fn = $parse(attr['scBlur']);

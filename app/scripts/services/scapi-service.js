@@ -1,4 +1,6 @@
-myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q, Track){
+
+myApp.factory('SCAPI', ['Times', 'Recording', '$timeout', 'User', '$http', '$q', 'Track',
+	function(Times, Recording, $timeout, User, $http, $q, Track){
     var SCAPI = {
         init : function(Request) {
             this.Request = Request;
@@ -289,4 +291,4 @@ myApp.factory('SCAPI', function(Times, Recording, $timeout, User, $http, $q, Tra
         }
     };
     return SCAPI;
-});
+}]);
