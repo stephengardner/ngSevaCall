@@ -176,10 +176,10 @@ module.exports = function (grunt) {
     filerev: {
       dist: {
         src: [
-          '<%= yeoman.dist %>/scripts/{,*/}*.js',
-          '<%= yeoman.dist %>/styles/{,*/}*.css',
-          '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-          '<%= yeoman.dist %>/styles/fonts/*'
+          '<%= yeoman.dist %>/scripts/{,*/}*.js'//,
+          //'<%= yeoman.dist %>/styles/{,*/}*.css',
+          //'<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+          //'<%= yeoman.dist %>/styles/fonts/*'
         ]
       }
     },
@@ -316,7 +316,14 @@ module.exports = function (grunt) {
             'fonts/*'
           ]
         },
-	    // move my infobox / xmarker into dist.  Needed because we're using .getScript which can't be minified
+	    // get the fonts from font-awesome into our fonts directory during distribution - Augie
+        {
+	        expand: true,
+	        cwd: 'bower_components/font-awesome/fonts',
+	        dest: '<%= yeoman.dist %>/fonts',
+	        src: '*.*'
+        },
+	    // move my infobox / xmarker into dist.  Needed because we're using .getScript which can't be minified - Augie
 	    {
 	        expand: true,
 	        cwd: '<%= yeoman.app %>/scripts-get',
@@ -327,7 +334,7 @@ module.exports = function (grunt) {
           cwd: '.tmp/images',
           dest: '<%= yeoman.dist %>/images',
           src: ['generated/*']
-        }, {
+        },{
           expand: true,
           cwd: 'bower_components/bootstrap/dist',
           src: 'fonts/*',
