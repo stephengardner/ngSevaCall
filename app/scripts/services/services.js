@@ -377,7 +377,7 @@ myApp.factory('Ratings', ['Request', function(Request){
     return Ratings;
 }]);
 
-myApp.factory('GoogleMap', ['$timeout', '$q', 'Request', function($timeout, $q, Request){
+myApp.factory('GoogleMap', ['Track', '$timeout', '$q', 'Request', function(Track, $timeout, $q, Request){
     var GoogleMap = {
         bounds : [],
         latLngList : [],
@@ -581,7 +581,7 @@ myApp.factory('GoogleMap', ['$timeout', '$q', 'Request', function($timeout, $q, 
     return GoogleMap;
 }]);
 
-myApp.factory('Times', [function(){
+myApp.factory('Times', ['Track', function(Track){
     var Times = {
         timesActive : [],
         timesInactive : [],
@@ -754,7 +754,8 @@ myApp.factory('Times', [function(){
     return Times;
 }]);
 
-myApp.factory('Request', ['Recording', '$rootScope', 'SCAPI', '$interval', '$http', '$q', 'Times', 'Uploader', function(Recording, $rootScope, SCAPI, $interval, $http, $q, Times, Uploader){
+myApp.factory('Request', ['Track', 'Recording', '$rootScope', 'SCAPI', '$interval', '$http', '$q', 'Times',
+	'Uploader', function(Track, Recording, $rootScope, SCAPI, $interval, $http, $q, Times, Uploader){
     var Request = {
         initialized : false,
         companies : {},

@@ -419,6 +419,7 @@ module.exports = function (grunt) {
 		'htmlmin'
 	]);
 
+	// do-ng-min - Augie, not implemented
 	grunt.registerTask('do-ng-min', [
 		'ngmin'
 	]);

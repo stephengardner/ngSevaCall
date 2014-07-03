@@ -55,28 +55,33 @@ angular.module('myApp.directives', []).
             templateUrl: 'views/statusBar.html'
         }
     }])
-    .directive('scBlur', ['$parse', function($parse) {
+    .directive('scBlur', ['$parse', '$timeout', function($parse, $timeout) {
         return function(scope, element, attr) {
             var fn = $parse(attr['scBlur']);
             element.bind('blur', function(event) {
-	            /*
-                scope.$apply(function() {
-                    fn(scope, {$event:event});
-                });
-                */
+	            $timeout(function() {
+		            // anything you want can go here and will safely be run on the next digest.
+		            scope.$apply(function() {
+			            fn(scope, {$event:event});
+		            });
+	            })
             });
         }
     }])
-    .directive('scFocus', ['$parse', function($parse) {
+    .directive('scFocus', ['$parse', '$timeout', function($parse, $timeout) {
         return function(scope, element, attr) {
             var fn = $parse(attr['scFocus']);
             element.bind('focus', function(event) {
-                scope.$apply(function() {
-                    fn(scope, {$event:event});
-                });
+	            $timeout(function() {
+		            // anything you want can go here and will safely be run on the next digest.
+		            scope.$apply(function() {
+			            fn(scope, {$event:event});
+		            });
+                })
             });
         }
     }])
+	// allow phonegap links to open externally
 	.directive('a', function(){
 		return {
 			restrict : 'EAC',

@@ -8,10 +8,10 @@ var checkPhoneGap = function() {
 	return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
 }
 var isPhoneGap = checkPhoneGap();
-var testing = true;
+var testing = false;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
-var skipAPICalls = true;
+var skipAPICalls = false;
 var testingType = ""; //statusBug
 var environment = "local", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
@@ -314,6 +314,11 @@ var myApp = angular.module('myApp', [
 		'AlertSwitch',
 		function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
 		FastClick.attach(document.body);
+			$rootScope.settingsCompletedOnce = {
+				name : false,
+				email : false,
+				phone : false
+			};
 		$rootScope.$on('requestCompleted', [function(){
             $state.go("summary");
         }]);
