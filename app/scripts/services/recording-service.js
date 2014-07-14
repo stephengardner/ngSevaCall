@@ -71,8 +71,8 @@ myApp.factory('Uploader', ['$q', function($q) {
         };
         return Uploader;
 }]);
-myApp.factory('Recording', ['$timeout', '$interval', 'User', '$http', '$q', '$rootScope',
-	function($timeout, $interval, User, $http, $q, $rootScope){
+myApp.factory('Recording', ['Track', '$timeout', '$interval', 'User', '$http', '$q', '$rootScope',
+	function(Track, $timeout, $interval, User, $http, $q, $rootScope){
     var Recording = {
         length : 0,
         position : 0,
