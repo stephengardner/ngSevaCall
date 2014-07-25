@@ -7,10 +7,10 @@ var checkPhoneGap = function() {
 	return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
 }
 var isPhoneGap = checkPhoneGap();
-var testing = false;
+var testing = true;
 var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
-var skipAPICalls = false;
+var skipAPICalls = true;
 var testingType = ""; //statusBug
 var environment = "local", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
@@ -105,6 +105,7 @@ var myApp = angular.module('myApp', [
 	.factory('MyInterceptor', ['$q', '$rootScope', '$injector', '$timeout', 'Overlay',
 	function ($q, $rootScope, $injector, $timeout, Overlay) {
         var errorCount = 0;
+		console.log("http interceptor");
         var MyInterceptor = function(promise){
             var trackInternetFailed = function(){
 	            $injector.get('Track').event(3, "alert_internet_failed");
@@ -319,6 +320,7 @@ var myApp = angular.module('myApp', [
 				phone : false
 			};
 		$rootScope.$on('requestCompleted', [function(){
+			console.warn("SC-Deprecated: rootScope broadcast('requestCompleted')");
             $state.go("summary");
         }]);
         $rootScope.$on('$stateChangeStart', function(event, toState){

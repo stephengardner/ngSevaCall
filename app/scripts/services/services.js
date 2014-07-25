@@ -754,8 +754,8 @@ myApp.factory('Times', ['Track', function(Track){
     return Times;
 }]);
 
-myApp.factory('Request', ['Track', 'Recording', '$rootScope', 'SCAPI', '$interval', '$http', '$q', 'Times',
-	'Uploader', function(Track, Recording, $rootScope, SCAPI, $interval, $http, $q, Times, Uploader){
+myApp.factory('Request', ['$state', 'Track', 'Recording', '$rootScope', 'SCAPI', '$interval', '$http', '$q', 'Times',
+	'Uploader', function($state, Track, Recording, $rootScope, SCAPI, $interval, $http, $q, Times, Uploader){
     var Request = {
         initialized : false,
         companies : {},
@@ -911,8 +911,8 @@ myApp.factory('Request', ['Track', 'Recording', '$rootScope', 'SCAPI', '$interva
         },
 
         requestComplete : function() {
-            $rootScope.$broadcast('requestCompleted');
-	        Track.event('')
+	        Track.event(1, 'request_complete', true);
+	        $state.go("summary");
             this.complete = true;
         },
 

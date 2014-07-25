@@ -161,6 +161,7 @@ myApp.factory('SCAPI', ['Times', 'Recording', '$timeout', 'User', '$http', '$q',
             self.data.requestID = self.Request.id;
             var deferred = $q.defer();
             var url = self.generateURL("searchAction3");
+	        console.log("SCAPI.searchAction3 is processing with this url: ", url);
             if(testing) {
                 $timeout(function(){
                     deferred.resolve(true);
