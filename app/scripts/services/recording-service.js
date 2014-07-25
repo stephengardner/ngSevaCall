@@ -10,7 +10,7 @@ String.prototype.toHHMMSS = function () {
     var time    = /*hours+':'+*/minutes+':'+seconds;
     return time;
 }
-myApp.factory('Uploader', ['$q', function($q) {
+myApp.factory('Uploader', ['$q', 'Track', function($q, Track) {
 		var Uploader = {
             url : api_root + "components/audio-upload/upload.php",
             success : function(r) {

@@ -12,7 +12,7 @@ myApp.factory('App', [function() {
    return App;
 }]);
 
-myApp.factory('TwitterService', function($timeout, Track) {
+myApp.factory('TwitterService', ['Track', function(Track) {
 	var TwitterService = {
 		initialized : false,
 		init : function() {
@@ -36,7 +36,7 @@ myApp.factory('TwitterService', function($timeout, Track) {
 		}
 	};
 	return TwitterService;
-});
+}]);
 // keep track of if the initial animation has processed
 myApp.factory('AnimationService', [function() {
     var AnimationService = {
@@ -1079,7 +1079,6 @@ myApp.factory('User', [function() {
         isPhoneValid : function() {
             return this.phoneValidate.test(this.getPhone());
         }
-
     }
     return User;
 }]);

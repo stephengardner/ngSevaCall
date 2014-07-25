@@ -277,7 +277,6 @@ angular.module('myApp.controllers', [])
 				$interval.cancel(modalInterval);
 			}
 		}, 1000);
-		
 		// set an interval to initialize the recording of the app.  Delaying it so that less processing is done during the transition
 		// this leaves for a cleaner transition
         if(isPhoneGap) {

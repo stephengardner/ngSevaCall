@@ -3,6 +3,7 @@ window.onerror = function(message, url, lineNumber) {
 	console.log("SCError: "+message+" in "+url+" at line "+lineNumber);
 }
 
+alert("hi");
 //var isPhoneGap = true;
 var checkPhoneGap = function() {
 	return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
@@ -13,7 +14,7 @@ var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
 var skipAPICalls = false;
 var testingType = ""; //statusBug
-var environment = "production", root, api_root;
+var environment = "local", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
 var appOptions = {
@@ -57,7 +58,7 @@ var alerts = {
 	}
 };
 if(environment == "local" && !isPhoneGap) {
-	root = "../../";
+	root = ""; //"../../"
 	api_root = "http://localhost/";
 }
 else if(environment == "local" && isPhoneGap) {
