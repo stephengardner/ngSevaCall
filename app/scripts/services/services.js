@@ -995,7 +995,7 @@ myApp.factory('Storage', ['User', 'Request', '$localStorage', function(User, Req
             User.phone = $localStorage.sc_user_phone;
             User.zip = $localStorage.sc_user_zip;
             this.name = $localStorage.sc_user_name;
-            this.email = $localStorage.sc_user_phone;
+            this.email = $localStorage.sc_user_email;
             this.phone = $localStorage.sc_user_phone;
             this.zip = $localStorage.sc_user_zip;
             this.recordingModalDismissed = $localStorage.sc_recordingModalDismissed;
