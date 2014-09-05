@@ -1,4 +1,9 @@
 'use strict';
+/**
+ * SevaCall iPhone App 2.0
+ * Author: Stephen Gardner (https://www.linkedin.com/profile/view?id=167519048)
+ *
+ */
 window.onerror = function(message, url, lineNumber) {
 	console.log("SCError: "+message+" in "+url+" at line "+lineNumber);
 }
@@ -12,7 +17,7 @@ var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
 var skipAPICalls = false;
 var testingType = ""; //statusBug
-var environment = "production", root, api_root;
+var environment = "local", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
 var appOptions = {

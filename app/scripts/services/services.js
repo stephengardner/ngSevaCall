@@ -72,12 +72,12 @@ myApp.factory('RecordingModal', ['Storage', '$timeout', function(Storage, $timeo
             // set the recording modal dismissal notice to never appear again
 			var self = this;
 			self.removing = true;
-            self.active = false;
-			
+            //self.active = false; //this caused an odd undefined function error within angular animate, because removing and active were both animations
+
 			$timeout(function(){
 				self.removed = true;
 			}, 500);
-			
+
             Storage.recordingModalDismissed = true;
             Storage.set();
         }

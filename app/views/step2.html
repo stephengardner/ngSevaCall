@@ -7,7 +7,7 @@
         </div>
         <div class="description">
 	        <div class="description-wrapper" ng-class="{active : isPhoneGap}">
-	            <div ng-show="isPhoneGap" class="recording-modal" ng-class="{active : recordingModal.active, removing : recordingModal.removing, removed : recordingModal.removed}">
+	            <div ng-show="!isPhoneGap" class="recording-modal" ng-class="{active : recordingModal.active, removing : recordingModal.removing, removed : recordingModal.removed}">
 	                <div class="modal-close" ng-click="recordingModal.hide()">
 	                    <i class="fa fa-times"></i>
 	                </div>
