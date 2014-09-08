@@ -486,8 +486,8 @@ angular.module('myApp.controllers', [])
         SCAPI.timeSaved().then(function(d) {
             $scope.timeSaved = d.timeSaved;
         });
-        $scope.twitterMessage = encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
-        $scope.twttrURL = "https://twitter.com/intent/tweet?url=http://www.sevacall.com&text=" + encodeURIComponent("SevaCall found me help in minutes! sevacall.com #savetime #awesome @sevacall");
+        $scope.twitterMessage = encodeURIComponent("talklocal found me help in minutes! talklocal.com #savetime #awesome @talklocal");
+        $scope.twttrURL = "https://twitter.com/intent/tweet?url=http://www.talklocal.com&text=" + encodeURIComponent("talklocal found me help in minutes! talklocal.com #savetime #awesome @talklocal");
 
 		$scope.twitterShare = function() {
 	        Track.event(2, 'twitter_share_button_pressed', true);
@@ -496,14 +496,14 @@ angular.module('myApp.controllers', [])
         $scope.facebookShare = function() {
 	        Track.event(2, 'facebook_share_button_pressed', true);
             var url = "http://facebook.com/dialog/feed";
-            url += "?app_id=543995755650717";
-            url += "&link=www.sevacall.com";
+            url += "?app_id=696501850437286";
+            url += "&link=www.talklocal.com";
             url += "&name= Seva Call - Tell us what and when, we'll find the professionals!";
-            url += "&description=Seva Call works to find local businesses that can help you with your service need instantly, like a free personal concierge service. Within minutes you will be connected to providers that can service your specific problem, on your schedule, at your location.";
-            url += "&redirect_uri=http://sevacall.com";
+            url += "&description=talklocal works to find local businesses that can help you with your service need instantly, like a free personal concierge service. Within minutes you will be connected to providers that can service your specific problem, on your schedule, at your location.";
+            url += "&redirect_uri=http://talklocal.com";
             console.log("popping up fb url: " + url);
-            window.open("http://www.facebook.com/dialog/feed?app_id=543995755650717&link=http://www.sevacall.com&name="
-                + encodeURIComponent("Seva Call - Tell us what and when, we'll find the professionals!") + "&redirect_uri=http://sevacall.com", '_system');
+            window.open("http://www.facebook.com/dialog/feed?app_id=696501850437286&link=http://www.talklocal.com&name="
+                + encodeURIComponent("talklocal - Tell us what and when, we'll find the professionals!") + "&redirect_uri=http://sevacall.com", '_system');
             return false;
         }
     }])

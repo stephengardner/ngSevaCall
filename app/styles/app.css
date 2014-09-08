@@ -231,15 +231,16 @@ input {
 
 /* fonts */
 @font-face {
-    font-family: 'League_Gothic';
-    src: url("../fonts/League_Gothic-webfont.ttf"),
-    url('../fonts/League_Gothic-webfont.eot'), /* IE9 */
-    url('../fonts/League_Gothic-webfont.woff');
+    font-family: 'leelawad';
+    src: url("../fonts/leelawad-webfont.ttf"),
+    url('../fonts/leelawad-webfont.eot'), /* IE9 */
+    url('../fonts/leelawad-webfont.woff');
 }
 
 h1{
-    font-family:League_Gothic;
+    font-family:leelawad;
     color:#003366;
+    text-transform:lowercase;
 }
 
 #step1 h1 {

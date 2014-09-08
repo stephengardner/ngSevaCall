@@ -1,5 +1,5 @@
 {
-  "name": "ngyo2",
+  "name": "ngTalkLocal",
   "version": "0.0.0",
   "dependencies": {
     "grunt-bower-install": "~1.6.0"

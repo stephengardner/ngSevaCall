@@ -17,7 +17,7 @@ var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
 var skipAPICalls = false;
 var testingType = ""; //statusBug
-var environment = "local", root, api_root;
+var environment = "production", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
 var appOptions = {
@@ -68,7 +68,7 @@ else if(environment == "local" && isPhoneGap) {
 	root = "";
 	api_root = "http://test.s17.sevacall.com/";
 }
-else if(environment == "development"){
+else if(environment == "development") {
 	if(isPhoneGap) {
 		root = "";
 	}
@@ -83,7 +83,7 @@ else if(environment == "production") {
 	console.error = function(msg) {};
 	root = "";
 	if(isPhoneGap) {
-		api_root = "http://www.sevacall.com/";
+		api_root = "http://www.talklocal.com/";
 	}
 	else {
 		api_root = "../";
