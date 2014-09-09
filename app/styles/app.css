@@ -573,3 +573,15 @@ select, input, textarea {
     -moz-transform:none!important;
     transform:none!important;
 }
+
+h1 {
+    margin-bottom:.1em;font-size:2.8em!important
+}
+
+#step2 h1 {
+   font-size:2em!important
+}
+
+#step2a h1 {
+    font-size:2.4em!important
+}
