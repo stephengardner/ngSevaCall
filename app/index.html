@@ -27,6 +27,7 @@
         <link rel="stylesheet" href="styles/summary.css"/>
         <link rel="stylesheet" href="styles/recording.css"/>
         <link rel="stylesheet" href="styles/media.css"/>
+        <link rel="stylesheet" href="styles/splashscreen.css"/>
         <!-- endbuild -->
 
     </head>
@@ -36,15 +37,19 @@
         <![endif]-->
 
         <!-- Application Content -->
-        <div id="splashscreen" ng-show="isPhoneGap">
-            <img id="splashImg-iPhone4" src="images/splash-iphone4-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
-            <img id="splashImg-iPhone5" src="images/splash-iphone5-4.jpg" style="position:fixed; z-index:100000; width:100%; height:100%; top:0px; left: -9999999px"/>
+        <!--
+        splash removed for talklocal app
+        <div ng-controller="splashController" id="splashscreen" ng-show="isPhoneGap">
+            <div class="img-wrapper">
+                <img ng-src="{{splash.image.src}}"/>
+            </div>
         </div>
+        -->
 
         <!-- begin header -->
         <div id="header-wrapper" style="height:55px;" class="clearfix">
             <div sc-header class="clearfix"></div>
-        </div>
+        </div>e
         <!-- end header -->
 
         <!-- begin main view -->
@@ -98,7 +103,24 @@
         <script src="scripts/services/test-service.js"></script>
         <script src="scripts/services/services.js"></script>
         <script src="scripts/services/recording-service.js"></script>
+        <script src="scripts/services/splash.factory.js"></script>
+
         <script src="scripts/controllers/controllers.js"></script>
+        <script src="scripts/controllers/body.controller.js"></script>
+        <script src="scripts/controllers/action-button.controller.js"></script>
+        <script src="scripts/controllers/wrapper.controller.js"></script>
+        <script src="scripts/controllers/step1.controller.js"></script>
+        <script src="scripts/controllers/step2.controller.js"></script>
+        <script src="scripts/controllers/step2a.controller.js"></script>
+        <script src="scripts/controllers/step3.controller.js"></script>
+        <script src="scripts/controllers/summary.controller.js"></script>
+        <script src="scripts/controllers/menu.controller.js"></script>
+        <script src="scripts/controllers/header.controller.js"></script>
+        <script src="scripts/controllers/timetable.controller.js"></script>
+        <script src="scripts/controllers/information.controller.js"></script>
+        <script src="scripts/controllers/recording.controller.js"></script>
+        <script src="scripts/controllers/splash.controller.js"></script>
+
         <script src="scripts/directives/directives.js"></script>
         <script src="scripts/other/initialize.js"></script>
         <!-- endbuild -->

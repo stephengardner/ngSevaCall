@@ -14,25 +14,12 @@ body, .ui-view-container {
 	left:-9000px!important;
 }
 
-#splashscreen {
-	position:fixed;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    z-index:9003;
-}
-
 textarea.disabled {
 	background:#eee;
     color:#999;
     pointer-events:none;
 }
 
-#splashscreen img {
-	height:100%;
-    width:100%;
-}
 
 .btn.disabled {
     opacity:1 /*bootstrap override */
