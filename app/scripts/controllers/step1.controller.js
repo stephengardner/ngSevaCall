@@ -1,13 +1,15 @@
 
-myApp.controller('step1Controller', ['App', '$scope', 'Location', 'User', 'Request', '$location', 'Categories', 'Overlay'
+myApp.controller('step1Controller', ['$timeout', 'appStateTracker', '$appTutorial', 'App', '$scope', 'Location', 'User', 'Request', '$location', 'Categories', 'Overlay'
 	, 'SCAPI', '$q', 'Splash', '$state', 'Track',
-	function(App, $scope, Location, User, Request, $location, Categories, Overlay, SCAPI, $q, Splash, $state, Track) {
+	function($timeout, appStateTracker, $appTutorial, App, $scope, Location, User, Request, $location, Categories, Overlay, SCAPI, $q, Splash, $state, Track) {
 		Request.reset();
 		$scope.app = App;
 		$scope.isPhoneGap = isPhoneGap;
 		$scope.Location = Location;
 		$scope.User = User;
 		$scope.Request = Request;
+
+		console.log("Request is: ", $scope.Request);
 
 		$scope.$on('$viewContentLoaded', function() {
 			if(!App.loaded) {
@@ -25,6 +27,7 @@ myApp.controller('step1Controller', ['App', '$scope', 'Location', 'User', 'Reque
 		});
 		// on request category dropdown change
 		$scope.change = function(){
+			$appTutorial.step1B();
 			Track.event(2, "category_selected", true);
 			for(var i = 0; i < $scope.categories.length; i++){
 				if($scope.categories[i].id == Request.categoryID) {
@@ -35,12 +38,10 @@ myApp.controller('step1Controller', ['App', '$scope', 'Location', 'User', 'Reque
 			console.log("*Set Request category to:" + Request.category);
 		};
 
-		setTimeout(function(){
-			document.getElementById("disabled").disabled = 'yes'
-		}, 1);
-
 		$scope.getLocation = function(){
 			console.log("*scope.getLocation");
+			if($appTutorial.state == "step1B")
+				$appTutorial.step1C();
 			Overlay.add(1);
 			Location.geoLocate().then(function(d){
 				console.log("Returned...");
@@ -84,6 +85,9 @@ myApp.controller('step1Controller', ['App', '$scope', 'Location', 'User', 'Reque
 			});
 			return deferred.promise;
 		};
+		$scope.$on('ngRepeatFinished', function(){
+			appStateTracker.pageLoaded = "step1";
+		});
 
 		// determines if we came to this page from the blog, if so, populate with a pre-filled category
 		var categoryFromParams = $location.search().source;

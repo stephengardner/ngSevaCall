@@ -1,4 +1,6 @@
-myApp.controller('timeTableController', ['Times', '$scope', '$rootScope', function(Times, $scope, $rootScope){
+myApp.controller('timeTableController', ['appStateTracker', 'Times', '$scope', '$rootScope',
+	function(appStateTracker, Times, $scope, $rootScope){
+		$scope.appStateTracker = appStateTracker;
 	$scope.Times = Times;
 	console.log("*Times object:" + Times.postify());
 	var tempTimes = angular.copy(Times.timesActive);
@@ -7,5 +9,8 @@ myApp.controller('timeTableController', ['Times', '$scope', '$rootScope', functi
 	});
 	$scope.$on('$destroy', function() {
 		cleanUpFunction();
+	});
+	$scope.$on('ngRepeatFinished', function(){
+		$scope.appStateTracker.pageLoaded = "timetable";
 	});
 }])

@@ -28,10 +28,17 @@
         <link rel="stylesheet" href="styles/recording.css"/>
         <link rel="stylesheet" href="styles/media.css"/>
         <link rel="stylesheet" href="styles/splashscreen.css"/>
+        <link rel="stylesheet" href="styles/menu.css"/>
+        <link rel="stylesheet" href="../../app-tutorial/css/app-tutorial.css"/>
         <!-- endbuild -->
 
     </head>
-    <body ng-controller="wrapperController" class="container" ng-class="{iphone4 : iphone4, iphone5 : iphone5, ios7 : ios7, phonegap : isPhoneGap, mobileWeb : !isPhoneGap}">
+    <body ng-controller="wrapperController" class="container" ng-class="{noTransition : !app.transitions, iphone4 : iphone4, iphone5 : iphone5, ios7 : ios7, phonegap : isPhoneGap, mobileWeb : !isPhoneGap}">
+        <!-- begin menu -->
+        <div sc-menu class="GPUAccel row"></div>
+        <div class="menu-cover" ng-class="{menuActive : Menu.active}"></div>
+        <!-- end menu -->
+
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -54,7 +61,6 @@
 
         <!-- begin main view -->
         <div class="row body">
-            <div class="menu-cover" ng-class="{menuActive : Menu.active}" style="top:0;"></div>
             <div id="bodyContainer" ng-click="click($event)" ng-controller="bodyController" ng-class="{menuActive : Menu.active, loaded : app.loaded}" class="body-animate GPUAccel clearfix">
                 <div class="body-margin">
                     <div class="span12 ui-view-container clearfix">
@@ -64,10 +70,6 @@
             </div>
         </div>
         <!-- end main view -->
-
-        <!-- begin menu -->
-        <div sc-menu class="GPUAccel row"></div>
-        <!-- end menu -->
 
         <!-- build:js(.tmp) scripts/ie_shims.js -->
         <!--[if lt IE 9]>
@@ -86,6 +88,7 @@
         <script src="../bower_components/ngstorage/ngStorage.js"></script>
         <script src="../bower_components/fastclick/lib/fastclick.js"></script>
         <script src="../bower_components/angular-animate/angular-animate.js"></script>
+        <script src="../../app-tutorial/app-tutorial.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
 
@@ -104,6 +107,7 @@
         <script src="scripts/services/services.js"></script>
         <script src="scripts/services/recording-service.js"></script>
         <script src="scripts/services/splash.factory.js"></script>
+        <script src="scripts/services/app-state-tracker.factory.js"></script>
 
         <script src="scripts/controllers/controllers.js"></script>
         <script src="scripts/controllers/body.controller.js"></script>
@@ -120,8 +124,13 @@
         <script src="scripts/controllers/information.controller.js"></script>
         <script src="scripts/controllers/recording.controller.js"></script>
         <script src="scripts/controllers/splash.controller.js"></script>
+        <script src="scripts/controllers/tl-where.controller.js"></script>
 
         <script src="scripts/directives/directives.js"></script>
+        <script src="scripts/directives/tl-select.directive.js"></script>
+        <script src="scripts/directives/tl-where.directive.js"></script>
+        <script src="scripts/directives/tl-on-finish-render.directive.js"></script>
+
         <script src="scripts/other/initialize.js"></script>
         <!-- endbuild -->
 

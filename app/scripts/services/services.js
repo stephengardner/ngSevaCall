@@ -7,7 +7,8 @@ angular.module('myApp.services', []);
 // this is needed to check on step1's viewcontentloaded if we should blip() and init recording, etc.
 myApp.factory('App', [function() {
    var App = {
-       loaded : false
+       loaded : false,
+	   transitions : true
    };
    return App;
 }]);
@@ -956,6 +957,7 @@ myApp.factory('User', [function() {
         nameValidate : /[a-zA-Z]{2,}/,
         emailValidate : /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
         phoneValidate : /^((\([\d]{3}\))( [\d]{3}-))[\d]{4}|^[\d]{10}$/,
+	    zipcodeValidate : /(^\d{5}$)|(^\d{5}-\d{4}$)/,
 
         // getters
         getCategory : function(){
@@ -965,7 +967,7 @@ myApp.factory('User', [function() {
             return this.categoryID;
         },
         getZipcode : function(){
-            return this.zipcode();
+            return this.zipcode;
         },
         getName : function(){
             return this.name;
@@ -1005,6 +1007,10 @@ myApp.factory('User', [function() {
         isEmailValid : function() {
             return this.emailValidate.test(this.getEmail());
         },
+
+	    isZipcodeValid : function() {
+		    return this.zipcodeValidate.test(this.getZipcode());
+	    },
 
         isPhoneValid : function() {
             return this.phoneValidate.test(this.getPhone());

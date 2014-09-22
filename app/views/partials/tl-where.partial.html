@@ -1,0 +1,24 @@
+<div class="where-text-wrap" ng-class="{
+                'has-feedback' : $appTutorial.state != 'hidden',
+                'has-error' : $appTutorial.state != 'hidden' && !User.isZipcodeValid(),
+                'has-success' : $appTutorial.state != 'hidden' && User.isZipcodeValid()
+             }">
+    <div class="where-text-innerwrap">
+        <div class="shadow">
+            <input ng-class="{
+                'has-feedback' : $appTutorial.state != 'hidden',
+                'has-error' : $appTutorial.state != 'hidden' && !User.isZipcodeValid(),
+                'has-success' : $appTutorial.state != 'hidden' && User.isZipcodeValid(),
+                 disabled : menu.active
+             }" ng-model="User.zipcode" class="where-text" type="tel" placeholder="Zipcode" style="width:100%;"/>
+            <span ng-if="$appTutorial.state != 'hidden' && User.isZipcodeValid()" class="glyphicon glyphicon-ok form-control-feedback"></span>
+            <span ng-if="$appTutorial.state != 'hidden' && !User.isZipcodeValid()" class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+        </div>
+        <img id="where-loader" ng-show="Location.busy" src="images/ajax_loader.gif"/>
+    </div>
+</div>
+<div class="button shadow" id="where-button" ng-click="getLocation()" ng-class="{disabled : menu.active}">
+    <div class="where-button-image" >
+    </div>
+    <a href="#"></a>
+</div>
