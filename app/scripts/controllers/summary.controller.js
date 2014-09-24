@@ -1,6 +1,5 @@
 myApp.controller('summaryController', ['TwitterService', 'Track', 'Request', 'SCAPI', '$scope', function(TwitterService, Track, Request, SCAPI, $scope){
 	TwitterService.init();
-	Request.setID(112669);
 	$scope.request = Request;
 	$scope.acceptanceRate = Request.numCompaniesCalled ?  Math.round(((parseFloat( Request.numCompaniesAccepted  /  Request.numCompaniesCalled * 100)))) + "%" : "0%";
 	SCAPI.timeSaved().then(function(d) {

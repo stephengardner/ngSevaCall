@@ -124,20 +124,25 @@ var myApp = angular.module('myApp', [
 	            if(response.data && typeof response.data == "string" && response.data.indexOf("DOCTYPE") != -1) {
                 	var deferred = $q.defer();
 		            trackInternetFailed();
-                    new xAlert("Verify you are connected to the internet and retry.",
-                        function(button){
-                            if(button == 1){
-                                var $http = $injector.get('$http');
-                                return $http(response.config);
-                            }
-                            else {
-                                Overlay.remove();
-                                $q.reject("rejected");
-                            }
-                        },
-                        "Connection Error",
-                        "Retry, Cancel"
-                    );
+					if(!$rootScope.internetError) {
+						$rootScope.internetError = 1;
+						new xAlert("Verify you are connected to the internet and retry.",
+							function(button){
+								if(button == 1){
+									$rootScope.internetError = 0;
+									var $http = $injector.get('$http');
+									return $http(response.config);
+								}
+								else {
+									$rootScope.internetError = 0;
+									Overlay.remove();
+									$q.reject("rejected");
+								}
+							},
+							"Connection Error",
+							"Retry, Cancel"
+						);
+					}
                     return deferred.promise;
                 }
 				else {
@@ -153,20 +158,25 @@ var myApp = angular.module('myApp', [
                     errorCount = 0;
                     var deferred = $q.defer();
 	                trackInternetFailed();
-                    new xAlert("Verify you are connected to the internet and retry.",
-                        function(button){
-                            if(button == 1){
-                                var $http = $injector.get('$http');
-                                return $http(response.config);
-                            }
-                            else {
-                                Overlay.remove();
-                                $q.reject("rejected");
-                            }
-                        },
-                        "Connection Error",
-                        "Retry, Cancel"
-                    );
+					if(!$rootScope.internetError) {
+						$rootScope.internetError = 1;
+						new xAlert("Verify you are connected to the internet and retry.",
+							function(button){
+								if(button == 1){
+									$rootScope.internetError = 0;
+									var $http = $injector.get('$http');
+									return $http(response.config);
+								}
+								else {
+									$rootScope.internetError = 0;
+									Overlay.remove();
+									$q.reject("rejected");
+								}
+							},
+							"Connection Error",
+							"Retry, Cancel"
+						);
+					}
                     return deferred.promise;
                 }
                 else {

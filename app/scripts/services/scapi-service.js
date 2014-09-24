@@ -86,7 +86,7 @@ myApp.factory('SCAPI', ['Times', 'Recording', '$timeout', 'User', '$http', '$q',
                         status: "none",
                         marker: new Object(),
                         infoBox: new Object(),
-                        infoBoxEvent: function () {
+                        infoBoxEvent: function (){
                         },
                         ratingYelp: 0,
                         isYelpLoaded : 0,
