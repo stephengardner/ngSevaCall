@@ -40,8 +40,13 @@
 	*/
     /* Phonegap */
     .phonegap h1 {
+    	font-size:2.75em!important;
+    }
+
+    .phonegap #step1 h1 {
     	font-size:3.75em!important;
     }
+
     
     .phonegap .sep {
     	margin-top:2.3em;
@@ -81,7 +86,7 @@
 		font-size:3.2em!important;
     }
     .phonegap #step2a input[type="text"], .phonegap #phone {
-    	padding: .5em .25em!important;
+    	padding: .5em .25em!important;/
     	font-size:1.5em!important;
 	}
     .phonegap .setting-wrapper i {
@@ -89,7 +94,8 @@
         height:3.4em;
     }
     .phonegap #step2 h1 {
-    	font-size:2.95em!important;
+    	font-size:1.95em!important;
+        margin-bottom:.25em;
     }
     .phonegap .timetable {
         font-size: 1.25em!important;

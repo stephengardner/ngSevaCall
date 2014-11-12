@@ -13,13 +13,12 @@ myApp.controller('step1Controller', ['App', '$scope', 'Location', 'User', 'Reque
 			if(!App.loaded) {
 				App.loaded = true;
 				if(isPhoneGap) {
-					navigator.splashscreen.hide();
-					/*
-					removed from talklocal app
 					Splash.blip().then(function() {
-						console.log("*--*Splash screen removed*--*");
 					});
-					*/
+                    $("#phonegap-splash")[0].onload = function(){
+						console.log("*--*Splash screen removed*--*");
+                   		navigator.splashscreen.hide();
+                    };
 				}
 			}
 		});

@@ -48,13 +48,10 @@ myApp.controller('step2Controller', ['Track', 'RecordingModal', 'Overlay', 'Uplo
 							Track.event(2, 'confirm_notification_ok', true);
 							Overlay.add(1);
 							if(Recording.saved) {
-							
-									alert("attempting to upload");
 								Overlay.message("Uploading Recording...");
 								Uploader.uploadRecording(Recording.toURL, { audioType : Recording.audioType, reqID : Request.id}).then(function(d){
 
 									console.log("*Audio Uploaded returned: ", d);
-																		alert("upload finished");
 									Overlay.message("Encoding Recording...");
 									$http({
 										url : api_root + "api/mobile/v2/encodeAudio.php?audioType=" + Recording.audioType + "&requestID=" + Request.id,
@@ -62,14 +59,12 @@ myApp.controller('step2Controller', ['Track', 'RecordingModal', 'Overlay', 'Uplo
 										headers : {'Content-Type': 'application/json'}
 									}).success(function(d){
 										console.log("*Audio Encoding returned: " + d);
-										alert("encode finished");
 										Overlay.message("Preparing Request...");
 										finalStep();
 									}).error(function(){
 										new xAlert("Error Encoding Recording");
 									});
 								}, function(){
-									alert("Not uploaded");
 									// if the recording upload was rejected due to a bad internet connection.
 									Overlay.remove();
                                     deferred.reject();

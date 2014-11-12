@@ -39,12 +39,12 @@
         <!-- Application Content -->
         <!--
         splash removed for talklocal app
+        -->
         <div ng-controller="splashController" id="splashscreen" ng-show="isPhoneGap">
             <div class="img-wrapper">
-                <img ng-src="{{splash.image.src}}"/>
+                <img id="phonegap-splash" ng-src="{{splash.image.src}}"/>
             </div>
         </div>
-        -->
 
         <!-- begin header -->
         <div id="header-wrapper" style="height:55px;" class="clearfix">
@@ -123,6 +123,7 @@
 
         <script src="scripts/directives/directives.js"></script>
         <script src="scripts/other/initialize.js"></script>
+        <script src="scripts/other/remarketing.js"></script>
         <!-- endbuild -->
 
 
