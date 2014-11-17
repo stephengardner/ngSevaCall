@@ -6,7 +6,7 @@
 	*/
 }
 
-body, .ui-view-container {
+.ui-view-container {
     background:#F2F7FD;
     font-family:arial;
 }
@@ -144,7 +144,7 @@ input {
     border:2px solid #ddd;
     color:#003366;
     border-radius:5px;
-    padding:14px 0;
+    padding:20px 0;
     float: left;
     font: bold 12px Arial!important;
     max-width: 32.66%!important;
@@ -160,6 +160,10 @@ input {
     -webkit-appearance: none;
     resize:none;
     outline:none;
+}
+
+#nav {
+    display:none;
 }
 
 #nav img {
@@ -185,7 +189,7 @@ h1{
 }
 
 #step1 h1 {
-	font-size:3.2em;
+	font-size:3em;
 }
 
 h3 {
@@ -197,6 +201,8 @@ h3 {
 
 header {
     height:55px;
+    position:relative;
+    z-index:1;
 }
 
 #menu {
@@ -442,15 +448,18 @@ select, input, textarea {
 }
 
 .noTransition [ui-view] {
+    /*
     -webkit-transform:none!important;
     -moz-transform:none!important;
     transform:none!important;
+    */
 }
 
 .loaded [ui-view].ng-enter, .loaded [ui-view].ng-leave {
     position: absolute;
     left: 0;
     right: 0;
+    opacity: 1;
     -webkit-transition:all .5s ease-in-out;
     -moz-transition:all .5s ease-in-out;
     -o-transition:all .5s ease-in-out;
@@ -458,7 +467,6 @@ select, input, textarea {
 }
 
 .loaded [ui-view].ng-enter {
-
     opacity: 0;
     -webkit-transform:scale3d(0.5, 0.5, 0.5);
     -moz-transform:scale3d(0.5, 0.5, 0.5);
@@ -497,14 +505,16 @@ select, input, textarea {
 .body-animate {
     position:relative;
     left:0;
-    -webkit-transition:all .3s ease-in-out!important;
-    -moz-transition:all .3s ease-in-out!important;
-    -o-transition:all .3s ease-in-ou!importantt;
-    transition:all .3s ease-in-out!important;
+    opacity: 1;
+    visibility: visible;
+    transition: all .3s ease-in-out;
+    transition-property:left,right,opacity,background-color,border-color;
+    -webkit-transition: all .3s ease-in-out;
+    -webkit-transition-property:left,right,opacity,background-color,border-color;
 }
 
 .menuActive {
-    left: -70%;
+    left: -70%!important;
 }
 
 .hidden {

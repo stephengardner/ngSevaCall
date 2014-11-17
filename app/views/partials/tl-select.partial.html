@@ -1,8 +1,8 @@
 <div class="input-em GPUAccel has-feedback" ng-class="{
-    'has-success' : Request.category
+    'has-success' : Request.category && $appTutorial.state != 'hidden' && $appTutorial.state != 'closed'
 }">
     <select tl-on-finish-render ng-class="{disabled : menu.active}" ng-options="category.id as category.name for category in categories" ng-model="Request.categoryID" ng-change="change()">
         <option id="disabled" ng-selected="" value="">Choose category</option>
     </select>
-    <span ng-if="Request.category && $appTutorial.state != 'hidden'" class="glyphicon glyphicon-ok form-control-feedback"></span>
+    <span ng-if="Request.category && $appTutorial.state != 'hidden' && $appTutorial.state != 'closed'" class="glyphicon glyphicon-ok form-control-feedback"></span>
 </div>

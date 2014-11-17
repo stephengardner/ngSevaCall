@@ -12,38 +12,37 @@ myApp.controller('step1Controller', ['$timeout', 'appStateTracker', '$appTutoria
 		console.log("Request is: ", $scope.Request);
 
 		$scope.$on('$viewContentLoaded', function() {
-			if(!App.loaded) {
-				App.loaded = true;
-				if(isPhoneGap) {
-					navigator.splashscreen.hide();
-					/*
-					removed from talklocal app
-					Splash.blip().then(function() {
-						console.log("*--*Splash screen removed*--*");
-					});
-					*/
-				}
+			if(isPhoneGap) {
+				navigator.splashscreen.hide();
+				/*
+				removed from talklocal app
+				Splash.blip().then(function() {
+					console.log("*--*Splash screen removed*--*");
+				});
+				*/
 			}
 		});
 		// on request category dropdown change
 		$scope.change = function(){
-			$appTutorial.step1B();
-			Track.event(2, "category_selected", true);
-			for(var i = 0; i < $scope.categories.length; i++){
-				if($scope.categories[i].id == Request.categoryID) {
-					Request.setCategory($scope.categories[i].name);
+			$timeout(function(){
+				$appTutorial.step1B();
+				Track.event(2, "category_selected", true);
+				for(var i = 0; i < $scope.categories.length; i++){
+					if($scope.categories[i].id == Request.categoryID) {
+						Request.setCategory($scope.categories[i].name);
+					}
 				}
-			}
-			console.log("*Set Request category ID to:" + Request.categoryID);
-			console.log("*Set Request category to:" + Request.category);
+				console.log("*Set Request category ID to:" + Request.categoryID);
+				console.log("*Set Request category to:" + Request.category);
+			})
 		};
 
-		$scope.getLocation = function(){
+		$scope.getLocation = function() {
 			console.log("*scope.getLocation");
 			if($appTutorial.state == "step1B")
 				$appTutorial.step1C();
 			Overlay.add(1);
-			Location.geoLocate().then(function(d){
+			Location.geoLocate().then(function(d) {
 				console.log("Returned...");
 				$scope.Location.busy = false;
 				if(d) {
@@ -85,8 +84,11 @@ myApp.controller('step1Controller', ['$timeout', 'appStateTracker', '$appTutoria
 			});
 			return deferred.promise;
 		};
-		$scope.$on('ngRepeatFinished', function(){
-			appStateTracker.pageLoaded = "step1";
+		$scope.$on('ngRepeatFinished', function(state){
+			$timeout(function(){
+				if(!App.loaded)
+					App.loaded = true;
+			});
 		});
 
 		// determines if we came to this page from the blog, if so, populate with a pre-filled category
