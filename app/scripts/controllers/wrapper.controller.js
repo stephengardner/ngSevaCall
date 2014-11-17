@@ -16,7 +16,7 @@ myApp.controller('wrapperController', ['appStateTracker', '$appTutorial', '$scop
 			$scope.iphone5 = true;
 
 		function locate(opt_initial_check) {
-			console.log("***locating....");
+			console.log("***locating....")
 			MapLoader.loadMaps().then(function(){
 				if(!User.zipcode) {
 					console.log("*Going to geoLocate from wrapperController");
