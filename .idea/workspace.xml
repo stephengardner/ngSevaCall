@@ -2,44 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6aabc326-297e-4a43-83b7-bed14be2a6f3" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/images/tutorial-home.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dist/images/tutorial-home.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/scripts/modules/app-tutorial/css/app-tutorial.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/scripts/modules/app-tutorial/app-tutorial.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/scripts/modules/app-tutorial/bower.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/scripts/services/storage.factory.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/scripts/directives/tl-on-animation-complete.directive.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dist/views/partials/tl-select.partial.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dist/views/partials/tl-where.partial.html" />
-      <change type="DELETED" beforePath="C:\xampp\htdocs\augie\ngTalkLocal\dist\scripts\ngsevacall.bf40a147.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\xampp\htdocs\augie\ngTalkLocal\dist\scripts\vendor.e992b6ec.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/styles/app.css" afterPath="$PROJECT_DIR$/app/styles/app.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/app.js" afterPath="$PROJECT_DIR$/app/scripts/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/controllers/body.controller.js" afterPath="$PROJECT_DIR$/app/scripts/controllers/body.controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bower.json" afterPath="$PROJECT_DIR$/bower.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/controllers/header.controller.js" afterPath="$PROJECT_DIR$/app/scripts/controllers/header.controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/home.html" afterPath="$PROJECT_DIR$/app/views/home.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/home.html" afterPath="$PROJECT_DIR$/dist/views/home.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/index.html" afterPath="$PROJECT_DIR$/app/index.html" />
+      <change type="DELETED" beforePath="C:\xampp\htdocs\augie\ngTalkLocal\dist\scripts\ngsevacall.07ae598f.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/index.html" afterPath="$PROJECT_DIR$/dist/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/main.html" afterPath="$PROJECT_DIR$/app/views/main.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/styles/menu.css" afterPath="$PROJECT_DIR$/app/styles/menu.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/menu.html" afterPath="$PROJECT_DIR$/app/views/menu.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/menu.html" afterPath="$PROJECT_DIR$/dist/views/menu.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/services/recording-service.js" afterPath="$PROJECT_DIR$/app/scripts/services/recording-service.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/services/services.js" afterPath="$PROJECT_DIR$/app/scripts/services/services.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/main.html" afterPath="$PROJECT_DIR$/dist/views/main.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/styles/sevacall.css" afterPath="$PROJECT_DIR$/dist/styles/sevacall.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/controllers/step1.controller.js" afterPath="$PROJECT_DIR$/app/scripts/controllers/step1.controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/controllers/step2.controller.js" afterPath="$PROJECT_DIR$/app/scripts/controllers/step2.controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/step2.html" afterPath="$PROJECT_DIR$/app/views/step2.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/step2.html" afterPath="$PROJECT_DIR$/dist/views/step2.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/controllers/step2a.controller.js" afterPath="$PROJECT_DIR$/app/scripts/controllers/step2a.controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/controllers/timetable.controller.js" afterPath="$PROJECT_DIR$/app/scripts/controllers/timetable.controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/styles/timetable.css" afterPath="$PROJECT_DIR$/app/styles/timetable.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/views/timetable.html" afterPath="$PROJECT_DIR$/dist/views/timetable.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/partials/tl-select.partial.html" afterPath="$PROJECT_DIR$/app/views/partials/tl-select.partial.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/partials/tl-where.partial.html" afterPath="$PROJECT_DIR$/app/views/partials/tl-where.partial.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/scripts/controllers/wrapper.controller.js" afterPath="$PROJECT_DIR$/app/scripts/controllers/wrapper.controller.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ngTalkLocal.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -139,7 +107,7 @@
       <file leaf-file-name="wrapper.controller.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/scripts/controllers/wrapper.controller.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="35" selection-start="561" selection-end="566" vertical-scroll-proportion="0.13165538" vertical-offset="0" max-vertical-offset="1033">
+            <state line="29" column="8" selection-start="1135" selection-end="1135" vertical-scroll-proportion="0.47725073" vertical-offset="0" max-vertical-offset="1033">
               <folding />
             </state>
           </provider>
@@ -233,64 +201,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ngTalkLocal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ngTalkLocal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="styles" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ngTalkLocal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ngTalkLocal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ngTalkLocal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ngTalkLocal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -300,6 +210,23 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../ngRedesign14" />
   </component>
   <component name="RunManager">
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
+      <method />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" working-dir="">
+      <browser start="false" url="" with-js-debugger="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+      <method />
+    </configuration>
     <list size="0" />
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
@@ -321,7 +248,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973376" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973376" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
@@ -440,7 +367,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/scripts/controllers/wrapper.controller.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="35" selection-start="561" selection-end="566" vertical-scroll-proportion="0.13165538" vertical-offset="0" max-vertical-offset="1033">
+        <state line="29" column="8" selection-start="1135" selection-end="1135" vertical-scroll-proportion="0.47725073" vertical-offset="0" max-vertical-offset="1033">
           <folding />
         </state>
       </provider>
