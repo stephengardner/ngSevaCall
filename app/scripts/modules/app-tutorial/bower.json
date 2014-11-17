@@ -1,0 +1,21 @@
+{
+  "name": "ngTalkLocalTutorial",
+  "main": "app-tutorial.js",
+  "version": "0.0.1",
+  "authors": [
+    "stephengardner <opensourceaugie@gmail.com>"
+  ],
+  "description": "tutorial overlay for ngTalkLocal",
+  "keywords": [
+    "angular",
+    "talklocal"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

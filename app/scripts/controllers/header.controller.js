@@ -1,7 +1,7 @@
 myApp.controller('headerController', ['Track', 'Nav', 'Request', '$rootScope', '$state', '$window', 'Menu', '$attrs',
 	'$scope', function(Track, Nav, Request, $rootScope, $state, $window, Menu, $attrs, $scope){
 		$scope.request = Request; // this might case a bug on iphones, please check
-		$scope.$on("$stateChangeSuccess", function(event, state){
+		$scope.$on("$stateChangeSuccess", function(event, state) {
 			// weird bug -- reading the "state.name" object in the partial for ng-show will cause this page to flash
 			if(state.name == "step1")
 				$("#nav").hide();

@@ -1,7 +1,8 @@
-myApp.controller('step2Controller', ['Track', 'RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times',
+myApp.controller('step2Controller', ['App', 'appStateTracker', '$appTutorial', 'Track', 'RecordingModal', 'Overlay', 'Uploader', '$http', 'Recording', '$timeout', 'SCAPI', 'Times',
 	'$scope', 'User', 'Request', '$state', '$interval',
-	function(Track, RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state, $interval) {
+	function(App, appStateTracker, $appTutorial, Track, RecordingModal, Overlay, Uploader, $http, Recording, $timeout, SCAPI, Times, $scope, User, Request, $state, $interval) {
 		$scope.isPhoneGap = isPhoneGap;
+		$scope.appStateTracker = appStateTracker;
 		$scope.recordingModal = RecordingModal;
 		if($.isEmptyObject(Request.companies))
 			SCAPI.getCompaniesList();
@@ -92,23 +93,53 @@ myApp.controller('step2Controller', ['Track', 'RecordingModal', 'Overlay', 'Uplo
 				$state.go("step2a");
 			}
 		};
-
+		/*
+		$scope.onAnimationComplete = function(){
+			$scope.appStateTracker.pageLoaded = "step2";
+			$timeout(function(){
+				RecordingModal.show();
+			}, 1000);
+		};
+		if(!App.transitions) {
+			$scope.onAnimationComplete();
+		}
+		$scope.$on("animationComplete", $scope.onAnimationComplete);
+		*/
 		// initializing the recording on step 2, so that step 1 is not further delayed during processing.
 		// delay this until transition end so that slower processing phones don't have a problem on transitioning
+		/*
 		var addModalOnTransitionEnd = function(){
-			if($(this).css("left") == "0px") {
-				//addIframe();
+			$timeout(function(){
+				if($(this).css("left") == "0px"){
+					console.log("----");
+					console.warn($("#step2Next").offset().left);
+					$scope.appStateTracker.pageLoaded = "step2";
+				}
 				$timeout(function(){
 					RecordingModal.show();
 				}, 1000);
-				$("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+				$(".loaded [ui-view]").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
 					addModalOnTransitionEnd);
-			}
+			}.bind(this));
 		};
-
-		$("#bodyContainer").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
-			addModalOnTransitionEnd);
-
+		*/
+		/*
+		if(!App.transitions){
+			//alert("App.transitions, now binding to transitionend");
+			//$("#bodyContainer").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+			//	addModalOnTransitionEnd);
+			$(".loaded [ui-view]").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',addModalOnTransitionEnd);
+		}
+		else {
+			alert("NO App.transitions");
+			$timeout(function(){
+				$scope.appStateTracker.pageLoaded = "step2";
+			});
+			$timeout(function(){
+				RecordingModal.show();
+			}, 1000);
+		}
+		*/
 		// set an interval that will display the modal recording popup, this is necessary because some phones - specifically the HTC ONE,
 		// are not responding to the transitionEnd events
 		var modalInterval = $interval(function() {

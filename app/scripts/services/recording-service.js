@@ -82,6 +82,8 @@ myApp.factory('Recording', ['Track', '$timeout', '$interval', 'User', '$http', '
         permissionsStatus : 0, // O: Uknown (on start), 1: Good to record, 2: DENIED
         paused : 0,
 		initialized : false,
+	    recording : false,
+	    saved : true, // is the recording valid?
         // set using "setAudio()" : mimeType : "audio/wav",
         // set using "setAudiio()" : audioType : "aiff",
 		

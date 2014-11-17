@@ -17,7 +17,7 @@ var testRequestID = 112669;
 var testPhoneNumber = "(301) 704-7437"; // Augie's number!
 var skipAPICalls = false;
 var testingType = ""; //statusBug
-var environment = "production", root, api_root;
+var environment = "local", root, api_root;
 var mapsLoaded = false; // requires internet to grab google map
 
 var appOptions = {
@@ -105,7 +105,8 @@ var myApp = angular.module('myApp', [
         'myApp.controllers',
         'ui.router',
         'ngAnimate',
-        'ngStorage'
+        'ngStorage',
+		'appTutorial'
     ])
 	.factory('MyInterceptor', ['$q', '$rootScope', '$injector', '$timeout', 'Overlay',
 	function ($q, $rootScope, $injector, $timeout, Overlay) {
@@ -325,19 +326,33 @@ var myApp = angular.module('myApp', [
         $stateProvider.state(settings);
         $stateProvider.state(information);
     }])
-	.run(['Storage', 'SCAPI', 'Request', '$rootScope', 'Menu', '$state', '$urlRouter', '$window', '$location', 'Nav',
+	.run(['Track', '$appTutorial', '$animate', 'appStateTracker', 'Storage', 'SCAPI', 'Request', '$rootScope', 'Menu', '$state', '$urlRouter', '$window', '$location', 'Nav',
 		'AlertSwitch',
-		function(Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
+		function(Track, $appTutorial, $animate, appStateTracker, Storage, SCAPI, Request, $rootScope, Menu, $state, $urlRouter, $window, $location, Nav, AlertSwitch){
+
+		Storage.import();
+		SCAPI.init(Request);
 		FastClick.attach(document.body);
-			$rootScope.settingsCompletedOnce = {
-				name : false,
-				email : false,
-				phone : false
-			};
+		$rootScope.settingsCompletedOnce = {
+			name : false,
+			email : false,
+			phone : false
+		};
+
+		Track.init();
+		Track.event(1, "application_opened");
 		$rootScope.$on('requestCompleted', [function(){
 			console.warn("SC-Deprecated: rootScope broadcast('requestCompleted')");
             $state.go("summary");
         }]);
+
+		$rootScope.$on('$locationChangeSuccess', function(){
+			console.log("*page*" + $location.url());
+			Track.event(1, $location.url().replace("/", "") + "_screen_opened");
+			// only call if the event.preventDefault isn't active from the locationChangeStart
+			Nav.reset();
+		});
+
         $rootScope.$on('$stateChangeStart', function(event, toState){
             console.log("-Going to state: " + toState.name);
             //alert(toState.name);

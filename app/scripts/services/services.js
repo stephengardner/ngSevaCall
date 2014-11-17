@@ -7,7 +7,8 @@ angular.module('myApp.services', []);
 // this is needed to check on step1's viewcontentloaded if we should blip() and init recording, etc.
 myApp.factory('App', [function() {
    var App = {
-       loaded : false
+       loaded : false,
+	   transitions : true
    };
    return App;
 }]);
@@ -724,6 +725,7 @@ myApp.factory('Request', ['$state', 'Track', 'Recording', '$rootScope', 'SCAPI',
             this.companies = {};
             this.processing = false;
             this.complete = false;
+	        $rootScope.$broadcast("reset");
         	//SCAPI.init(Request);
         },
 
@@ -859,6 +861,7 @@ myApp.factory('Request', ['$state', 'Track', 'Recording', '$rootScope', 'SCAPI',
                 this.setID(112669);
               
             SCAPI.searchAction3().then(function(d){
+	            $rootScope.$broadcast("submit");
                 Request.pingStatusesStart();
                 deferred.resolve(d);
             });
@@ -904,58 +907,12 @@ myApp.factory('Request', ['$state', 'Track', 'Recording', '$rootScope', 'SCAPI',
     return Request;
 }]);
 
-myApp.factory('Storage', ['User', 'Request', '$localStorage', function(User, Request, $localStorage) {
-    var Storage = {
-        name : false,
-        email : false,
-        phone : false,
-        zip : false,
-        recordingModalDismissed : false,
-
-        saveUser : function(){
-            this.name = User.name;
-            this.email = User.email;
-            this.phone = User.phone;
-            this.set();
-        },
-
-        import : function() {
-            User.name = $localStorage.sc_user_name;
-            User.email = $localStorage.sc_user_email;
-            User.phone = $localStorage.sc_user_phone;
-            User.zip = $localStorage.sc_user_zip;
-            this.name = $localStorage.sc_user_name;
-            this.email = $localStorage.sc_user_email;
-            this.phone = $localStorage.sc_user_phone;
-            this.zip = $localStorage.sc_user_zip;
-            this.recordingModalDismissed = $localStorage.sc_recordingModalDismissed;
-        },
-
-        saveZip : function() {
-            this.zip = User.zipcode;
-            this.set();
-        },
-
-        set : function() {
-            $localStorage.sc_user_name = this.name;
-            $localStorage.sc_user_email = this.email;
-            $localStorage.sc_user_phone = this.phone;
-            $localStorage.sc_user_zip = this.zip;
-            $localStorage.sc_recordingModalDismissed = this.recordingModalDismissed;
-        },
-
-        empty : function() {
-            $localStorage.$reset();
-        }
-    };
-    return Storage;
-}]);
-
 myApp.factory('User', [function() {
     var User = {
         nameValidate : /[a-zA-Z]{2,}/,
         emailValidate : /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
         phoneValidate : /^((\([\d]{3}\))( [\d]{3}-))[\d]{4}|^[\d]{10}$/,
+	    zipcodeValidate : /(^\d{5}$)|(^\d{5}-\d{4}$)/,
 
         // getters
         getCategory : function(){
@@ -965,7 +922,7 @@ myApp.factory('User', [function() {
             return this.categoryID;
         },
         getZipcode : function(){
-            return this.zipcode();
+            return this.zipcode;
         },
         getName : function(){
             return this.name;
@@ -1005,6 +962,10 @@ myApp.factory('User', [function() {
         isEmailValid : function() {
             return this.emailValidate.test(this.getEmail());
         },
+
+	    isZipcodeValid : function() {
+		    return this.zipcodeValidate.test(this.getZipcode());
+	    },
 
         isPhoneValid : function() {
             return this.phoneValidate.test(this.getPhone());
