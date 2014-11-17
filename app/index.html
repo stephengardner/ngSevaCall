@@ -28,10 +28,19 @@
         <link rel="stylesheet" href="styles/recording.css"/>
         <link rel="stylesheet" href="styles/media.css"/>
         <link rel="stylesheet" href="styles/splashscreen.css"/>
+        <link rel="stylesheet" href="styles/menu.css"/>
+        <link rel="stylesheet" href="styles/visibility.css"/>
+        <link rel="stylesheet" href="scripts/modules/app-tutorial/css/app-tutorial.css"/>
         <!-- endbuild -->
 
     </head>
-    <body ng-controller="wrapperController" class="container" ng-class="{iphone4 : iphone4, iphone5 : iphone5, ios7 : ios7, phonegap : isPhoneGap, mobileWeb : !isPhoneGap}">
+    <body ng-controller="wrapperController" class="container" ng-class="{noTransition : !app.transitions, iphone4 : iphone4, iphone5 : iphone5, ios7 : ios7, phonegap : isPhoneGap || fakePhoneGap , mobileWeb : !isPhoneGap}">
+        <!-- begin menu -->
+        <div sc-menu class="GPUAccel row"></div>
+        <div class="menu-cover" ng-class="{menuActive : Menu.active}"></div>
+        <div ng-controller="menuController" class="menu-closer" ng-click="Menu.close()" ng-class="{menuActive : Menu.active}"></div>
+        <!-- end menu -->
+
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -47,27 +56,22 @@
         </div>
 
         <!-- begin header -->
-        <div id="header-wrapper" style="height:55px;" class="clearfix">
+        <div id="header-wrapper" style="height:55px;" class="clearfix" ng-cloak>
             <div sc-header class="clearfix"></div>
         </div>
         <!-- end header -->
 
         <!-- begin main view -->
         <div class="row body">
-            <div class="menu-cover" ng-class="{menuActive : Menu.active}" style="top:0;"></div>
-            <div id="bodyContainer" ng-click="click($event)" ng-controller="bodyController" ng-class="{menuActive : Menu.active, loaded : app.loaded}" class="body-animate GPUAccel clearfix">
+            <div id="bodyContainer" ng-click="menu.close()" ng-controller="bodyController" ng-class="{menuActive : Menu.active, loaded : app.loaded}" class="body-animate GPUAccel clearfix">
                 <div class="body-margin">
                     <div class="span12 ui-view-container clearfix">
-                        <div ui-view class="slide GPUAccel" ng-class="{disabled : Menu.active}"></div>
+                        <div ui-view tl-on-animation-complete class="slide GPUAccel" ng-class="{disabled : Menu.active}"></div>
                     </div>
                 </div>
             </div>
         </div>
         <!-- end main view -->
-
-        <!-- begin menu -->
-        <div sc-menu class="GPUAccel row"></div>
-        <!-- end menu -->
 
         <!-- build:js(.tmp) scripts/ie_shims.js -->
         <!--[if lt IE 9]>
@@ -82,13 +86,12 @@
         <script src="../bower_components/angular/angular.js"></script>
         <script src="../bower_components/json3/lib/json3.js"></script>
         <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="../bower_components/angular-ui-router-animate-callbacks/release/angular-ui-router.js"></script>
         <script src="../bower_components/ngstorage/ngStorage.js"></script>
         <script src="../bower_components/fastclick/lib/fastclick.js"></script>
         <script src="../bower_components/angular-animate/angular-animate.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
-
         <script src="../../cordova.js"></script>
         <!-- build:js scripts/addins.js -->
         <script src="scripts/other/ga.js"></script>
@@ -104,6 +107,11 @@
         <script src="scripts/services/services.js"></script>
         <script src="scripts/services/recording-service.js"></script>
         <script src="scripts/services/splash.factory.js"></script>
+        <script src="scripts/services/app-state-tracker.factory.js"></script>
+        <script src="scripts/services/storage.factory.js"></script>
+
+        <!-- app tutorial -->
+        <script src="scripts/modules/app-tutorial/app-tutorial.js"></script>
 
         <script src="scripts/controllers/controllers.js"></script>
         <script src="scripts/controllers/body.controller.js"></script>
@@ -120,8 +128,14 @@
         <script src="scripts/controllers/information.controller.js"></script>
         <script src="scripts/controllers/recording.controller.js"></script>
         <script src="scripts/controllers/splash.controller.js"></script>
+        <script src="scripts/controllers/tl-where.controller.js"></script>
 
         <script src="scripts/directives/directives.js"></script>
+        <script src="scripts/directives/tl-select.directive.js"></script>
+        <script src="scripts/directives/tl-where.directive.js"></script>
+        <script src="scripts/directives/tl-on-finish-render.directive.js"></script>
+        <script src="scripts/directives/tl-on-animation-complete.directive.js"></script>
+
         <script src="scripts/other/initialize.js"></script>
         <script src="scripts/other/remarketing.js"></script>
         <!-- endbuild -->

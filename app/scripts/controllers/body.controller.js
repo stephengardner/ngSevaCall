@@ -8,8 +8,5 @@ myApp.controller('bodyController', ['$location', '$scope', 'Menu', 'AnimationSer
 			$location.path("/step1");
 		}
 		$scope.menu = Menu;
-		$scope.click = function($event) {
-			Menu.active = false;
-		};
 		$scope.animationService = AnimationService;
 	}])

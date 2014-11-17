@@ -1,0 +1,227 @@
+.app-tutorial {
+    color:white;
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+}
+
+#app-tutorial {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: opacity .5s;
+}
+
+#app-tutorial.active {
+    opacity: 1;
+    z-index:1;
+}
+
+.app-tutorial-overlay {
+    background:rgba(0,0,0,.75);
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+}
+
+.select-blurb {
+    position:absolute;
+    z-index:90001;
+}
+
+.app-tutorial .close {
+    float:none;
+    z-index:90002;
+}
+
+.highlight {
+    position:relative;
+    z-index:90001!important;
+}
+
+.app-tutorial-buttons {
+    position:fixed;
+    bottom:1em;
+    left: 8px;
+    right: 8px;
+}
+.app-tutorial-buttons > div {
+    padding:.7em;
+    font-size:16px;
+}
+
+.app-tutorial-buttons > div ~ div {
+    margin-top:1em;
+}
+
+.app-tutorial .close {
+    color:white;
+    opacity:1;
+    margin-right:.5em;
+    margin-top:.5em;
+    position: absolute;
+    right: 8px;
+}
+
+.highlight-shadow {
+    box-shadow: 0px 0px 5px 3px #fff;
+    border-radius: 4px;
+}
+
+.btn.highlight-shadow {
+    background:#ff6600;
+    border-color: #ff5915;
+}
+.select-blurb .btn {
+    margin-top:1em;
+}
+
+.tutorial-step0 img {
+    display:block;
+    width:40px;
+    margin:0 auto;
+    margin-bottom:1em;
+}
+.select-blurb .btn.btn-primary i {
+    margin-left:.25em;
+}
+
+.select-blurb .btn.btn-default i {
+    margin-right:.25em;
+}
+
+h1.highlight, .head.highlight, .aside.highlight {
+    color:white;
+}
+
+.tutorial-step0 header {
+    font-size:1.4em;
+    padding-top:1em;
+    height:auto;
+    background:none;
+    margin-left:8px;
+    margin-right:8px;
+}
+
+.tutorial-step0 header {
+    font-size:1.4em;
+    padding-top:1em;
+    height:auto;
+    background:none;
+}
+
+.tutorial-step1 .buttons {
+    margin-top:3em;
+}
+
+.select-blurb {
+    right:8px;
+    left:8px;
+}
+
+.select-blurb .button-description {
+    width:160px;
+    margin-right:8px;
+    text-align:right;
+}
+
+.close span {
+    font-weight: normal;
+    font-size: .7em;
+    display: inline-block;
+    margin-right: .25em;
+}
+
+.close i {
+    vertical-align: middle;
+}
+
+.app-tutorial .fixed-header {
+    background:none;
+}
+
+.app-tutorial strong {
+    display: block;
+    font-size: 1.4em;
+    color: #D0E1F1;
+    margin-bottom:.25em;
+}
+
+.phonegap .app-tutorial strong {
+	font-size:1.2em;
+}
+
+.tutorial-step0 {
+    display: table;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: 70%;
+    width: 100%;
+    padding: 8px;
+    margin: 0 auto;
+}
+
+.tutorial-step0 .buttons {
+    margin-top:2em;
+}
+
+.app-tutorial .btn {
+    font-size: 1.2em;
+    padding: .6em 1em;
+    background: #ff6600;
+    border-color: #DD6718;
+}
+
+.tutorial-container {
+    max-width:500px;
+    margin:0 auto;
+}
+
+.tutorial-step0 header {
+    text-align:center;
+}
+
+.table-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.app-tutorial .btn-info {
+    background-color: #ff6600;
+    border-color: #ff6600;
+}
+
+.app-tutorial .btn-default {
+    padding:.6em;
+    font-size:1.2em;
+    background: #ffffff;
+    border-color: rgb(221, 221, 221);
+}
+
+.app-tutorial strong i {
+    font-size: 1.3em;
+    margin-right:.35em;
+}
+
+.time-button.highlight-shadow{
+    box-shadow: 0px 0px 4px 1px #fff;
+}
+
+.app-tutorial .select-blurb .btn ~ .btn {
+    margin-left:.5em;
+}
+
+.app-tutorial .fa-microphone.small {
+    padding: .25em .5em;
+    border: 1px solid;
+    border-radius: 3px;
+}

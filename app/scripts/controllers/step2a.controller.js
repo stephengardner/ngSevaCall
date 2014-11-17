@@ -1,14 +1,30 @@
 
-myApp.controller('step2aController', ['Track', '$http', 'Uploader', 'Overlay', 'Recording', 'Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window',
-	function(Track, $http, Uploader, Overlay, Recording, Storage, $rootScope, User, Times, $scope, Request, $state, $window){
+myApp.controller('step2aController', ['$timeout', 'appStateTracker', 'App', 'Track', '$http', 'Uploader', 'Overlay', 'Recording', 'Storage', '$rootScope', 'User', 'Times', '$scope', 'Request', '$state', '$window',
+	function($timeout, appStateTracker, App, Track, $http, Uploader, Overlay, Recording, Storage, $rootScope, User, Times, $scope, Request, $state, $window){
 		var UserBackup = angular.copy(User);
 		var cleanUpFunction = $rootScope.$on('back', function(){
 			User.setName(UserBackup.getName());
 			User.setEmail(UserBackup.getEmail());
 			User.setPhone(UserBackup.getPhone());
 		});
+		$scope.appStateTracker = appStateTracker;
 		$scope.User = User;
-
+		var addModalOnTransitionEnd = function(){
+			if($(this).css("left") == "0px"){
+				$timeout(function(){
+					$scope.appStateTracker.pageLoaded = "settings";
+					$("#bodyContainer").unbind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+						addModalOnTransitionEnd);
+				});
+			}
+		};
+		if(App.transitions){
+			$("#bodyContainer").bind('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+				addModalOnTransitionEnd);
+		}
+		else {
+			$scope.appStateTracker.pageLoaded = "settings";
+		}
 		// Analytics - Track whether or not the name, phone, and email have been filled in properly.
 		// Watch the variables, and only report this statistic once
 		$scope.$watch('User.name', function(){

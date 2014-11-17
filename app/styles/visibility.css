@@ -1,0 +1,17 @@
+#description-button, .recording-modal {
+    display:none;
+}
+.phonegap #description-button, .phonegap .recording-modal {
+    display:block;
+}
+
+.phonegap .description-wrapper {
+    padding-left: 107px;
+}
+
+.tutorial-microphone-snippet {
+    display:none;
+}
+.phonegap .tutorial-microphone-snippet {
+    display:inline;
+}
